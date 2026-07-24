@@ -332,9 +332,29 @@ function setupEventListeners() {
             document.querySelectorAll('.difficulty-btn').forEach(b => {
                 b.disabled = isModeWithoutDifficulty;
             });
+
+            // 词库仅在单词模式可用
+            const isLibraryMode = mode === 'word';
+            document.querySelectorAll('.library-btn').forEach(b => {
+                b.disabled = !isLibraryMode;
+            });
+            const libHint = document.getElementById('libraryHint');
+            if (libHint) {
+                libHint.classList.toggle('hidden', isLibraryMode);
+            }
+
+            // 难度提示文字
             const hint = document.getElementById('difficultyHint');
             if (hint) {
-                hint.classList.toggle('hidden', !isModeWithoutDifficulty);
+                if (mode === 'word') {
+                    hint.textContent = '简单=短词(2-3字母) / 中等=中词(4-5字母) / 困难=长词(6+字母)';
+                    hint.classList.remove('hidden');
+                } else if (mode === 'challenge') {
+                    hint.textContent = '简单=3秒超时 / 中等=2秒超时 / 困难=1秒超时';
+                    hint.classList.remove('hidden');
+                } else {
+                    hint.classList.add('hidden');
+                }
             }
 
             // 更新排行榜显示
@@ -1036,9 +1056,10 @@ window.addEventListener('DOMContentLoaded', async function() {
         initLeaderboard();
         console.log('排行榜初始化完成');
 
-        // 默认字母模式，禁用难度选择
+        // 默认字母模式，禁用难度和词库选择
         document.querySelectorAll('.difficulty-btn').forEach(b => b.disabled = true);
-        document.getElementById('difficultyHint')?.classList.remove('hidden');
+        document.querySelectorAll('.library-btn').forEach(b => b.disabled = true);
+        document.getElementById('libraryHint')?.classList.remove('hidden');
         
     } catch (error) {
         console.error('游戏初始化失败:', error);
