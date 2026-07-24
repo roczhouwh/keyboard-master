@@ -370,7 +370,10 @@ function startGame() {
     
     console.log('开始游戏，单词库已加载:', Object.keys(wordList));
 
-    
+    // 重置暂停按钮文本
+    const pauseBtn = document.getElementById('pauseButton');
+    if (pauseBtn) pauseBtn.textContent = '暂停';
+
     // 根据难度设置挑战模式的超时时间
     let challengeTimeout;
     if (gameState.mode === 'challenge') {
