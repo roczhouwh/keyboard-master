@@ -1,22 +1,540 @@
 {
   "easy": [
-    "cat", "dog", "sun", "fun", "run", "hat", "bat", "mat", "sit", "big",
-    "red", "blue", "green", "book", "pen", "pencil", "cup", "map", "bag", "cap",
-    "can", "man", "boy", "girl", "yes", "no", "go", "stop", "up",
-    "down", "left", "right", "in", "out", "on", "off", "two", "three", "four",
-    "five", "six", "seven", "eight", "nine", "ten", "one", "zero"
+    {
+      "en": "bag",
+      "zh": "包"
+    },
+    {
+      "en": "pen",
+      "zh": "钢笔"
+    },
+    {
+      "en": "book",
+      "zh": "书"
+    },
+    {
+      "en": "no",
+      "zh": "不"
+    },
+    {
+      "en": "your",
+      "zh": "你（们）的"
+    },
+    {
+      "en": "red",
+      "zh": "红色"
+    },
+    {
+      "en": "blue",
+      "zh": "蓝色"
+    },
+    {
+      "en": "OK",
+      "zh": "好；行"
+    },
+    {
+      "en": "mum",
+      "zh": "妈妈"
+    },
+    {
+      "en": "face",
+      "zh": "脸"
+    },
+    {
+      "en": "ear",
+      "zh": "耳朵"
+    },
+    {
+      "en": "eye",
+      "zh": "眼睛"
+    },
+    {
+      "en": "nose",
+      "zh": "鼻子"
+    },
+    {
+      "en": "arm",
+      "zh": "胳臂"
+    },
+    {
+      "en": "hand",
+      "zh": "手"
+    },
+    {
+      "en": "head",
+      "zh": "头"
+    },
+    {
+      "en": "body",
+      "zh": "身体"
+    },
+    {
+      "en": "leg",
+      "zh": "腿"
+    },
+    {
+      "en": "foo t",
+      "zh": "脚"
+    },
+    {
+      "en": "duck",
+      "zh": "鸭子"
+    },
+    {
+      "en": "pig",
+      "zh": "猪"
+    },
+    {
+      "en": "cat",
+      "zh": "猫"
+    },
+    {
+      "en": "bear",
+      "zh": "熊"
+    },
+    {
+      "en": "dog",
+      "zh": "狗"
+    },
+    {
+      "en": "bird",
+      "zh": "鸟"
+    },
+    {
+      "en": "zoo",
+      "zh": "动物园"
+    },
+    {
+      "en": "egg",
+      "zh": "蛋"
+    },
+    {
+      "en": "milk",
+      "zh": "牛奶"
+    },
+    {
+      "en": "cake",
+      "zh": "蛋糕"
+    },
+    {
+      "en": "fish",
+      "zh": "鱼"
+    },
+    {
+      "en": "rice",
+      "zh": "米饭"
+    },
+    {
+      "en": "one",
+      "zh": "一"
+    },
+    {
+      "en": "two",
+      "zh": "二"
+    },
+    {
+      "en": "four",
+      "zh": "四"
+    },
+    {
+      "en": "five",
+      "zh": "五"
+    },
+    {
+      "en": "six",
+      "zh": "六"
+    },
+    {
+      "en": "Nine",
+      "zh": "九"
+    },
+    {
+      "en": "Ten",
+      "zh": "十"
+    },
+    {
+      "en": "UK",
+      "zh": "英国"
+    },
+    {
+      "en": "USA",
+      "zh": "美国"
+    },
+    {
+      "en": "she",
+      "zh": "她"
+    },
+    {
+      "en": "he",
+      "zh": "他"
+    },
+    {
+      "en": "boy",
+      "zh": "男孩"
+    },
+    {
+      "en": "and",
+      "zh": "和；与"
+    },
+    {
+      "en": "girl",
+      "zh": "女孩"
+    },
+    {
+      "en": "new",
+      "zh": "新的"
+    },
+    {
+      "en": "dad",
+      "zh": "爸爸（口语）"
+    },
+    {
+      "en": "man",
+      "zh": "男人"
+    },
+    {
+      "en": "thin",
+      "zh": "瘦的"
+    },
+    {
+      "en": "fat",
+      "zh": "肥的"
+    },
+    {
+      "en": "tall",
+      "zh": "高的"
+    },
+    {
+      "en": "long",
+      "zh": "长的"
+    },
+    {
+      "en": "big",
+      "zh": "大的"
+    },
+    {
+      "en": "so",
+      "zh": "这么；那么"
+    },
+    {
+      "en": "tail",
+      "zh": "尾巴"
+    },
+    {
+      "en": "on",
+      "zh": "在……上面"
+    },
+    {
+      "en": "In",
+      "zh": "在……里面"
+    },
+    {
+      "en": "desk",
+      "zh": "书桌"
+    },
+    {
+      "en": "cap",
+      "zh": "帽子"
+    },
+    {
+      "en": "ball",
+      "zh": "球"
+    },
+    {
+      "en": "car",
+      "zh": "小汽车"
+    },
+    {
+      "en": "boat",
+      "zh": "小船"
+    },
+    {
+      "en": "map",
+      "zh": "地图"
+    },
+    {
+      "en": "toy",
+      "zh": "玩具"
+    },
+    {
+      "en": "box",
+      "zh": "盒；箱"
+    },
+    {
+      "en": "pear",
+      "zh": "梨"
+    },
+    {
+      "en": "buy",
+      "zh": "买"
+    },
+    {
+      "en": "kite",
+      "zh": "风筝"
+    }
   ],
   "medium": [
-    "apple", "happy", "water", "school", "friend", "mouse", "house", "plant", "dance", "smile",
-    "banana", "orange", "grape", "cherry", "lemon", "brother", "sister", "mother", "father", "family",
-    "birthday", "sunshine", "rainbow", "cloud", "river", "mountain", "forest", "ocean",
-    "bicycle", "elephant", "giraffe", "monkey", "zebra", "tiger", "rabbit", "duck"
+    {
+      "en": "ruler",
+      "zh": "尺子"
+    },
+    {
+      "en": "pencil",
+      "zh": "铅笔"
+    },
+    {
+      "en": "eraser",
+      "zh": "橡皮"
+    },
+    {
+      "en": "crayon",
+      "zh": "蜡笔"
+    },
+    {
+      "en": "green",
+      "zh": "绿色"
+    },
+    {
+      "en": "yellow",
+      "zh": "黄色"
+    },
+    {
+      "en": "black",
+      "zh": "黑色"
+    },
+    {
+      "en": "brown",
+      "zh": "棕色"
+    },
+    {
+      "en": "white",
+      "zh": "白色"
+    },
+    {
+      "en": "orange",
+      "zh": "橙色"
+    },
+    {
+      "en": "mouth",
+      "zh": "嘴"
+    },
+    {
+      "en": "school",
+      "zh": "学校"
+    },
+    {
+      "en": "monkey",
+      "zh": "猴子"
+    },
+    {
+      "en": "tiger",
+      "zh": "老虎"
+    },
+    {
+      "en": "panda",
+      "zh": "大熊猫"
+    },
+    {
+      "en": "funny",
+      "zh": "滑稽的；好笑的"
+    },
+    {
+      "en": "bread",
+      "zh": "面包"
+    },
+    {
+      "en": "Juice",
+      "zh": "果汁"
+    },
+    {
+      "en": "water",
+      "zh": "水"
+    },
+    {
+      "en": "three",
+      "zh": "三"
+    },
+    {
+      "en": "seven",
+      "zh": "七"
+    },
+    {
+      "en": "eight",
+      "zh": "八"
+    },
+    {
+      "en": "brother",
+      "zh": "兄；弟"
+    },
+    {
+      "en": "sister",
+      "zh": "姐；妹"
+    },
+    {
+      "en": "plate",
+      "zh": "盘子"
+    },
+    {
+      "en": "Canada",
+      "zh": "加拿大"
+    },
+    {
+      "en": "China",
+      "zh": "中国"
+    },
+    {
+      "en": "student",
+      "zh": "学生"
+    },
+    {
+      "en": "pupil",
+      "zh": "小学生"
+    },
+    {
+      "en": "teacher",
+      "zh": "教师"
+    },
+    {
+      "en": "friend",
+      "zh": "朋友"
+    },
+    {
+      "en": "today",
+      "zh": "今天"
+    },
+    {
+      "en": "father",
+      "zh": "父亲；爸爸"
+    },
+    {
+      "en": "woman",
+      "zh": "女人"
+    },
+    {
+      "en": "mother",
+      "zh": "母亲；妈妈"
+    },
+    {
+      "en": "grandma",
+      "zh": "（口语）祖母"
+    },
+    {
+      "en": "grandpa",
+      "zh": "（口语）祖父"
+    },
+    {
+      "en": "family",
+      "zh": "家；家庭"
+    },
+    {
+      "en": "short",
+      "zh": "矮的；短的"
+    },
+    {
+      "en": "small",
+      "zh": "小的"
+    },
+    {
+      "en": "giraffe",
+      "zh": "长颈鹿"
+    },
+    {
+      "en": "under",
+      "zh": "在……下面"
+    },
+    {
+      "en": "chair",
+      "zh": "椅子"
+    },
+    {
+      "en": "apple",
+      "zh": "苹果"
+    },
+    {
+      "en": "banana",
+      "zh": "香蕉"
+    },
+    {
+      "en": "grape",
+      "zh": "葡萄"
+    },
+    {
+      "en": "fruit",
+      "zh": "水果"
+    },
+    {
+      "en": "eleven",
+      "zh": "十一"
+    },
+    {
+      "en": "twelve",
+      "zh": "十二"
+    },
+    {
+      "en": "fifteen",
+      "zh": "十五"
+    },
+    {
+      "en": "sixteen",
+      "zh": "十六"
+    },
+    {
+      "en": "twenty",
+      "zh": "二十"
+    }
   ],
   "hard": [
-    "computer", "keyboard", "student", "teacher", "picture", "morning", "evening",
-    "television", "telephone", "internet", "software", "printer", "monitor",
-    "library", "classroom", "textbook", "science", "mathematics", "literature",
-    "history", "geography", "biology", "chemistry", "physics", "astronomy",
-    "environment", "pollution", "recycling", "sustainability", "biodiversity"
+    {
+      "en": "pencil box",
+      "zh": "铅笔盒"
+    },
+    {
+      "en": "elephant",
+      "zh": "大象"
+    },
+    {
+      "en": "grandmother",
+      "zh": "（外）祖母"
+    },
+    {
+      "en": "grandfather",
+      "zh": "（外）祖父"
+    },
+    {
+      "en": "children",
+      "zh": "儿童（child的复数）"
+    },
+    {
+      "en": "watermelon",
+      "zh": "西瓜"
+    },
+    {
+      "en": "strawberry",
+      "zh": "草莓"
+    },
+    {
+      "en": "thirteen",
+      "zh": "十三"
+    },
+    {
+      "en": "fourteen",
+      "zh": "十四"
+    },
+    {
+      "en": "seventeen",
+      "zh": "十七"
+    },
+    {
+      "en": "eighteen",
+      "zh": "十八"
+    },
+    {
+      "en": "nineteen",
+      "zh": "十九"
+    },
+    {
+      "en": "beautiful",
+      "zh": "美丽的"
+    }
   ]
 }

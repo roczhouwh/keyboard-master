@@ -1,29 +1,1124 @@
 {
   "easy": [
-    "cat", "dog", "sun", "run", "big", "red", "book", "cup", "map", "bag",
-    "fish", "bird", "desk", "door", "bell", "kite", "star", "moon", "tree", "rain",
-    "snow", "wind", "lake", "hill", "bear", "deer", "frog", "duck", "hen", "pig",
-    "cow", "sheep", "wolf", "seal", "milk", "cake", "rice", "egg", "soup", "bread",
-    "hand", "foot", "head", "nose", "ear", "eye", "arm", "leg", "bed", "box",
-    "ship", "flag", "nest", "rock", "seed", "leaf", "wing", "tail", "horn", "claw"
+    {
+      "en": "old",
+      "zh": "老的；年纪大的"
+    },
+    {
+      "en": "kind",
+      "zh": "体贴的；慈祥的"
+    },
+    {
+      "en": "shy",
+      "zh": "腼腆的；羞怯的"
+    },
+    {
+      "en": "know",
+      "zh": "知道；了解"
+    },
+    {
+      "en": "our",
+      "zh": "我们的"
+    },
+    {
+      "en": "Ms",
+      "zh": "女士"
+    },
+    {
+      "en": "will",
+      "zh": "将要"
+    },
+    {
+      "en": "him",
+      "zh": "他（宾语或表语）"
+    },
+    {
+      "en": "wash",
+      "zh": "洗"
+    },
+    {
+      "en": "do",
+      "zh": "做；干"
+    },
+    {
+      "en": "read",
+      "zh": "看；读"
+    },
+    {
+      "en": "play",
+      "zh": "踢；玩；参加（运动）"
+    },
+    {
+      "en": "park",
+      "zh": "公园"
+    },
+    {
+      "en": "day",
+      "zh": "一天；一日"
+    },
+    {
+      "en": "tea",
+      "zh": "茶；茶水"
+    },
+    {
+      "en": "hot",
+      "zh": "辣的"
+    },
+    {
+      "en": "food",
+      "zh": "食物"
+    },
+    {
+      "en": "Dear",
+      "zh": "亲爱的"
+    },
+    {
+      "en": "sing",
+      "zh": "唱歌"
+    },
+    {
+      "en": "song",
+      "zh": "歌曲"
+    },
+    {
+      "en": "draw",
+      "zh": "画"
+    },
+    {
+      "en": "cook",
+      "zh": "烹饪"
+    },
+    {
+      "en": "swim",
+      "zh": "游泳"
+    },
+    {
+      "en": "next",
+      "zh": "下一个的；紧接着的"
+    },
+    {
+      "en": "any",
+      "zh": "任何的；任一的"
+    },
+    {
+      "en": "want",
+      "zh": "要；想要"
+    },
+    {
+      "en": "send",
+      "zh": "邮寄；发送"
+    },
+    {
+      "en": "at",
+      "zh": "（后面接邮件地址）"
+    },
+    {
+      "en": "bike",
+      "zh": "自行车"
+    },
+    {
+      "en": "lot",
+      "zh": "大量；许多"
+    },
+    {
+      "en": "move",
+      "zh": "搬家"
+    },
+    {
+      "en": "live",
+      "zh": "居住"
+    },
+    {
+      "en": "lake",
+      "zh": "湖；湖泊"
+    },
+    {
+      "en": "hill",
+      "zh": "山丘；小山"
+    },
+    {
+      "en": "tree",
+      "zh": "树；树木"
+    },
+    {
+      "en": "high",
+      "zh": "高的"
+    },
+    {
+      "en": "take",
+      "zh": "学习；上（课）"
+    },
+    {
+      "en": "when",
+      "zh": "什么时候；何时"
+    },
+    {
+      "en": "late",
+      "zh": "晚；迟"
+    },
+    {
+      "en": "a.m.",
+      "zh": "午前；上午"
+    },
+    {
+      "en": "p.m.",
+      "zh": "午后；下午"
+    },
+    {
+      "en": "why",
+      "zh": "为什么"
+    },
+    {
+      "en": "shop",
+      "zh": "去买东西；购物"
+    },
+    {
+      "en": "work",
+      "zh": "工作"
+    },
+    {
+      "en": "last",
+      "zh": "上一个的；刚过去的"
+    },
+    {
+      "en": "also",
+      "zh": "还；也"
+    },
+    {
+      "en": "busy",
+      "zh": "忙的"
+    },
+    {
+      "en": "need",
+      "zh": "需要"
+    },
+    {
+      "en": "cave",
+      "zh": "山洞；洞穴"
+    },
+    {
+      "en": "win",
+      "zh": "获胜"
+    },
+    {
+      "en": "pick",
+      "zh": "摘；采集"
+    },
+    {
+      "en": "best",
+      "zh": "最"
+    },
+    {
+      "en": "snow",
+      "zh": "雪"
+    },
+    {
+      "en": "all",
+      "zh": "全；完全"
+    },
+    {
+      "en": "pink",
+      "zh": "粉色；粉色的"
+    },
+    {
+      "en": "leaf",
+      "zh": "叶子"
+    },
+    {
+      "en": "fall",
+      "zh": "落下；秋天"
+    },
+    {
+      "en": "May",
+      "zh": "五月"
+    },
+    {
+      "en": "June",
+      "zh": "六月"
+    },
+    {
+      "en": "July",
+      "zh": "七月"
+    },
+    {
+      "en": "few",
+      "zh": "不多；很少"
+    },
+    {
+      "en": "a few",
+      "zh": "一些"
+    },
+    {
+      "en": "meet",
+      "zh": "集会；开会"
+    },
+    {
+      "en": "trip",
+      "zh": "旅行"
+    },
+    {
+      "en": "year",
+      "zh": "年"
+    },
+    {
+      "en": "game",
+      "zh": "游戏"
+    },
+    {
+      "en": "roll",
+      "zh": "滚动"
+    },
+    {
+      "en": "RSVP",
+      "zh": "请赐复"
+    },
+    {
+      "en": "by",
+      "zh": "在……之前"
+    },
+    {
+      "en": "fool",
+      "zh": "蠢人；傻瓜"
+    },
+    {
+      "en": "fur",
+      "zh": "浓密的；软毛"
+    },
+    {
+      "en": "open",
+      "zh": "开着的"
+    },
+    {
+      "en": "walk",
+      "zh": "行走"
+    },
+    {
+      "en": "mine",
+      "zh": "我的"
+    },
+    {
+      "en": "his",
+      "zh": "他的"
+    },
+    {
+      "en": "hers",
+      "zh": "她的"
+    },
+    {
+      "en": "ours",
+      "zh": "我们的"
+    },
+    {
+      "en": "each",
+      "zh": "每一；各个"
+    },
+    {
+      "en": "like",
+      "zh": "像`````那样"
+    },
+    {
+      "en": "keep",
+      "zh": "保持某种状态"
+    },
+    {
+      "en": "turn",
+      "zh": "顺序"
+    },
+    {
+      "en": "its",
+      "zh": "它的；他的；她的"
+    },
+    {
+      "en": "show",
+      "zh": "给人看；指引"
+    },
+    {
+      "en": "else",
+      "zh": "另外；其他"
+    },
+    {
+      "en": "say",
+      "zh": "说；讲"
+    },
+    {
+      "en": "sure",
+      "zh": "当然"
+    }
   ],
   "medium": [
-    "apple", "happy", "water", "school", "friend", "mouse", "house", "plant", "dance", "smile",
-    "banana", "orange", "grape", "cherry", "lemon", "brother", "sister", "mother", "father", "family",
-    "birthday", "sunshine", "rainbow", "cloud", "river", "mountain", "forest", "ocean",
-    "bicycle", "elephant", "giraffe", "monkey", "zebra", "tiger", "rabbit", "duck",
-    "garden", "park", "beach", "island", "desert", "planet", "rocket", "comet",
-    "volcano", "canyon", "glacier", "prairie", "swamp", "coral", "turtle", "dolphin",
-    "penguin", "walrus", "eagle", "falcon", "beaver", "otter", "badger", "weasel"
+    {
+      "en": "young",
+      "zh": "年轻的；岁数不大的"
+    },
+    {
+      "en": "funny",
+      "zh": "滑稽的；可笑的"
+    },
+    {
+      "en": "strict",
+      "zh": "严厉的"
+    },
+    {
+      "en": "polite",
+      "zh": "有礼貌的"
+    },
+    {
+      "en": "helpful",
+      "zh": "有帮助的"
+    },
+    {
+      "en": "clever",
+      "zh": "聪明的"
+    },
+    {
+      "en": "robot",
+      "zh": "机器人"
+    },
+    {
+      "en": "speak",
+      "zh": "会说；会讲"
+    },
+    {
+      "en": "finish",
+      "zh": "完成；做好"
+    },
+    {
+      "en": "Monday",
+      "zh": "星期一"
+    },
+    {
+      "en": "Tuesday",
+      "zh": "星期二"
+    },
+    {
+      "en": "Friday",
+      "zh": "星期五"
+    },
+    {
+      "en": "Sunday",
+      "zh": "星期日"
+    },
+    {
+      "en": "weekend",
+      "zh": "周末"
+    },
+    {
+      "en": "watch",
+      "zh": "看"
+    },
+    {
+      "en": "watch TV",
+      "zh": "看电视"
+    },
+    {
+      "en": "cooking",
+      "zh": "烹饪"
+    },
+    {
+      "en": "often",
+      "zh": "时常；常常"
+    },
+    {
+      "en": "tired",
+      "zh": "疲倦的"
+    },
+    {
+      "en": "sport",
+      "zh": "体育运动"
+    },
+    {
+      "en": "should",
+      "zh": "应该；应当"
+    },
+    {
+      "en": "every",
+      "zh": "每一个；每个"
+    },
+    {
+      "en": "salad",
+      "zh": "蔬菜沙拉"
+    },
+    {
+      "en": "fresh",
+      "zh": "新鲜的；刚摘的"
+    },
+    {
+      "en": "healthy",
+      "zh": "健康的"
+    },
+    {
+      "en": "sweet",
+      "zh": "甜的"
+    },
+    {
+      "en": "drink",
+      "zh": "喝；饮"
+    },
+    {
+      "en": "thirsty",
+      "zh": "口渴的"
+    },
+    {
+      "en": "onion",
+      "zh": "洋葱"
+    },
+    {
+      "en": "kung fu",
+      "zh": "功夫；武术"
+    },
+    {
+      "en": "dance",
+      "zh": "跳舞"
+    },
+    {
+      "en": "cartoon",
+      "zh": "漫画"
+    },
+    {
+      "en": "party",
+      "zh": "聚会；派对"
+    },
+    {
+      "en": "learn",
+      "zh": "学；学习"
+    },
+    {
+      "en": "problem",
+      "zh": "问题"
+    },
+    {
+      "en": "email",
+      "zh": "电子邮件"
+    },
+    {
+      "en": "clock",
+      "zh": "时钟"
+    },
+    {
+      "en": "plant",
+      "zh": "植物"
+    },
+    {
+      "en": "bottle",
+      "zh": "瓶子"
+    },
+    {
+      "en": "photo",
+      "zh": "照片；相片"
+    },
+    {
+      "en": "front",
+      "zh": "正面"
+    },
+    {
+      "en": "between",
+      "zh": "在……中间"
+    },
+    {
+      "en": "above",
+      "zh": "在……上面"
+    },
+    {
+      "en": "beside",
+      "zh": "在旁边"
+    },
+    {
+      "en": "behind",
+      "zh": "在……`后面"
+    },
+    {
+      "en": "there",
+      "zh": "（表示存在或发生）"
+    },
+    {
+      "en": "their",
+      "zh": "他们的"
+    },
+    {
+      "en": "house",
+      "zh": "房屋；房子"
+    },
+    {
+      "en": "lots of",
+      "zh": "大量；许多"
+    },
+    {
+      "en": "flower",
+      "zh": "花；花朵"
+    },
+    {
+      "en": "dirty",
+      "zh": "肮脏的"
+    },
+    {
+      "en": "mouse",
+      "zh": "老鼠"
+    },
+    {
+      "en": "nature",
+      "zh": "自然界；大自然"
+    },
+    {
+      "en": "forest",
+      "zh": "森林；林区"
+    },
+    {
+      "en": "river",
+      "zh": "河；江"
+    },
+    {
+      "en": "bridge",
+      "zh": "桥"
+    },
+    {
+      "en": "village",
+      "zh": "村庄；村镇"
+    },
+    {
+      "en": "boating",
+      "zh": "划船"
+    },
+    {
+      "en": "rabbit",
+      "zh": "兔子"
+    },
+    {
+      "en": "dancing",
+      "zh": "跳舞；舞蹈"
+    },
+    {
+      "en": "after",
+      "zh": "在（时间）之后"
+    },
+    {
+      "en": "start",
+      "zh": "开始"
+    },
+    {
+      "en": "usually",
+      "zh": "通常地；惯常的"
+    },
+    {
+      "en": "Spain",
+      "zh": "西班牙"
+    },
+    {
+      "en": "sound",
+      "zh": "听起来好像"
+    },
+    {
+      "en": "letter",
+      "zh": "信"
+    },
+    {
+      "en": "island",
+      "zh": "岛"
+    },
+    {
+      "en": "always",
+      "zh": "总是；一直"
+    },
+    {
+      "en": "spring",
+      "zh": "春天"
+    },
+    {
+      "en": "summer",
+      "zh": "夏天"
+    },
+    {
+      "en": "winter",
+      "zh": "冬天"
+    },
+    {
+      "en": "season",
+      "zh": "季节"
+    },
+    {
+      "en": "picnic",
+      "zh": "野餐"
+    },
+    {
+      "en": "snowman",
+      "zh": "雪人"
+    },
+    {
+      "en": "which",
+      "zh": "哪一个"
+    },
+    {
+      "en": "good job",
+      "zh": "做得好"
+    },
+    {
+      "en": "because",
+      "zh": "因为"
+    },
+    {
+      "en": "lovely",
+      "zh": "可爱的；美丽的"
+    },
+    {
+      "en": "paint",
+      "zh": "用颜料绘画"
+    },
+    {
+      "en": "January",
+      "zh": "一月"
+    },
+    {
+      "en": "March",
+      "zh": "三月"
+    },
+    {
+      "en": "April",
+      "zh": "四月"
+    },
+    {
+      "en": "August",
+      "zh": "八月"
+    },
+    {
+      "en": "October",
+      "zh": "十月"
+    },
+    {
+      "en": "thing",
+      "zh": "事情"
+    },
+    {
+      "en": "Easter",
+      "zh": "复活节"
+    },
+    {
+      "en": "contest",
+      "zh": "比赛；竞赛"
+    },
+    {
+      "en": "holiday",
+      "zh": "假日；节日"
+    },
+    {
+      "en": "look for",
+      "zh": "寻找"
+    },
+    {
+      "en": "bunny",
+      "zh": "兔子"
+    },
+    {
+      "en": "first",
+      "zh": "第一"
+    },
+    {
+      "en": "second",
+      "zh": "第二"
+    },
+    {
+      "en": "third",
+      "zh": "第三"
+    },
+    {
+      "en": "fourth",
+      "zh": "第四"
+    },
+    {
+      "en": "fifth",
+      "zh": "第五"
+    },
+    {
+      "en": "sixth",
+      "zh": "第六"
+    },
+    {
+      "en": "twelfth",
+      "zh": "第十二"
+    },
+    {
+      "en": "special",
+      "zh": "特殊的；特别的"
+    },
+    {
+      "en": "kitten",
+      "zh": "小猫"
+    },
+    {
+      "en": "diary",
+      "zh": "日记"
+    },
+    {
+      "en": "still",
+      "zh": "仍然；依旧；还是"
+    },
+    {
+      "en": "noise",
+      "zh": "声音；噪音"
+    },
+    {
+      "en": "yours",
+      "zh": "你（们）的"
+    },
+    {
+      "en": "theirs",
+      "zh": "他（她、它）们的"
+    },
+    {
+      "en": "eating",
+      "zh": "吃（eat的-ing形式）"
+    },
+    {
+      "en": "playing",
+      "zh": "（正在）玩耍"
+    },
+    {
+      "en": "jumping",
+      "zh": "（正在）跳"
+    },
+    {
+      "en": "other",
+      "zh": "其他"
+    },
+    {
+      "en": "excited",
+      "zh": "兴奋的；激动的"
+    },
+    {
+      "en": "bamboo",
+      "zh": "竹子"
+    },
+    {
+      "en": "sushi",
+      "zh": "寿司"
+    },
+    {
+      "en": "teach",
+      "zh": "教"
+    },
+    {
+      "en": "Spanish",
+      "zh": "西班牙的"
+    }
   ],
   "hard": [
-    "computer", "keyboard", "student", "teacher", "picture", "morning", "evening",
-    "television", "telephone", "internet", "software", "printer", "monitor",
-    "library", "classroom", "textbook", "science", "mathematics", "literature",
-    "history", "geography", "biology", "chemistry", "physics", "astronomy",
-    "environment", "pollution", "recycling", "sustainability", "biodiversity",
-    "temperature", "thermometer", "barometer", "atmosphere", "constellation",
-    "photosynthesis", "ecosystem", "civilization", "architecture", "archaeology",
-    "democracy", "republic", "constitution", "independence", "revolution"
+    {
+      "en": "hard-working",
+      "zh": "工作努力的"
+    },
+    {
+      "en": "sometimes",
+      "zh": "有时；间或"
+    },
+    {
+      "en": "Wednesday",
+      "zh": "星期三"
+    },
+    {
+      "en": "Thursday",
+      "zh": "星期四"
+    },
+    {
+      "en": "Saturday",
+      "zh": "星期六"
+    },
+    {
+      "en": "wash my clothes",
+      "zh": "洗我的衣服"
+    },
+    {
+      "en": "do homework",
+      "zh": "做作业"
+    },
+    {
+      "en": "read books",
+      "zh": "看书"
+    },
+    {
+      "en": "play football",
+      "zh": "踢足球"
+    },
+    {
+      "en": "play sports",
+      "zh": "做体育运动"
+    },
+    {
+      "en": "schedule",
+      "zh": "工作计划；日程安排"
+    },
+    {
+      "en": "sandwich",
+      "zh": "三明治"
+    },
+    {
+      "en": "hamburger",
+      "zh": "汉堡包"
+    },
+    {
+      "en": "ice cream",
+      "zh": "冰激凌"
+    },
+    {
+      "en": "delicious",
+      "zh": "美味的；可口的"
+    },
+    {
+      "en": "favourite",
+      "zh": "特别喜爱的"
+    },
+    {
+      "en": "sing English song",
+      "zh": "唱英文歌曲"
+    },
+    {
+      "en": "play the pipa",
+      "zh": "弹琵琶"
+    },
+    {
+      "en": "do kung fu",
+      "zh": "练功夫"
+    },
+    {
+      "en": "draw cartoons",
+      "zh": "画漫画"
+    },
+    {
+      "en": "play basketball",
+      "zh": "打篮球"
+    },
+    {
+      "en": "play ping-pong",
+      "zh": "打乒乓球"
+    },
+    {
+      "en": "speak English",
+      "zh": "说英语"
+    },
+    {
+      "en": "we'll = we will",
+      "zh": "我们将"
+    },
+    {
+      "en": "wonderful",
+      "zh": "极好的；了不起的"
+    },
+    {
+      "en": "no problem",
+      "zh": "没问题"
+    },
+    {
+      "en": "water bottle",
+      "zh": "水瓶"
+    },
+    {
+      "en": "in front of",
+      "zh": "在……前面"
+    },
+    {
+      "en": "garandparent",
+      "zh": "（外）祖父母"
+    },
+    {
+      "en": "everywhere",
+      "zh": "处处；到处"
+    },
+    {
+      "en": "mountain",
+      "zh": "高山；山岳"
+    },
+    {
+      "en": "building",
+      "zh": "建筑物；房子"
+    },
+    {
+      "en": "go boating",
+      "zh": "去划船"
+    },
+    {
+      "en": "aren't = are not",
+      "zh": "不是"
+    },
+    {
+      "en": "eat breakfast",
+      "zh": "吃早饭"
+    },
+    {
+      "en": "have…class",
+      "zh": "上……课"
+    },
+    {
+      "en": "exercise",
+      "zh": "活动；运动"
+    },
+    {
+      "en": "do morning exercise",
+      "zh": "做早操"
+    },
+    {
+      "en": "eat dinner",
+      "zh": "吃晚饭"
+    },
+    {
+      "en": "clean my room",
+      "zh": "打扫我的房间"
+    },
+    {
+      "en": "go for a walk",
+      "zh": "散步"
+    },
+    {
+      "en": "go shopping",
+      "zh": "去买东西；购物"
+    },
+    {
+      "en": "take a dancing class",
+      "zh": "上舞蹈课"
+    },
+    {
+      "en": "go swimming",
+      "zh": "去游泳"
+    },
+    {
+      "en": "autumn/fall",
+      "zh": "秋天"
+    },
+    {
+      "en": "go on a picnic",
+      "zh": "去野餐"
+    },
+    {
+      "en": "pick apples",
+      "zh": "摘苹果"
+    },
+    {
+      "en": "make a snowman",
+      "zh": "堆雪人"
+    },
+    {
+      "en": "vacation",
+      "zh": "假期"
+    },
+    {
+      "en": "February",
+      "zh": "二月"
+    },
+    {
+      "en": "September",
+      "zh": "九月"
+    },
+    {
+      "en": "November",
+      "zh": "十一月"
+    },
+    {
+      "en": "December",
+      "zh": "十二月"
+    },
+    {
+      "en": "sports meet",
+      "zh": "运动会"
+    },
+    {
+      "en": "the Great Wall",
+      "zh": "长城"
+    },
+    {
+      "en": "national",
+      "zh": "国家的"
+    },
+    {
+      "en": "National Day",
+      "zh": "国庆日"
+    },
+    {
+      "en": "American",
+      "zh": "美国的"
+    },
+    {
+      "en": "Thanksgiving",
+      "zh": "感恩节"
+    },
+    {
+      "en": "Christmas",
+      "zh": "圣诞节"
+    },
+    {
+      "en": "chocolate",
+      "zh": "巧克力"
+    },
+    {
+      "en": "twentieth",
+      "zh": "第二十"
+    },
+    {
+      "en": "twenty-first",
+      "zh": "第二十一"
+    },
+    {
+      "en": "twenty-third",
+      "zh": "第二十三"
+    },
+    {
+      "en": "climbing",
+      "zh": "（正在）攀爬"
+    },
+    {
+      "en": "drinking",
+      "zh": "（正在）喝"
+    },
+    {
+      "en": "sleeping",
+      "zh": "（正在）睡觉"
+    },
+    {
+      "en": "each other",
+      "zh": "相互"
+    },
+    {
+      "en": "doing moring exercise",
+      "zh": "做早操"
+    },
+    {
+      "en": "having…class",
+      "zh": "上……课"
+    },
+    {
+      "en": "reading a book",
+      "zh": "（正在）看书"
+    },
+    {
+      "en": "listening to music",
+      "zh": "正在听音乐"
+    },
+    {
+      "en": "keep to the right",
+      "zh": "靠右"
+    },
+    {
+      "en": "keep your desk clean",
+      "zh": "保持你的课桌干净"
+    },
+    {
+      "en": "talk quietly",
+      "zh": "小声讲话"
+    },
+    {
+      "en": "take turns",
+      "zh": "按顺序来"
+    },
+    {
+      "en": "anything",
+      "zh": "任何事物"
+    },
+    {
+      "en": "exhibition",
+      "zh": "展览"
+    },
+    {
+      "en": "have a look",
+      "zh": "看一看"
+    },
+    {
+      "en": "Canadian",
+      "zh": "加拿大的"
+    }
   ]
 }

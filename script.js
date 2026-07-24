@@ -11,6 +11,7 @@ let gameState = {
     mode: 'letter',
     difficulty: 'easy',
     currentTarget: '',
+    currentTargetZh: '', // 单词模式的中文释义
     currentIndex: 0,
     timerInterval: null,
     challengeTimer: null, // 挑战模式的字符超时计时器
@@ -431,7 +432,7 @@ function startGame() {
         return;
     }
     
-    console.log('开始游戏，单词库已加载:', Object.keys(wordList));
+    console.log('开始游戏，单词库已加载:', wordList ? Object.keys(wordList) : null);
 
     // 重置暂停按钮状态
     const pauseBtn = document.getElementById('pauseButton');
@@ -464,6 +465,7 @@ function startGame() {
         mode: gameState.mode,
         difficulty: gameState.difficulty,
         currentTarget: '',
+        currentTargetZh: '',
         currentIndex: 0,
         timerInterval: null,
         challengeTimer: null,
@@ -537,6 +539,7 @@ function handleChallengeTimeout() {
 // 生成下一个目标
 function nextTarget() {
     gameState.currentIndex = 0;
+    gameState.currentTargetZh = ''; // 非单词模式清空中文释义
     
     // 清除之前的挑战模式计时器
     if (gameState.challengeTimer) {
@@ -570,18 +573,36 @@ function nextTarget() {
         // 检查词库是否加载
         if (!words || words.length === 0) {
             console.log('词库未加载，使用默认单词');
-            // 使用默认单词
+            // 使用默认单词（含中文释义）
             const fallback = {
-                easy: ['cat', 'dog', 'sun', 'fun', 'run', 'hat', 'bat', 'mat', 'sit', 'big'],
-                medium: ['apple', 'happy', 'water', 'school', 'friend', 'mouse', 'house', 'plant', 'dance', 'smile'],
-                hard: ['computer', 'keyboard', 'student', 'teacher', 'picture', 'morning', 'evening', 'family', 'animal', 'science']
+                easy: [
+                    { en: 'cat', zh: '猫' }, { en: 'dog', zh: '狗' }, { en: 'sun', zh: '太阳' },
+                    { en: 'fun', zh: '乐趣' }, { en: 'run', zh: '跑' }, { en: 'hat', zh: '帽子' },
+                    { en: 'bat', zh: '蝙蝠' }, { en: 'mat', zh: '垫子' }, { en: 'sit', zh: '坐' },
+                    { en: 'big', zh: '大的' }
+                ],
+                medium: [
+                    { en: 'apple', zh: '苹果' }, { en: 'happy', zh: '快乐的' }, { en: 'water', zh: '水' },
+                    { en: 'school', zh: '学校' }, { en: 'friend', zh: '朋友' }, { en: 'mouse', zh: '老鼠' },
+                    { en: 'house', zh: '房子' }, { en: 'plant', zh: '植物' }, { en: 'dance', zh: '跳舞' },
+                    { en: 'smile', zh: '微笑' }
+                ],
+                hard: [
+                    { en: 'computer', zh: '计算机' }, { en: 'keyboard', zh: '键盘' },
+                    { en: 'student', zh: '学生' }, { en: 'teacher', zh: '老师' },
+                    { en: 'picture', zh: '图画' }, { en: 'morning', zh: '早上' },
+                    { en: 'evening', zh: '晚上' }, { en: 'family', zh: '家庭' },
+                    { en: 'animal', zh: '动物' }, { en: 'science', zh: '科学' }
+                ]
             };
             words = fallback[gameState.difficulty] || fallback.easy;
         }
 
         console.log('使用的单词列表:', words);
-        gameState.currentTarget = words[Math.floor(Math.random() * words.length)];
-        console.log('选择的单词:', gameState.currentTarget);
+        const wordObj = words[Math.floor(Math.random() * words.length)];
+        gameState.currentTarget = wordObj.en || wordObj;
+        gameState.currentTargetZh = wordObj.zh || '';
+        console.log('选择的单词:', gameState.currentTarget, '中文:', gameState.currentTargetZh);
     } else if (gameState.mode === 'challenge') {
         // 挑战模式：随机字母，限时输入
         const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -606,19 +627,30 @@ function nextTarget() {
 function displayTarget() {
     const display = document.getElementById('targetDisplay');
     display.innerHTML = '';
-    
+
     for (let i = 0; i < gameState.currentTarget.length; i++) {
         const char = document.createElement('span');
         char.className = 'target-char';
         char.textContent = gameState.currentTarget[i];
-        
+
         if (i < gameState.currentIndex) {
             char.classList.add('correct');
         } else if (i === gameState.currentIndex) {
             char.classList.add('current');
         }
-        
+
         display.appendChild(char);
+    }
+
+    // 单词模式显示中文释义
+    const meaning = document.getElementById('wordMeaning');
+    if (meaning) {
+        if (gameState.mode === 'word' && gameState.currentTargetZh) {
+            meaning.textContent = gameState.currentTargetZh;
+            meaning.classList.remove('hidden');
+        } else {
+            meaning.classList.add('hidden');
+        }
     }
 }
 

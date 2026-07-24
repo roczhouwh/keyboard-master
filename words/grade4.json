@@ -1,24 +1,744 @@
 {
   "easy": [
-    "cat", "dog", "sun", "run", "big", "red", "book", "cup", "map", "bag",
-    "fish", "bird", "desk", "door", "bell", "kite", "star", "moon", "tree", "rain",
-    "snow", "wind", "lake", "hill", "bear", "deer", "frog", "duck", "hen", "pig",
-    "cow", "sheep", "wolf", "seal", "milk", "cake", "rice", "egg", "soup", "bread",
-    "hand", "foot", "head", "nose", "ear", "eye", "arm", "leg", "bed", "box"
+    {
+      "en": "door",
+      "zh": "门"
+    },
+    {
+      "en": "fan",
+      "zh": "风扇"
+    },
+    {
+      "en": "wall",
+      "zh": "墙壁"
+    },
+    {
+      "en": "near",
+      "zh": "距离近"
+    },
+    {
+      "en": "TV",
+      "zh": "电视"
+    },
+    {
+      "en": "help",
+      "zh": "帮助"
+    },
+    {
+      "en": "toy",
+      "zh": "玩具"
+    },
+    {
+      "en": "key",
+      "zh": "钥匙"
+    },
+    {
+      "en": "wow",
+      "zh": "哇；呀"
+    },
+    {
+      "en": "lost",
+      "zh": "丢失"
+    },
+    {
+      "en": "cute",
+      "zh": "可爱的"
+    },
+    {
+      "en": "hair",
+      "zh": "头发"
+    },
+    {
+      "en": "shoe",
+      "zh": "鞋"
+    },
+    {
+      "en": "his",
+      "zh": "他的"
+    },
+    {
+      "en": "or",
+      "zh": "或者"
+    },
+    {
+      "en": "hat",
+      "zh": "帽子"
+    },
+    {
+      "en": "her",
+      "zh": "她的"
+    },
+    {
+      "en": "bed",
+      "zh": "床"
+    },
+    {
+      "en": "sofa",
+      "zh": "长沙发"
+    },
+    {
+      "en": "find",
+      "zh": "找到"
+    },
+    {
+      "en": "them",
+      "zh": "他（她、它）们"
+    },
+    {
+      "en": "beef",
+      "zh": "牛肉"
+    },
+    {
+      "en": "soup",
+      "zh": "汤"
+    },
+    {
+      "en": "bowl",
+      "zh": "碗"
+    },
+    {
+      "en": "fork",
+      "zh": "餐叉"
+    },
+    {
+      "en": "pass",
+      "zh": "给；递"
+    },
+    {
+      "en": "try",
+      "zh": "试；尝试"
+    },
+    {
+      "en": "aunt",
+      "zh": "阿姨"
+    },
+    {
+      "en": "cook",
+      "zh": "厨师"
+    },
+    {
+      "en": "but",
+      "zh": "但是"
+    },
+    {
+      "en": "job",
+      "zh": "工作"
+    },
+    {
+      "en": "way",
+      "zh": "方向"
+    },
+    {
+      "en": "fly",
+      "zh": "放（风筝等）"
+    },
+    {
+      "en": "love",
+      "zh": "爱"
+    },
+    {
+      "en": "over",
+      "zh": "结束"
+    },
+    {
+      "en": "now",
+      "zh": "现在；目前"
+    },
+    {
+      "en": "kid",
+      "zh": "小孩"
+    },
+    {
+      "en": "cold",
+      "zh": "冷的"
+    },
+    {
+      "en": "cool",
+      "zh": "凉的"
+    },
+    {
+      "en": "warm",
+      "zh": "温暖的"
+    },
+    {
+      "en": "hot",
+      "zh": "热的"
+    },
+    {
+      "en": "cow",
+      "zh": "母牛；奶牛"
+    },
+    {
+      "en": "hen",
+      "zh": "母鸡"
+    },
+    {
+      "en": "yum",
+      "zh": "味道很好"
+    },
+    {
+      "en": "farm",
+      "zh": "农场"
+    },
+    {
+      "en": "goat",
+      "zh": "山羊"
+    },
+    {
+      "en": "eat",
+      "zh": "吃"
+    },
+    {
+      "en": "coat",
+      "zh": "外套；大衣"
+    },
+    {
+      "en": "sock",
+      "zh": "短袜"
+    },
+    {
+      "en": "mine",
+      "zh": "我的"
+    },
+    {
+      "en": "pack",
+      "zh": "收拾（行李）"
+    },
+    {
+      "en": "wait",
+      "zh": "等待"
+    },
+    {
+      "en": "nice",
+      "zh": "好的"
+    },
+    {
+      "en": "size",
+      "zh": "尺码；号"
+    },
+    {
+      "en": "too",
+      "zh": "太；过于"
+    },
+    {
+      "en": "just",
+      "zh": "正好；恰好"
+    },
+    {
+      "en": "sale",
+      "zh": "大减价"
+    },
+    {
+      "en": "more",
+      "zh": "更多的"
+    }
   ],
   "medium": [
-    "apple", "happy", "water", "school", "friend", "mouse", "house", "plant", "dance", "smile",
-    "banana", "orange", "grape", "cherry", "lemon", "brother", "sister", "mother", "father", "family",
-    "birthday", "sunshine", "rainbow", "cloud", "river", "mountain", "forest", "ocean",
-    "bicycle", "elephant", "giraffe", "monkey", "zebra", "tiger", "rabbit", "duck",
-    "garden", "park", "beach", "island", "desert", "planet", "rocket", "comet"
+    {
+      "en": "window",
+      "zh": "窗户"
+    },
+    {
+      "en": "light",
+      "zh": "电灯"
+    },
+    {
+      "en": "picture",
+      "zh": "图画"
+    },
+    {
+      "en": "floor",
+      "zh": "地板"
+    },
+    {
+      "en": "really",
+      "zh": "真的"
+    },
+    {
+      "en": "clean",
+      "zh": "打扫"
+    },
+    {
+      "en": "candy",
+      "zh": "糖果"
+    },
+    {
+      "en": "so much",
+      "zh": "非常地"
+    },
+    {
+      "en": "strong",
+      "zh": "强壮的"
+    },
+    {
+      "en": "quiet",
+      "zh": "安静的"
+    },
+    {
+      "en": "glasses",
+      "zh": "眼镜"
+    },
+    {
+      "en": "right",
+      "zh": "正确的；对的"
+    },
+    {
+      "en": "bedroom",
+      "zh": "卧室"
+    },
+    {
+      "en": "study",
+      "zh": "书房"
+    },
+    {
+      "en": "kitchen",
+      "zh": "厨房"
+    },
+    {
+      "en": "phone",
+      "zh": "电话"
+    },
+    {
+      "en": "table",
+      "zh": "桌子"
+    },
+    {
+      "en": "fridge",
+      "zh": "冰箱"
+    },
+    {
+      "en": "chicken",
+      "zh": "鸡肉"
+    },
+    {
+      "en": "noodles",
+      "zh": "面条"
+    },
+    {
+      "en": "knife",
+      "zh": "刀"
+    },
+    {
+      "en": "spoon",
+      "zh": "勺"
+    },
+    {
+      "en": "dinner",
+      "zh": "正餐"
+    },
+    {
+      "en": "ready",
+      "zh": "准备好"
+    },
+    {
+      "en": "parents",
+      "zh": "父母"
+    },
+    {
+      "en": "cousin",
+      "zh": "同辈表亲（堂亲）"
+    },
+    {
+      "en": "uncle",
+      "zh": "叔叔"
+    },
+    {
+      "en": "doctor",
+      "zh": "医生"
+    },
+    {
+      "en": "driver",
+      "zh": "司机"
+    },
+    {
+      "en": "farmer",
+      "zh": "农民"
+    },
+    {
+      "en": "nurse",
+      "zh": "护士"
+    },
+    {
+      "en": "people",
+      "zh": "人们"
+    },
+    {
+      "en": "little",
+      "zh": "小的"
+    },
+    {
+      "en": "puppy",
+      "zh": "小狗"
+    },
+    {
+      "en": "library",
+      "zh": "图书馆"
+    },
+    {
+      "en": "art room",
+      "zh": "美术教室"
+    },
+    {
+      "en": "next to",
+      "zh": "紧邻"
+    },
+    {
+      "en": "class",
+      "zh": "班；班级"
+    },
+    {
+      "en": "forty",
+      "zh": "四十"
+    },
+    {
+      "en": "lunch",
+      "zh": "午餐"
+    },
+    {
+      "en": "PE class",
+      "zh": "体育课"
+    },
+    {
+      "en": "get up",
+      "zh": "起床"
+    },
+    {
+      "en": "go home",
+      "zh": "回家"
+    },
+    {
+      "en": "go to bed",
+      "zh": "上床睡觉"
+    },
+    {
+      "en": "o'clock",
+      "zh": "……点钟"
+    },
+    {
+      "en": "thirty",
+      "zh": "三十"
+    },
+    {
+      "en": "hurry up",
+      "zh": "快点"
+    },
+    {
+      "en": "come on",
+      "zh": "快；加油"
+    },
+    {
+      "en": "sunny",
+      "zh": "阳光充足的"
+    },
+    {
+      "en": "windy",
+      "zh": "多风的"
+    },
+    {
+      "en": "cloudy",
+      "zh": "阴天的"
+    },
+    {
+      "en": "snowy",
+      "zh": "下雪的"
+    },
+    {
+      "en": "rainy",
+      "zh": "多雨的"
+    },
+    {
+      "en": "outside",
+      "zh": "在户外"
+    },
+    {
+      "en": "weather",
+      "zh": "天气"
+    },
+    {
+      "en": "New York",
+      "zh": "纽约"
+    },
+    {
+      "en": "degree",
+      "zh": "度"
+    },
+    {
+      "en": "world",
+      "zh": "世界"
+    },
+    {
+      "en": "London",
+      "zh": "伦敦"
+    },
+    {
+      "en": "Moscow",
+      "zh": "莫斯科"
+    },
+    {
+      "en": "Sydney",
+      "zh": "悉尼"
+    },
+    {
+      "en": "tomato",
+      "zh": "西红柿"
+    },
+    {
+      "en": "potato",
+      "zh": "马铃薯"
+    },
+    {
+      "en": "carrot",
+      "zh": "胡萝卜"
+    },
+    {
+      "en": "horse",
+      "zh": "马"
+    },
+    {
+      "en": "sheep",
+      "zh": "绵羊"
+    },
+    {
+      "en": "these",
+      "zh": "这些"
+    },
+    {
+      "en": "animal",
+      "zh": "动物"
+    },
+    {
+      "en": "those",
+      "zh": "那些"
+    },
+    {
+      "en": "garden",
+      "zh": "花园；菜园"
+    },
+    {
+      "en": "clothes",
+      "zh": "衣服"
+    },
+    {
+      "en": "pants",
+      "zh": "裤子"
+    },
+    {
+      "en": "dress",
+      "zh": "连衣裙"
+    },
+    {
+      "en": "skirt",
+      "zh": "女裙"
+    },
+    {
+      "en": "sweater",
+      "zh": "毛衣"
+    },
+    {
+      "en": "shorts",
+      "zh": "短裤"
+    },
+    {
+      "en": "jacket",
+      "zh": "夹克衫"
+    },
+    {
+      "en": "shirt",
+      "zh": "衬衫"
+    },
+    {
+      "en": "yours",
+      "zh": "你的；你们的"
+    },
+    {
+      "en": "whose",
+      "zh": "谁的"
+    },
+    {
+      "en": "glove",
+      "zh": "手套"
+    },
+    {
+      "en": "scarf",
+      "zh": "围巾"
+    },
+    {
+      "en": "pretty",
+      "zh": "美观的；精致的"
+    },
+    {
+      "en": "cheap",
+      "zh": "便宜的"
+    },
+    {
+      "en": "try on",
+      "zh": "试穿"
+    },
+    {
+      "en": "how much",
+      "zh": "多少钱"
+    },
+    {
+      "en": "dollar",
+      "zh": "元（美元等）"
+    }
   ],
   "hard": [
-    "computer", "keyboard", "student", "teacher", "picture", "morning", "evening",
-    "television", "telephone", "internet", "software", "printer", "monitor",
-    "library", "classroom", "textbook", "science", "mathematics", "literature",
-    "history", "geography", "biology", "chemistry", "physics", "astronomy",
-    "environment", "pollution", "recycling", "sustainability", "biodiversity",
-    "temperature", "thermometer", "barometer", "atmosphere", "constellation"
+    {
+      "en": "classroom",
+      "zh": "教室"
+    },
+    {
+      "en": "blackboard",
+      "zh": "黑板"
+    },
+    {
+      "en": "teacher's desk",
+      "zh": "讲台"
+    },
+    {
+      "en": "computer",
+      "zh": "计算机"
+    },
+    {
+      "en": "schoolbag",
+      "zh": "书包"
+    },
+    {
+      "en": "maths book",
+      "zh": "数学书"
+    },
+    {
+      "en": "English book",
+      "zh": "英语书"
+    },
+    {
+      "en": "Chinese book",
+      "zh": "语文书"
+    },
+    {
+      "en": "storybook",
+      "zh": "故事书"
+    },
+    {
+      "en": "notebook",
+      "zh": "笔记本"
+    },
+    {
+      "en": "friendly",
+      "zh": "友好的"
+    },
+    {
+      "en": "living room",
+      "zh": "客厅；起居室"
+    },
+    {
+      "en": "bathroom",
+      "zh": "浴室"
+    },
+    {
+      "en": "vegetable",
+      "zh": "蔬菜"
+    },
+    {
+      "en": "chopsticks",
+      "zh": "筷子"
+    },
+    {
+      "en": "help yourself",
+      "zh": "为（自己）取用"
+    },
+    {
+      "en": "baby brother",
+      "zh": "婴儿小弟弟"
+    },
+    {
+      "en": "football player",
+      "zh": "足球运动员"
+    },
+    {
+      "en": "basketball",
+      "zh": "篮球"
+    },
+    {
+      "en": "first floor",
+      "zh": "一楼"
+    },
+    {
+      "en": "second floor",
+      "zh": "二楼"
+    },
+    {
+      "en": "teachers'office",
+      "zh": "教师办公室"
+    },
+    {
+      "en": "playground",
+      "zh": "操场"
+    },
+    {
+      "en": "computer room",
+      "zh": "计算机房"
+    },
+    {
+      "en": "music room",
+      "zh": "音乐教室"
+    },
+    {
+      "en": "homework",
+      "zh": "作业"
+    },
+    {
+      "en": "breakfast",
+      "zh": "早餐"
+    },
+    {
+      "en": "English class",
+      "zh": "英语课"
+    },
+    {
+      "en": "music class",
+      "zh": "音乐课"
+    },
+    {
+      "en": "go to school",
+      "zh": "去上学"
+    },
+    {
+      "en": "just a minute",
+      "zh": "稍等一会儿"
+    },
+    {
+      "en": "be careful",
+      "zh": "小心"
+    },
+    {
+      "en": "how about",
+      "zh": "……怎么样？"
+    },
+    {
+      "en": "Singapore",
+      "zh": "新加坡"
+    },
+    {
+      "en": "green beans",
+      "zh": "豆角"
+    },
+    {
+      "en": "umbrella",
+      "zh": "雨伞"
+    },
+    {
+      "en": "sunglasses",
+      "zh": "太阳镜"
+    },
+    {
+      "en": "expensive",
+      "zh": "昂贵的"
+    },
+    {
+      "en": "of course",
+      "zh": "当然"
+    }
   ]
 }

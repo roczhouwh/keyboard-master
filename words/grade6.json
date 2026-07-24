@@ -1,32 +1,936 @@
 {
   "easy": [
-    "cat", "dog", "sun", "run", "big", "red", "book", "cup", "map", "bag",
-    "fish", "bird", "desk", "door", "bell", "kite", "star", "moon", "tree", "rain",
-    "snow", "wind", "lake", "hill", "bear", "deer", "frog", "duck", "hen", "pig",
-    "cow", "sheep", "wolf", "seal", "milk", "cake", "rice", "egg", "soup", "bread",
-    "hand", "foot", "head", "nose", "ear", "eye", "arm", "leg", "bed", "box",
-    "ship", "flag", "nest", "rock", "seed", "leaf", "wing", "tail", "horn", "claw"
+    {
+      "en": "turn",
+      "zh": "转弯"
+    },
+    {
+      "en": "left",
+      "zh": "左"
+    },
+    {
+      "en": "ask",
+      "zh": "问"
+    },
+    {
+      "en": "sir",
+      "zh": "先生"
+    },
+    {
+      "en": "get",
+      "zh": "到达"
+    },
+    {
+      "en": "GPS",
+      "zh": "全球（卫星）定位系统"
+    },
+    {
+      "en": "gave",
+      "zh": "提供；交给（give的过去时）"
+    },
+    {
+      "en": "far",
+      "zh": "较远的"
+    },
+    {
+      "en": "tell",
+      "zh": "告诉"
+    },
+    {
+      "en": "by",
+      "zh": "乘"
+    },
+    {
+      "en": "bus",
+      "zh": "公共汽车"
+    },
+    {
+      "en": "taxi",
+      "zh": "出租汽车"
+    },
+    {
+      "en": "ship",
+      "zh": "船"
+    },
+    {
+      "en": "slow",
+      "zh": "慢的"
+    },
+    {
+      "en": "down",
+      "zh": "减少；降低"
+    },
+    {
+      "en": "stop",
+      "zh": "停下"
+    },
+    {
+      "en": "Mrs",
+      "zh": "夫人"
+    },
+    {
+      "en": "must",
+      "zh": "必须"
+    },
+    {
+      "en": "wear",
+      "zh": "戴"
+    },
+    {
+      "en": "sled",
+      "zh": "雪橇"
+    },
+    {
+      "en": "fast",
+      "zh": "快的"
+    },
+    {
+      "en": "film",
+      "zh": "电影"
+    },
+    {
+      "en": "trip",
+      "zh": "旅行"
+    },
+    {
+      "en": "word",
+      "zh": "单词"
+    },
+    {
+      "en": "half",
+      "zh": "一半"
+    },
+    {
+      "en": "poem",
+      "zh": "诗"
+    },
+    {
+      "en": "moon",
+      "zh": "月亮"
+    },
+    {
+      "en": "idea",
+      "zh": "想法；主意"
+    },
+    {
+      "en": "goal",
+      "zh": "射门"
+    },
+    {
+      "en": "join",
+      "zh": "加入"
+    },
+    {
+      "en": "club",
+      "zh": "俱乐部"
+    },
+    {
+      "en": "sea",
+      "zh": "大海"
+    },
+    {
+      "en": "stay",
+      "zh": "保持"
+    },
+    {
+      "en": "gym",
+      "zh": "体育馆"
+    },
+    {
+      "en": "if",
+      "zh": "如果"
+    },
+    {
+      "en": "use",
+      "zh": "使用"
+    },
+    {
+      "en": "type",
+      "zh": "打字"
+    },
+    {
+      "en": "sad",
+      "zh": "难过的"
+    },
+    {
+      "en": "more",
+      "zh": "更多的"
+    },
+    {
+      "en": "deep",
+      "zh": "深的"
+    },
+    {
+      "en": "mice",
+      "zh": "老鼠（mouse的复数）"
+    },
+    {
+      "en": "bad",
+      "zh": "邪恶的；坏的"
+    },
+    {
+      "en": "hurt",
+      "zh": "受伤"
+    },
+    {
+      "en": "ill",
+      "zh": "有病；不舒服"
+    },
+    {
+      "en": "feel",
+      "zh": "觉得；感到"
+    },
+    {
+      "en": "well",
+      "zh": "健康；身体好"
+    },
+    {
+      "en": "sit",
+      "zh": "坐"
+    },
+    {
+      "en": "hear",
+      "zh": "听见"
+    },
+    {
+      "en": "ant",
+      "zh": "蚂蚁"
+    },
+    {
+      "en": "mud",
+      "zh": "泥"
+    },
+    {
+      "en": "pull",
+      "zh": "拉；拽"
+    },
+    {
+      "en": "hall",
+      "zh": "大厅"
+    },
+    {
+      "en": "than",
+      "zh": "比"
+    },
+    {
+      "en": "both",
+      "zh": "两个都"
+    },
+    {
+      "en": "had",
+      "zh": "患病；得病（have）"
+    },
+    {
+      "en": "read",
+      "zh": "读（read）"
+    },
+    {
+      "en": "saw",
+      "zh": "看见（see）"
+    },
+    {
+      "en": "last",
+      "zh": "最近的；上一个的"
+    },
+    {
+      "en": "show",
+      "zh": "演出"
+    },
+    {
+      "en": "lamp",
+      "zh": "台灯"
+    },
+    {
+      "en": "loud",
+      "zh": "大声的；喧闹的"
+    },
+    {
+      "en": "went",
+      "zh": "去（go）"
+    },
+    {
+      "en": "camp",
+      "zh": "野营"
+    },
+    {
+      "en": "fish",
+      "zh": "钓鱼"
+    },
+    {
+      "en": "rode",
+      "zh": "骑"
+    },
+    {
+      "en": "ate",
+      "zh": "吃（eat）"
+    },
+    {
+      "en": "took",
+      "zh": "拍照（take）"
+    },
+    {
+      "en": "gift",
+      "zh": "礼物"
+    },
+    {
+      "en": "fell",
+      "zh": "摔倒（fall）"
+    },
+    {
+      "en": "off",
+      "zh": "落下"
+    },
+    {
+      "en": "mule",
+      "zh": "骡子"
+    },
+    {
+      "en": "till",
+      "zh": "直到"
+    },
+    {
+      "en": "part",
+      "zh": "角色"
+    },
+    {
+      "en": "ago",
+      "zh": "以前"
+    },
+    {
+      "en": "star",
+      "zh": "星"
+    },
+    {
+      "en": "easy",
+      "zh": "容易的"
+    },
+    {
+      "en": "race",
+      "zh": "赛跑"
+    },
+    {
+      "en": "felt",
+      "zh": "感觉（feel）"
+    },
+    {
+      "en": "woke",
+      "zh": "醒（wake）"
+    }
   ],
   "medium": [
-    "apple", "happy", "water", "school", "friend", "mouse", "house", "plant", "dance", "smile",
-    "banana", "orange", "grape", "cherry", "lemon", "brother", "sister", "mother", "father", "family",
-    "birthday", "sunshine", "rainbow", "cloud", "river", "mountain", "forest", "ocean",
-    "bicycle", "elephant", "giraffe", "monkey", "zebra", "tiger", "rabbit", "duck",
-    "garden", "park", "beach", "island", "desert", "planet", "rocket", "comet",
-    "volcano", "canyon", "glacier", "prairie", "swamp", "coral", "turtle", "dolphin",
-    "penguin", "walrus", "eagle", "falcon", "beaver", "otter", "badger", "weasel",
-    "courage", "patience", "kindness", "honesty", "loyalty", "wisdom", "justice", "freedom"
+    {
+      "en": "science",
+      "zh": "科学"
+    },
+    {
+      "en": "museum",
+      "zh": "博物馆"
+    },
+    {
+      "en": "cinema",
+      "zh": "电影院"
+    },
+    {
+      "en": "right",
+      "zh": "右"
+    },
+    {
+      "en": "Italian",
+      "zh": "意大利的"
+    },
+    {
+      "en": "pizza",
+      "zh": "比萨饼"
+    },
+    {
+      "en": "street",
+      "zh": "大街；街道"
+    },
+    {
+      "en": "feature",
+      "zh": "特点"
+    },
+    {
+      "en": "follow",
+      "zh": "跟着"
+    },
+    {
+      "en": "on foot",
+      "zh": "步行"
+    },
+    {
+      "en": "plane",
+      "zh": "飞机"
+    },
+    {
+      "en": "subway",
+      "zh": "地铁"
+    },
+    {
+      "en": "train",
+      "zh": "火车"
+    },
+    {
+      "en": "early",
+      "zh": "早到的"
+    },
+    {
+      "en": "helmet",
+      "zh": "头盔"
+    },
+    {
+      "en": "traffic",
+      "zh": "交通"
+    },
+    {
+      "en": "Munich",
+      "zh": "慕尼黑（德国城市）"
+    },
+    {
+      "en": "Germany",
+      "zh": "德国"
+    },
+    {
+      "en": "Alaska",
+      "zh": "阿拉斯加州（美国州名）"
+    },
+    {
+      "en": "ferry",
+      "zh": "轮渡"
+    },
+    {
+      "en": "visit",
+      "zh": "拜访"
+    },
+    {
+      "en": "evening",
+      "zh": "晚上；傍晚"
+    },
+    {
+      "en": "tonight",
+      "zh": "在今晚"
+    },
+    {
+      "en": "comic",
+      "zh": "滑稽的"
+    },
+    {
+      "en": "lesson",
+      "zh": "课"
+    },
+    {
+      "en": "space",
+      "zh": "太空"
+    },
+    {
+      "en": "travel",
+      "zh": "旅行"
+    },
+    {
+      "en": "price",
+      "zh": "价格"
+    },
+    {
+      "en": "studies",
+      "zh": "学习"
+    },
+    {
+      "en": "puzzle",
+      "zh": "谜"
+    },
+    {
+      "en": "hiking",
+      "zh": "远足"
+    },
+    {
+      "en": "pen pal",
+      "zh": "笔友"
+    },
+    {
+      "en": "hobby",
+      "zh": "业余爱好"
+    },
+    {
+      "en": "jasmine",
+      "zh": "茉莉"
+    },
+    {
+      "en": "amazing",
+      "zh": "令人惊奇的"
+    },
+    {
+      "en": "shall",
+      "zh": "表示征求意见"
+    },
+    {
+      "en": "share",
+      "zh": "分享"
+    },
+    {
+      "en": "factory",
+      "zh": "工厂"
+    },
+    {
+      "en": "worker",
+      "zh": "工人"
+    },
+    {
+      "en": "postman",
+      "zh": "邮递员"
+    },
+    {
+      "en": "pilot",
+      "zh": "飞行员"
+    },
+    {
+      "en": "coach",
+      "zh": "教练"
+    },
+    {
+      "en": "country",
+      "zh": "国家"
+    },
+    {
+      "en": "quickly",
+      "zh": "迅速的"
+    },
+    {
+      "en": "angry",
+      "zh": "生气的"
+    },
+    {
+      "en": "afraid",
+      "zh": "害怕"
+    },
+    {
+      "en": "worried",
+      "zh": "担心的；发愁的"
+    },
+    {
+      "en": "happy",
+      "zh": "高兴的"
+    },
+    {
+      "en": "breath",
+      "zh": "呼吸"
+    },
+    {
+      "en": "count",
+      "zh": "数数"
+    },
+    {
+      "en": "chase",
+      "zh": "追赶"
+    },
+    {
+      "en": "wrong",
+      "zh": "有毛病"
+    },
+    {
+      "en": "should",
+      "zh": "应该"
+    },
+    {
+      "en": "grass",
+      "zh": "草坪"
+    },
+    {
+      "en": "worry",
+      "zh": "担心；担忧"
+    },
+    {
+      "en": "stuck",
+      "zh": "陷住；无法移动"
+    },
+    {
+      "en": "younger",
+      "zh": "更年轻的（young）"
+    },
+    {
+      "en": "older",
+      "zh": "更年长的（old）"
+    },
+    {
+      "en": "taller",
+      "zh": "更高的（tall）"
+    },
+    {
+      "en": "shorter",
+      "zh": "更矮的；更短的"
+    },
+    {
+      "en": "longer",
+      "zh": "更长的（long）"
+    },
+    {
+      "en": "thinner",
+      "zh": "更瘦的（thin）"
+    },
+    {
+      "en": "heavier",
+      "zh": "更重的（heavy）"
+    },
+    {
+      "en": "bigger",
+      "zh": "更大的（big）"
+    },
+    {
+      "en": "smaller",
+      "zh": "更小的（small）"
+    },
+    {
+      "en": "metre",
+      "zh": "米"
+    },
+    {
+      "en": "lower",
+      "zh": "更低的（low）"
+    },
+    {
+      "en": "shadow",
+      "zh": "阴影；影子"
+    },
+    {
+      "en": "smarter",
+      "zh": "更聪明的（smart）"
+    },
+    {
+      "en": "become",
+      "zh": "变成"
+    },
+    {
+      "en": "cleaned",
+      "zh": "打扫（clean的过去式）"
+    },
+    {
+      "en": "stayed",
+      "zh": "停留；呆（stay）"
+    },
+    {
+      "en": "washed",
+      "zh": "洗（wash）"
+    },
+    {
+      "en": "watched",
+      "zh": "看（watch）"
+    },
+    {
+      "en": "slept",
+      "zh": "睡觉（sleep）"
+    },
+    {
+      "en": "before",
+      "zh": "在……之前"
+    },
+    {
+      "en": "drank",
+      "zh": "喝（drink）"
+    },
+    {
+      "en": "better",
+      "zh": "更好的（well；good）"
+    },
+    {
+      "en": "faster",
+      "zh": "更快的（fast）"
+    },
+    {
+      "en": "hotel",
+      "zh": "旅馆"
+    },
+    {
+      "en": "fixed",
+      "zh": "修理（fix）"
+    },
+    {
+      "en": "broken",
+      "zh": "破损的"
+    },
+    {
+      "en": "enjoy",
+      "zh": "喜爱"
+    },
+    {
+      "en": "bought",
+      "zh": "买（buy）"
+    },
+    {
+      "en": "Turpan",
+      "zh": "吐鲁番"
+    },
+    {
+      "en": "could",
+      "zh": "能（can）"
+    },
+    {
+      "en": "beach",
+      "zh": "沙滩"
+    },
+    {
+      "en": "basket",
+      "zh": "篮；框"
+    },
+    {
+      "en": "licked",
+      "zh": "舔（lick）"
+    },
+    {
+      "en": "laughed",
+      "zh": "笑（laugh）"
+    },
+    {
+      "en": "cycling",
+      "zh": "骑自行车运动"
+    },
+    {
+      "en": "look up",
+      "zh": "查阅"
+    },
+    {
+      "en": "active",
+      "zh": "积极的；活跃的"
+    },
+    {
+      "en": "nothing",
+      "zh": "没有什么"
+    },
+    {
+      "en": "thought",
+      "zh": "想（think）"
+    },
+    {
+      "en": "cheetah",
+      "zh": "猎豹"
+    },
+    {
+      "en": "dream",
+      "zh": "梦"
+    }
   ],
   "hard": [
-    "computer", "keyboard", "student", "teacher", "picture", "morning", "evening",
-    "television", "telephone", "internet", "software", "printer", "monitor",
-    "library", "classroom", "textbook", "science", "mathematics", "literature",
-    "history", "geography", "biology", "chemistry", "physics", "astronomy",
-    "environment", "pollution", "recycling", "sustainability", "biodiversity",
-    "temperature", "thermometer", "barometer", "atmosphere", "constellation",
-    "photosynthesis", "ecosystem", "civilization", "architecture", "archaeology",
-    "democracy", "republic", "constitution", "independence", "revolution",
-    "entrepreneur", "innovation", "technology", "communication", "transportation",
-    "responsibility", "determination", "perseverance", "accomplishment", "appreciation"
+    {
+      "en": "post office",
+      "zh": "邮局"
+    },
+    {
+      "en": "bookstore",
+      "zh": "书店"
+    },
+    {
+      "en": "hospital",
+      "zh": "医院"
+    },
+    {
+      "en": "crossing",
+      "zh": "十字路口"
+    },
+    {
+      "en": "straight",
+      "zh": "笔直的"
+    },
+    {
+      "en": "interesting",
+      "zh": "有趣的"
+    },
+    {
+      "en": "restaurant",
+      "zh": "餐馆"
+    },
+    {
+      "en": "slow down",
+      "zh": "慢下来"
+    },
+    {
+      "en": "attention",
+      "zh": "注意"
+    },
+    {
+      "en": "pay attention to",
+      "zh": "注意"
+    },
+    {
+      "en": "traffic lights",
+      "zh": "交通信号灯"
+    },
+    {
+      "en": "Papa Westray",
+      "zh": "帕帕韦斯特雷岛"
+    },
+    {
+      "en": "Scotland",
+      "zh": "苏格兰"
+    },
+    {
+      "en": "see a film",
+      "zh": "看电影"
+    },
+    {
+      "en": "take a trip",
+      "zh": "去旅行"
+    },
+    {
+      "en": "supermarket",
+      "zh": "超市"
+    },
+    {
+      "en": "tomorrow",
+      "zh": "明天"
+    },
+    {
+      "en": "next week",
+      "zh": "下周"
+    },
+    {
+      "en": "dictionary",
+      "zh": "词典"
+    },
+    {
+      "en": "comic book",
+      "zh": "连环画册"
+    },
+    {
+      "en": "word book",
+      "zh": "单词书"
+    },
+    {
+      "en": "postcard",
+      "zh": "明信片"
+    },
+    {
+      "en": "Mid-Autumn Festival",
+      "zh": "中秋节"
+    },
+    {
+      "en": "together",
+      "zh": "一起"
+    },
+    {
+      "en": "get together",
+      "zh": "聚会"
+    },
+    {
+      "en": "mooncake",
+      "zh": "月饼"
+    },
+    {
+      "en": "Canberra",
+      "zh": "堪培拉；澳大利亚首都"
+    },
+    {
+      "en": "businessman",
+      "zh": "商人"
+    },
+    {
+      "en": "police office",
+      "zh": "警察"
+    },
+    {
+      "en": "fisherman",
+      "zh": "渔民"
+    },
+    {
+      "en": "scientist",
+      "zh": "科学家"
+    },
+    {
+      "en": "head teacher",
+      "zh": "校长"
+    },
+    {
+      "en": "university",
+      "zh": "大学"
+    },
+    {
+      "en": "reporter",
+      "zh": "记者"
+    },
+    {
+      "en": "secretary",
+      "zh": "秘书"
+    },
+    {
+      "en": "see a doctor",
+      "zh": "看病"
+    },
+    {
+      "en": "take a deep breath",
+      "zh": "深呼吸"
+    },
+    {
+      "en": "count to ten",
+      "zh": "数到十"
+    },
+    {
+      "en": "everyone",
+      "zh": "每人"
+    },
+    {
+      "en": "stronger",
+      "zh": "更强壮的（strong）"
+    },
+    {
+      "en": "dinosaur",
+      "zh": "恐龙"
+    },
+    {
+      "en": "kilogram",
+      "zh": "千克；公斤"
+    },
+    {
+      "en": "countryside",
+      "zh": "乡村"
+    },
+    {
+      "en": "had a cold",
+      "zh": "感冒"
+    },
+    {
+      "en": "yesterday",
+      "zh": "昨天"
+    },
+    {
+      "en": "magazine",
+      "zh": "杂志"
+    },
+    {
+      "en": "went camping",
+      "zh": "野营"
+    },
+    {
+      "en": "went fishing",
+      "zh": "去钓鱼"
+    },
+    {
+      "en": "took pictures",
+      "zh": "照相"
+    },
+    {
+      "en": "Labour Day",
+      "zh": "劳动节"
+    },
+    {
+      "en": "dining hall",
+      "zh": "饭厅"
+    },
+    {
+      "en": "go cycling",
+      "zh": "去骑自行车"
+    },
+    {
+      "en": "ice-skate",
+      "zh": "滑冰"
+    },
+    {
+      "en": "badminton",
+      "zh": "羽毛球运动"
+    },
+    {
+      "en": "Internet",
+      "zh": "互联网"
+    },
+    {
+      "en": "different",
+      "zh": "不同的"
+    }
   ]
 }
