@@ -102,11 +102,14 @@ function playSound(id) {
 function toggleSound() {
     gameState.soundEnabled = !gameState.soundEnabled;
     const button = document.getElementById('soundButton');
+    const text = button.querySelector('.btn-text');
     if (gameState.soundEnabled) {
-        button.textContent = '🔊 音效';
+        button.classList.remove('muted');
+        if (text) text.textContent = '音效';
         playSound('keySound'); // 测试音效
     } else {
-        button.textContent = '🔇 音效';
+        button.classList.add('muted');
+        if (text) text.textContent = '静音';
         const bgMusic = document.getElementById('bgMusic');
         if (bgMusic) {
             bgMusic.pause();
@@ -147,7 +150,10 @@ function updateVolume() {
 function testAllSounds() {
     if (!gameState.soundEnabled) {
         gameState.soundEnabled = true;
-        document.getElementById('soundButton').textContent = '🔊 音效';
+        const sb = document.getElementById('soundButton');
+        sb.classList.remove('muted');
+        const t = sb.querySelector('.btn-text');
+        if (t) t.textContent = '音效';
     }
     
     // 依次播放所有音效
@@ -286,8 +292,9 @@ function updateLeaderboardData(mode, difficulty) {
         const actionCell = document.createElement('td');
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'btn-delete';
-        deleteBtn.textContent = '✕';
+        deleteBtn.innerHTML = '<svg class="icon"><use href="#icon-x"/></svg>';
         deleteBtn.title = '删除此记录';
+        deleteBtn.setAttribute('aria-label', '删除此记录');
         deleteBtn.addEventListener('click', function(e) {
             e.stopPropagation();
             deleteLeaderboardEntry(mode, difficulty, index);
@@ -324,16 +331,19 @@ function setupEventListeners() {
             document.querySelectorAll('.library-btn').forEach(b => {
                 b.classList.remove('active');
                 b.disabled = true;
-                b.textContent = b.textContent.replace('…', '');
+                const t = b.querySelector('.btn-text');
+                if (t) t.textContent = t.textContent.replace('…', '');
             });
             this.classList.add('active');
-            this.textContent = this.textContent + '…';
+            const t = this.querySelector('.btn-text');
+            if (t) t.textContent = t.textContent + '…';
 
             await loadWordList(libraryId);
 
             document.querySelectorAll('.library-btn').forEach(b => {
                 b.disabled = false;
-                b.textContent = b.textContent.replace('…', '');
+                const t = b.querySelector('.btn-text');
+                if (t) t.textContent = t.textContent.replace('…', '');
             });
         });
     });
@@ -423,9 +433,13 @@ function startGame() {
     
     console.log('开始游戏，单词库已加载:', Object.keys(wordList));
 
-    // 重置暂停按钮文本
+    // 重置暂停按钮状态
     const pauseBtn = document.getElementById('pauseButton');
-    if (pauseBtn) pauseBtn.textContent = '暂停';
+    if (pauseBtn) {
+        pauseBtn.classList.remove('paused');
+        const pt = pauseBtn.querySelector('.btn-text');
+        if (pt) pt.textContent = '暂停';
+    }
 
     // 根据难度设置挑战模式的超时时间
     let challengeTimeout;
@@ -789,7 +803,9 @@ function updateStats() {
 function pauseGame() {
     gameState.isPaused = !gameState.isPaused;
     const btn = document.getElementById('pauseButton');
-    btn.textContent = gameState.isPaused ? '继续' : '暂停';
+    btn.classList.toggle('paused', gameState.isPaused);
+    const btnText = btn.querySelector('.btn-text');
+    if (btnText) btnText.textContent = gameState.isPaused ? '继续' : '暂停';
     showMessage(gameState.isPaused ? '游戏已暂停' : '游戏继续！', '');
     
     // 暂停/继续挑战模式计时器
