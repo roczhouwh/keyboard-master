@@ -1,0 +1,24 @@
+{
+  "easy": [
+    "cat", "dog", "sun", "run", "big", "red", "book", "cup", "map", "bag",
+    "fish", "bird", "desk", "door", "bell", "kite", "star", "moon", "tree", "rain",
+    "snow", "wind", "lake", "hill", "bear", "deer", "frog", "duck", "hen", "pig",
+    "cow", "sheep", "wolf", "seal", "milk", "cake", "rice", "egg", "soup", "bread",
+    "hand", "foot", "head", "nose", "ear", "eye", "arm", "leg", "bed", "box"
+  ],
+  "medium": [
+    "apple", "happy", "water", "school", "friend", "mouse", "house", "plant", "dance", "smile",
+    "banana", "orange", "grape", "cherry", "lemon", "brother", "sister", "mother", "father", "family",
+    "birthday", "sunshine", "rainbow", "cloud", "river", "mountain", "forest", "ocean",
+    "bicycle", "elephant", "giraffe", "monkey", "zebra", "tiger", "rabbit", "duck",
+    "garden", "park", "beach", "island", "desert", "planet", "rocket", "comet"
+  ],
+  "hard": [
+    "computer", "keyboard", "student", "teacher", "picture", "morning", "evening",
+    "television", "telephone", "internet", "software", "printer", "monitor",
+    "library", "classroom", "textbook", "science", "mathematics", "literature",
+    "history", "geography", "biology", "chemistry", "physics", "astronomy",
+    "environment", "pollution", "recycling", "sustainability", "biodiversity",
+    "temperature", "thermometer", "barometer", "atmosphere", "constellation"
+  ]
+}

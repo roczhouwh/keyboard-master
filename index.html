@@ -35,12 +35,14 @@
             <h2>🎮 选择游戏模式</h2>
             <p>
                 🌟 <strong>字母模式</strong>：练习单个字母按键<br>
+                🔣 <strong>字符模式</strong>：练习字母、数字和标点符号<br>
                 📝 <strong>单词模式</strong>：练习拼写简单单词<br>
                 🎯 <strong>挑战模式</strong>：限时挑战，要快速按键哦！
             </p>
             
             <div class="mode-selector">
                 <button class="mode-btn active" data-mode="letter">字母模式</button>
+                <button class="mode-btn" data-mode="character">字符模式</button>
                 <button class="mode-btn" data-mode="word">单词模式</button>
                 <button class="mode-btn" data-mode="challenge">挑战模式</button>
             </div>
@@ -50,12 +52,16 @@
                 <button class="difficulty-btn medium" data-difficulty="medium">中等</button>
                 <button class="difficulty-btn hard" data-difficulty="hard">困难</button>
             </div>
+            <div id="difficultyHint" class="difficulty-hint hidden">难度仅对单词和挑战模式生效</div>
 
-            <div class="pure-letters-toggle">
-                <label class="toggle-label">
-                    <input type="checkbox" id="pureLettersToggle" checked>
-                    <span class="toggle-text">纯字母模式: <span id="pureLettersStatus">开</span></span>
-                </label>
+            <div class="word-library-selector">
+                <span class="library-label">词库选择:</span>
+                <div class="library-buttons" id="libraryButtons">
+                    <button class="library-btn active" data-library="grade3">三年级</button>
+                    <button class="library-btn" data-library="grade4">四年级</button>
+                    <button class="library-btn" data-library="grade5">五年级</button>
+                    <button class="library-btn" data-library="grade6">六年级</button>
+                </div>
             </div>
 
             <button class="btn btn-primary" onclick="startGame()">开始游戏</button>
@@ -116,6 +122,54 @@
                                 </tr>
                             </thead>
                             <tbody id="leaderboard-letter-hard-body">
+                                <tr><td colspan="5">暂无记录</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="leaderboard hidden" id="leaderboard-character-easy">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>排名</th>
+                                    <th>得分</th>
+                                    <th>正确率</th>
+                                    <th>连击</th>
+                                    <th>时间</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-character-easy-body">
+                                <tr><td colspan="5">暂无记录</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="leaderboard hidden" id="leaderboard-character-medium">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>排名</th>
+                                    <th>得分</th>
+                                    <th>正确率</th>
+                                    <th>连击</th>
+                                    <th>时间</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-character-medium-body">
+                                <tr><td colspan="5">暂无记录</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="leaderboard hidden" id="leaderboard-character-hard">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>排名</th>
+                                    <th>得分</th>
+                                    <th>正确率</th>
+                                    <th>连击</th>
+                                    <th>时间</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-character-hard-body">
                                 <tr><td colspan="5">暂无记录</td></tr>
                             </tbody>
                         </table>

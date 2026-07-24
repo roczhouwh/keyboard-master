@@ -1,0 +1,22 @@
+{
+  "easy": [
+    "cat", "dog", "sun", "fun", "run", "hat", "bat", "mat", "sit", "big",
+    "red", "blue", "green", "book", "pen", "pencil", "cup", "map", "bag", "cap",
+    "can", "man", "boy", "girl", "yes", "no", "go", "stop", "up",
+    "down", "left", "right", "in", "out", "on", "off", "two", "three", "four",
+    "five", "six", "seven", "eight", "nine", "ten", "one", "zero"
+  ],
+  "medium": [
+    "apple", "happy", "water", "school", "friend", "mouse", "house", "plant", "dance", "smile",
+    "banana", "orange", "grape", "cherry", "lemon", "brother", "sister", "mother", "father", "family",
+    "birthday", "sunshine", "rainbow", "cloud", "river", "mountain", "forest", "ocean",
+    "bicycle", "elephant", "giraffe", "monkey", "zebra", "tiger", "rabbit", "duck"
+  ],
+  "hard": [
+    "computer", "keyboard", "student", "teacher", "picture", "morning", "evening",
+    "television", "telephone", "internet", "software", "printer", "monitor",
+    "library", "classroom", "textbook", "science", "mathematics", "literature",
+    "history", "geography", "biology", "chemistry", "physics", "astronomy",
+    "environment", "pollution", "recycling", "sustainability", "biodiversity"
+  ]
+}

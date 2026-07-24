@@ -10,7 +10,6 @@ let gameState = {
     timeLeft: 60,
     mode: 'letter',
     difficulty: 'easy',
-    pureLetters: true, // 纯字母模式，默认为开
     currentTarget: '',
     currentIndex: 0,
     timerInterval: null,
@@ -23,64 +22,56 @@ let gameState = {
 // 音量控制
 let masterVolume = 1.0;
 
-// 默认单词库
-const wordList = {
-    "easy": [
-        "cat", "dog", "sun", "fun", "run", "hat", "bat", "mat", "sit", "big",
-        "red", "blue", "green", "book", "pen", "pencil", "cup", "map", "bag", "cap",
-        "can", "man", "woman", "boy", "girl", "yes", "no", "go", "stop", "up",
-        "down", "left", "right", "in", "out", "on", "off", "two", "three", "four",
-        "five", "six", "seven", "eight", "nine", "ten", "one", "zero"
-    ],
-    "medium": [
-        "apple", "happy", "water", "school", "friend", "mouse", "house", "plant", "dance", "smile",
-        "banana", "orange", "grape", "cherry", "lemon", "brother", "sister", "mother", "father", "family",
-        "birthday", "christmas", "halloween", "thanksgiving", "valentine", "sunshine", "moonlight", "starlight", "rainbow", "cloud",
-        "river", "mountain", "forest", "ocean", "desert", "island", "beach", "lake", "park", "garden",
-        "bicycle", "car", "bus", "train", "plane", "ship", "bird", "fish", "bear", "tiger",
-        "elephant", "giraffe", "monkey", "zebra", "lion", "horse", "cow", "sheep", "pig", "chicken"
-    ],
-    "hard": [
-        "computer", "keyboard", "student", "teacher", "family", "animal", "picture", "morning", "evening", "birthday",
-        "electricity", "television", "telephone", "internet", "software", "hardware", "printer", "monitor", "mouse", "keyboard",
-        "university", "college", "academy", "institute", "library", "laboratory", "classroom", "blackboard", "whiteboard", "textbook",
-        "science", "mathematics", "literature", "history", "geography", "biology", "chemistry", "physics", "astronomy", "geology",
-        "music", "painting", "sculpture", "theatre", "dance", "poetry", "novel", "story", "essay", "article",
-        "environment", "ecology", "conservation", "pollution", "recycling", "sustainability", "biodiversity", "ecosystem", "habitat", "species"
-    ]
-};
+// 词库列表
+const wordLibraries = [
+    { id: 'grade3', name: '三年级词库' },
+    { id: 'grade4', name: '四年级词库' },
+    { id: 'grade5', name: '五年级词库' },
+    { id: 'grade6', name: '六年级词库' }
+];
 
-// 单词库加载状态
+// 当前词库数据（加载后填充）
+let wordList = null;
 let wordListLoaded = false;
+let currentLibraryId = 'grade3';
 
-// 加载单词库
-async function loadWordList() {
-    const logPrefix = '单词库加载';
-    console.log(`${logPrefix}开始...`);
-    
+// 加载词库
+async function loadWordList(libraryId) {
+    const logPrefix = '词库加载';
+    console.log(`${logPrefix}开始加载: ${libraryId}`);
+
     // 显示加载中消息
-    showMessage('正在加载单词库，请稍候...⏳', '');
-    
+    showMessage('正在加载词库，请稍候...⏳', '');
+
     try {
-        // 直接使用默认单词库
-        console.log(`${logPrefix}使用默认单词库`);
+        const response = await fetch(`words/${libraryId}.json`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+
+        // 验证数据格式
+        if (!data.easy || !data.medium || !data.hard) {
+            throw new Error('词库数据格式不正确');
+        }
+
+        wordList = data;
         wordListLoaded = true;
-        
-        console.log(`${logPrefix}单词库加载成功:`, Object.keys(wordList));
-        
-        // 显示成功消息
-        showMessage('单词库加载成功！📚', 'success');
+        currentLibraryId = libraryId;
+
+        console.log(`${logPrefix}成功:`, libraryId, Object.keys(wordList));
+        showMessage(`词库加载成功！📚 (${libraryId})`, 'success');
     } catch (error) {
-        console.error(`${logPrefix}失败:`, error);
-        
-        // 显示错误消息
-        showMessage('单词库加载失败！❌', 'error');
+        console.error(`${logPrefix}失败:`, error.message);
+        showMessage(`词库加载失败: ${error.message}，使用内置词库`, 'error');
+
+        // 回退到内置词库
+        wordList = null;
+        wordListLoaded = true;
     }
 }
 
 // 检查单词库是否加载完成
 function isWordListLoaded() {
-    return wordListLoaded && Object.keys(wordList).length > 0;
+    return wordListLoaded;
 }
 
 // 字母表（包含常用字符）
@@ -202,6 +193,7 @@ function updateLeaderboardDisplay() {
     // 更新当前模式和难度的显示
     const modeMap = {
         'letter': '字母模式',
+        'character': '字符模式',
         'word': '单词模式',
         'challenge': '挑战模式'
     };
@@ -303,17 +295,29 @@ function setupEventListeners() {
         });
     });
     
-    // 纯字母模式toggle按钮
-    const pureLettersToggle = document.getElementById('pureLettersToggle');
-    const pureLettersStatus = document.getElementById('pureLettersStatus');
-    if (pureLettersToggle && pureLettersStatus) {
-        pureLettersToggle.addEventListener('change', function() {
-            gameState.pureLetters = this.checked;
-            const statusText = this.checked ? '开' : '关';
-            pureLettersStatus.textContent = statusText;
-            console.log('纯字母模式:', gameState.pureLetters);
+
+    // 词库选择
+    document.querySelectorAll('.library-btn').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const libraryId = this.dataset.library;
+            if (libraryId === currentLibraryId) return;
+
+            document.querySelectorAll('.library-btn').forEach(b => {
+                b.classList.remove('active');
+                b.disabled = true;
+                b.textContent = b.textContent.replace('…', '');
+            });
+            this.classList.add('active');
+            this.textContent = this.textContent + '…';
+
+            await loadWordList(libraryId);
+
+            document.querySelectorAll('.library-btn').forEach(b => {
+                b.disabled = false;
+                b.textContent = b.textContent.replace('…', '');
+            });
         });
-    }
+    });
 
     // 模式选择
     document.querySelectorAll('.mode-selector .mode-btn').forEach(btn => {
@@ -322,7 +326,17 @@ function setupEventListeners() {
             this.classList.add('active');
             const mode = this.dataset.mode;
             gameState.mode = mode;
-            
+
+            // 字母/字符模式：难度不生效，置灰
+            const isModeWithoutDifficulty = mode === 'letter' || mode === 'character';
+            document.querySelectorAll('.difficulty-btn').forEach(b => {
+                b.disabled = isModeWithoutDifficulty;
+            });
+            const hint = document.getElementById('difficultyHint');
+            if (hint) {
+                hint.classList.toggle('hidden', !isModeWithoutDifficulty);
+            }
+
             // 更新排行榜显示
             updateLeaderboardDisplay();
         });
@@ -391,10 +405,11 @@ function startGame() {
         wrong: 0,
         combo: 0,
         maxCombo: 0,
-        timeLeft: gameState.difficulty === 'easy' ? 60 : gameState.difficulty === 'medium' ? 40 : 30,
+        timeLeft: (gameState.mode === 'letter' || gameState.mode === 'character')
+            ? 60
+            : gameState.difficulty === 'easy' ? 60 : gameState.difficulty === 'medium' ? 40 : 30,
         mode: gameState.mode,
         difficulty: gameState.difficulty,
-        pureLetters: gameState.pureLetters,
         currentTarget: '',
         currentIndex: 0,
         timerInterval: null,
@@ -477,61 +492,50 @@ function nextTarget() {
     }
     
     if (gameState.mode === 'letter') {
-        // 字母模式：随机一个字符
-        let char;
-        if (gameState.pureLetters) {
-            // 纯字母模式：只生成字母
-            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            char = letters[Math.floor(Math.random() * letters.length)];
-        } else {
-            // 普通模式：包括字母、数字和简单标点
-            char = alphabet[Math.floor(Math.random() * alphabet.length)];
-        }
-        
-        // 对于字母，随机转换为大小写
+        // 字母模式：随机一个字母
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let char = letters[Math.floor(Math.random() * letters.length)];
+        // 随机大小写
+        char = Math.random() > 0.5 ? char.toUpperCase() : char.toLowerCase();
+        // 避免容易混淆的字符
+        if (char === 'I') char = 'i';
+        if (char === 'l') char = 'L';
+        gameState.currentTarget = char;
+    } else if (gameState.mode === 'character') {
+        // 字符模式：包括字母、数字和标点
+        let char = alphabet[Math.floor(Math.random() * alphabet.length)];
         if (/[a-zA-Z]/.test(char)) {
             char = Math.random() > 0.5 ? char.toUpperCase() : char.toLowerCase();
-            // 避免生成容易混淆的字符：大写的I和小写的l
-            if (char === 'I') char = 'i'; // 大写I替换为小写i
-            if (char === 'l') char = 'L'; // 小写l替换为大写L
+            if (char === 'I') char = 'i';
+            if (char === 'l') char = 'L';
         }
         gameState.currentTarget = char;
     } else if (gameState.mode === 'word') {
         // 单词模式：从词库随机选择
-        console.log('当前单词库状态:', wordList);
-        console.log('当前难度:', gameState.difficulty);
-        
-        let words = wordList[gameState.difficulty];
-        
-        // 检查单词库是否加载
+        let words = wordList ? wordList[gameState.difficulty] : null;
+
+        // 检查词库是否加载
         if (!words || words.length === 0) {
-            console.log('单词库未加载，使用默认单词');
+            console.log('词库未加载，使用默认单词');
             // 使用默认单词
-            words = ['cat', 'dog', 'sun', 'fun', 'run', 'apple', 'happy', 'water', 'school', 'friend'];
+            const fallback = {
+                easy: ['cat', 'dog', 'sun', 'fun', 'run', 'hat', 'bat', 'mat', 'sit', 'big'],
+                medium: ['apple', 'happy', 'water', 'school', 'friend', 'mouse', 'house', 'plant', 'dance', 'smile'],
+                hard: ['computer', 'keyboard', 'student', 'teacher', 'picture', 'morning', 'evening', 'family', 'animal', 'science']
+            };
+            words = fallback[gameState.difficulty] || fallback.easy;
         }
-        
+
         console.log('使用的单词列表:', words);
         gameState.currentTarget = words[Math.floor(Math.random() * words.length)];
         console.log('选择的单词:', gameState.currentTarget);
     } else if (gameState.mode === 'challenge') {
-        // 挑战模式：随机字符
-        let char;
-        if (gameState.pureLetters) {
-            // 纯字母模式：只生成字母
-            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            char = letters[Math.floor(Math.random() * letters.length)];
-        } else {
-            // 普通模式：包括字母、数字和简单标点
-            char = alphabet[Math.floor(Math.random() * alphabet.length)];
-        }
-        
-        // 对于字母，随机转换为大小写
-        if (/[a-zA-Z]/.test(char)) {
-            char = Math.random() > 0.5 ? char.toUpperCase() : char.toLowerCase();
-            // 避免生成容易混淆的字符：大写的I和小写的l
-            if (char === 'I') char = 'i'; // 大写I替换为小写i
-            if (char === 'l') char = 'L'; // 小写l替换为大写L
-        }
+        // 挑战模式：随机字母，限时输入
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let char = letters[Math.floor(Math.random() * letters.length)];
+        char = Math.random() > 0.5 ? char.toUpperCase() : char.toLowerCase();
+        if (char === 'I') char = 'i';
+        if (char === 'l') char = 'L';
         gameState.currentTarget = char;
         
         // 添加挑战模式超时计时器
@@ -735,7 +739,9 @@ function updateStats() {
     document.getElementById('accuracy').textContent = accuracy + '%';
     
     // 更新进度条
-    const maxTime = gameState.difficulty === 'easy' ? 60 : gameState.difficulty === 'medium' ? 40 : 30;
+    const maxTime = (gameState.mode === 'letter' || gameState.mode === 'character')
+        ? 60
+        : gameState.difficulty === 'easy' ? 60 : gameState.difficulty === 'medium' ? 40 : 30;
     const progress = ((maxTime - gameState.timeLeft) / maxTime) * 100;
     document.getElementById('progressFill').style.width = progress + '%';
 }
@@ -833,9 +839,9 @@ function endGame() {
 
 // 初始化排行榜
 function initLeaderboard() {
-    const modes = ['letter', 'word', 'challenge'];
+    const modes = ['letter', 'character', 'word', 'challenge'];
     const difficulties = ['easy', 'medium', 'hard'];
-    
+
     modes.forEach(mode => {
         difficulties.forEach(difficulty => {
             updateLeaderboardData(mode, difficulty);
@@ -908,7 +914,7 @@ function formatDate(timestamp) {
 
 // 导出排行榜数据
 function exportLeaderboard() {
-    const modes = ['letter', 'word', 'challenge'];
+    const modes = ['letter', 'character', 'word', 'challenge'];
     const difficulties = ['easy', 'medium', 'hard'];
     const leaderboardData = {};
     
@@ -970,9 +976,9 @@ function handleFileImport(input) {
             }
             
             // 导入数据
-            const modes = ['letter', 'word', 'challenge'];
+            const modes = ['letter', 'character', 'word', 'challenge'];
             const difficulties = ['easy', 'medium', 'hard'];
-            
+
             modes.forEach(mode => {
                 if (jsonData.leaderboard[mode]) {
                     difficulties.forEach(difficulty => {
@@ -1019,8 +1025,8 @@ window.addEventListener('DOMContentLoaded', async function() {
     
     // 然后加载单词库，等待完成
     try {
-        console.log('开始加载单词库...');
-        await loadWordList();
+        console.log('开始加载词库...');
+        await loadWordList('grade3');
         console.log('单词库加载完成，游戏初始化完成');
         
         // 单词库加载成功后，显示开始界面
@@ -1029,6 +1035,10 @@ window.addEventListener('DOMContentLoaded', async function() {
         // 初始化排行榜
         initLeaderboard();
         console.log('排行榜初始化完成');
+
+        // 默认字母模式，禁用难度选择
+        document.querySelectorAll('.difficulty-btn').forEach(b => b.disabled = true);
+        document.getElementById('difficultyHint')?.classList.remove('hidden');
         
     } catch (error) {
         console.error('游戏初始化失败:', error);
