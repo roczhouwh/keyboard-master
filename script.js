@@ -16,6 +16,7 @@ let gameState = {
     timerInterval: null,
     challengeTimer: null, // 挑战模式的字符超时计时器
     challengeTimeout: 3000, // 挑战模式的超时时间（毫秒）
+    challengeTimeRemaining: null, // 暂停时保存的剩余时间（毫秒）
     soundEnabled: true
 };
 
@@ -396,6 +397,8 @@ function startGame() {
         timerInterval: null,
         challengeTimer: null,
         challengeTimeout: challengeTimeout,
+        challengeTimeRemaining: null,
+        challengeTimerStartAt: null,
         soundEnabled: gameState.soundEnabled
     };
 
@@ -530,6 +533,8 @@ function nextTarget() {
         
         // 添加挑战模式超时计时器
         gameState.challengeTimer = setTimeout(handleChallengeTimeout, gameState.challengeTimeout);
+        gameState.challengeTimerStartAt = Date.now();
+        gameState.challengeTimeRemaining = null;
         console.log('挑战模式计时器已启动，超时时间:', gameState.challengeTimeout, 'ms');
     }
     
@@ -740,15 +745,26 @@ function pauseGame() {
     showMessage(gameState.isPaused ? '游戏已暂停' : '游戏继续！', '');
     
     // 暂停/继续挑战模式计时器
-    if (gameState.challengeTimer) {
-        clearTimeout(gameState.challengeTimer);
-        gameState.challengeTimer = null;
-    }
-    
-    // 如果游戏继续且是挑战模式，重新设置计时器
-    if (!gameState.isPaused && gameState.mode === 'challenge' && gameState.isPlaying) {
-        gameState.challengeTimer = setTimeout(handleChallengeTimeout, gameState.challengeTimeout);
-        console.log('挑战模式计时器已重启，超时时间:', gameState.challengeTimeout, 'ms');
+    if (gameState.isPaused) {
+        // 暂停：保存剩余时间
+        if (gameState.challengeTimer) {
+            clearTimeout(gameState.challengeTimer);
+            gameState.challengeTimer = null;
+        }
+        gameState.challengeTimeRemaining = gameState.challengeTimerStartAt
+            ? gameState.challengeTimeout - (Date.now() - gameState.challengeTimerStartAt)
+            : gameState.challengeTimeout;
+        if (gameState.challengeTimeRemaining < 0) gameState.challengeTimeRemaining = 0;
+    } else {
+        // 恢复：用剩余时间重新计时
+        if (gameState.mode === 'challenge' && gameState.isPlaying) {
+            const remaining = gameState.challengeTimeRemaining ?? gameState.challengeTimeout;
+            if (remaining > 0) {
+                gameState.challengeTimer = setTimeout(handleChallengeTimeout, remaining);
+                gameState.challengeTimerStartAt = Date.now();
+                console.log('挑战模式计时器已恢复，剩余时间:', remaining, 'ms');
+            }
+        }
     }
     
     // 暂停/恢复背景音乐
@@ -961,7 +977,7 @@ function handleFileImport(input) {
                             // 保存数据到localStorage
                             localStorage.setItem(`leaderboard_${mode}_${difficulty}`, JSON.stringify(jsonData.leaderboard[mode][difficulty]));
                             // 更新排行榜显示
-                            updateLeaderboardDisplay(mode, difficulty);
+                            updateLeaderboardDisplay();
                         }
                     });
                 }
