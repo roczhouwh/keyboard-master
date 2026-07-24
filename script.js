@@ -740,7 +740,7 @@ function updateStats() {
 // 暂停游戏
 function pauseGame() {
     gameState.isPaused = !gameState.isPaused;
-    const btn = document.querySelector('.btn-secondary');
+    const btn = document.getElementById('pauseButton');
     btn.textContent = gameState.isPaused ? '继续' : '暂停';
     showMessage(gameState.isPaused ? '游戏已暂停' : '游戏继续！', '');
     
