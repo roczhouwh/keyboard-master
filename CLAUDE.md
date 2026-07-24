@@ -68,3 +68,7 @@ Available libraries defined in `wordLibraries` array (`script.js:26-32`). Add ne
 
 ### Update difficulty-disabled logic
 `setupEventListeners()` (`script.js:322-342`): letter/character modes disable difficulty buttons; word/challenge enable them.
+
+## TODO
+
+- [ ] 单词模式显示中文释义：词库 JSON 改为 `{ "en": "apple", "zh": "苹果" }` 格式，`nextTarget()` 读取 `currentTarget` 时附带中文，在 target-display 下方显示中文
