@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>键盘小达人 - 趣味打字游戏</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-header">
+        <h1>⌨️ 键盘小达人</h1>
+        <p>快来练习打字，成为键盘小高手吧！</p>
+    </div>
+
+    <div class="game-container">
+        <!-- 音频元素 -->
+        <audio id="bgMusic" loop preload="auto">
+            <source src="sounds/bg_music.mp3" type="audio/mp3">
+       </audio>
+        <audio id="keySound" preload="auto">
+            <source src="sounds/key_sound.mp3" type="audio/mp3">
+       </audio>
+        <audio id="correctSound" preload="auto">
+            <source src="sounds/correct_sound.mp3" type="audio/mp3">
+       </audio>
+        <audio id="wrongSound" preload="auto">
+            <source src="sounds/wrong_sound.mp3" type="audio/mp3">
+       </audio>
+        <audio id="levelUpSound" preload="auto">
+            <source src="sounds/levelup_sound.mp3" type="audio/mp3">
+       </audio>
+        
+        <!-- 开始界面 -->
+        <div class="start-screen" id="startScreen">
+            <h2>🎮 选择游戏模式</h2>
+            <p>
+                🌟 <strong>字母模式</strong>：练习单个字母按键<br>
+                📝 <strong>单词模式</strong>：练习拼写简单单词<br>
+                🎯 <strong>挑战模式</strong>：限时挑战，要快速按键哦！
+            </p>
+            
+            <div class="mode-selector">
+                <button class="mode-btn active" data-mode="letter">字母模式</button>
+                <button class="mode-btn" data-mode="word">单词模式</button>
+                <button class="mode-btn" data-mode="challenge">挑战模式</button>
+            </div>
+
+            <div class="difficulty-selector">
+                <button class="difficulty-btn easy active" data-difficulty="easy">简单</button>
+                <button class="difficulty-btn medium" data-difficulty="medium">中等</button>
+                <button class="difficulty-btn hard" data-difficulty="hard">困难</button>
+            </div>
+
+            <div class="pure-letters-toggle">
+                <label class="toggle-label">
+                    <input type="checkbox" id="pureLettersToggle" checked>
+                    <span class="toggle-text">纯字母模式: <span id="pureLettersStatus">开</span></span>
+                </label>
+            </div>
+
+            <button class="btn btn-primary" onclick="startGame()">开始游戏</button>
+
+            <!-- 排行榜部分 -->
+            <div class="leaderboard-section">
+                <h3>🏆 排行榜</h3>
+                <div class="leaderboard-info">
+                    当前模式：<span id="currentMode">字母模式</span> | 当前难度：<span id="currentDifficulty">简单</span>
+                </div>
+                <div class="leaderboard-actions">
+                    <button class="btn btn-secondary" onclick="exportLeaderboard()">📤 导出排行榜</button>
+                    <button class="btn btn-secondary" onclick="importLeaderboard()">📥 导入排行榜</button>
+                    <input type="file" id="leaderboardFile" accept=".json" style="display: none;" onchange="handleFileImport(this)">
+                </div>
+                <div class="leaderboard-content">
+                    <div class="leaderboard" id="leaderboard-letter-easy">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>排名</th>
+                                    <th>得分</th>
+                                    <th>正确率</th>
+                                    <th>连击</th>
+                                    <th>时间</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-letter-easy-body">
+                                <tr><td colspan="5">暂无记录</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="leaderboard hidden" id="leaderboard-letter-medium">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>排名</th>
+                                    <th>得分</th>
+                                    <th>正确率</th>
+                                    <th>连击</th>
+                                    <th>时间</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-letter-medium-body">
+                                <tr><td colspan="5">暂无记录</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="leaderboard hidden" id="leaderboard-letter-hard">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>排名</th>
+                                    <th>得分</th>
+                                    <th>正确率</th>
+                                    <th>连击</th>
+                                    <th>时间</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-letter-hard-body">
+                                <tr><td colspan="5">暂无记录</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="leaderboard hidden" id="leaderboard-word-easy">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>排名</th>
+                                    <th>得分</th>
+                                    <th>正确率</th>
+                                    <th>连击</th>
+                                    <th>时间</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-word-easy-body">
+                                <tr><td colspan="5">暂无记录</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="leaderboard hidden" id="leaderboard-word-medium">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>排名</th>
+                                    <th>得分</th>
+                                    <th>正确率</th>
+                                    <th>连击</th>
+                                    <th>时间</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-word-medium-body">
+                                <tr><td colspan="5">暂无记录</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="leaderboard hidden" id="leaderboard-word-hard">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>排名</th>
+                                    <th>得分</th>
+                                    <th>正确率</th>
+                                    <th>连击</th>
+                                    <th>时间</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-word-hard-body">
+                                <tr><td colspan="5">暂无记录</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="leaderboard hidden" id="leaderboard-challenge-easy">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>排名</th>
+                                    <th>得分</th>
+                                    <th>正确率</th>
+                                    <th>连击</th>
+                                    <th>时间</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-challenge-easy-body">
+                                <tr><td colspan="5">暂无记录</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="leaderboard hidden" id="leaderboard-challenge-medium">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>排名</th>
+                                    <th>得分</th>
+                                    <th>正确率</th>
+                                    <th>连击</th>
+                                    <th>时间</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-challenge-medium-body">
+                                <tr><td colspan="5">暂无记录</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="leaderboard hidden" id="leaderboard-challenge-hard">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>排名</th>
+                                    <th>得分</th>
+                                    <th>正确率</th>
+                                    <th>连击</th>
+                                    <th>时间</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-challenge-hard-body">
+                                <tr><td colspan="5">暂无记录</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 游戏界面 -->
+        <div class="game-screen hidden" id="gameScreen">
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="label">得分</div>
+                    <div class="value" id="score">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="label">正确率</div>
+                    <div class="value" id="accuracy">100%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="label">连击</div>
+                    <div class="value" id="combo">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="label">时间</div>
+                    <div class="value" id="timer">60</div>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <div class="game-area" id="gameArea">
+                <div class="target-display" id="targetDisplay"></div>
+            </div>
+
+            <div class="message" id="message">准备好了吗？按键盘上对应的键！</div>
+
+            <div class="keyboard" id="keyboard">
+                <div class="keyboard-row">
+                    <div class="key" data-key="1">1</div>
+                    <div class="key" data-key="2">2</div>
+                    <div class="key" data-key="3">3</div>
+                    <div class="key" data-key="4">4</div>
+                    <div class="key" data-key="5">5</div>
+                    <div class="key" data-key="6">6</div>
+                    <div class="key" data-key="7">7</div>
+                    <div class="key" data-key="8">8</div>
+                    <div class="key" data-key="9">9</div>
+                    <div class="key" data-key="0">0</div>
+                </div>
+                <div class="keyboard-row">
+                    <div class="key" data-key="q">q</div>
+                    <div class="key" data-key="w">w</div>
+                    <div class="key" data-key="e">e</div>
+                    <div class="key" data-key="r">r</div>
+                    <div class="key" data-key="t">t</div>
+                    <div class="key" data-key="y">y</div>
+                    <div class="key" data-key="u">u</div>
+                    <div class="key" data-key="i">i</div>
+                    <div class="key" data-key="o">o</div>
+                    <div class="key" data-key="p">p</div>
+                </div>
+                <div class="keyboard-row">
+                    <div class="key" data-key="a">a</div>
+                    <div class="key" data-key="s">s</div>
+                    <div class="key" data-key="d">d</div>
+                    <div class="key" data-key="f">f</div>
+                    <div class="key" data-key="g">g</div>
+                    <div class="key" data-key="h">h</div>
+                    <div class="key" data-key="j">j</div>
+                    <div class="key" data-key="k">k</div>
+                    <div class="key" data-key="l">l</div>
+                </div>
+                <div class="keyboard-row">
+                    <div class="key" data-key="z">z</div>
+                    <div class="key" data-key="x">x</div>
+                    <div class="key" data-key="c">c</div>
+                    <div class="key" data-key="v">v</div>
+                    <div class="key" data-key="b">b</div>
+                    <div class="key" data-key="n">n</div>
+                    <div class="key" data-key="m">m</div>
+                    <div class="key" data-key=",">,</div>
+                    <div class="key" data-key=".">.</div>
+                    <div class="key" data-key="/">/</div>
+                </div>
+                <div class="keyboard-row">
+                    <div class="key space" data-key=" ">空格</div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-secondary" onclick="toggleSound()" id="soundButton">🔊 音效</button>
+                <button class="btn btn-secondary" onclick="increaseVolume()">🔉 音量+</button>
+                <button class="btn btn-secondary" onclick="decreaseVolume()">🔈 音量-</button>
+                <button class="btn btn-secondary" onclick="testAllSounds()">🎵 测试音效</button>
+                <button class="btn btn-secondary" onclick="pauseGame()">暂停</button>
+                <button class="btn btn-primary" onclick="endGame()">结束游戏</button>
+            </div>
+        </div>
+
+        <!-- 结果界面 -->
+        <div class="start-screen hidden" id="resultScreen">
+            <h2>🎉 游戏结束！</h2>
+            <p id="resultMessage"></p>
+            <div class="stats-bar" style="margin-bottom: 30px;">
+                <div class="stat-item">
+                    <div class="label">最终得分</div>
+                    <div class="value" id="finalScore">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="label">正确率</div>
+                    <div class="value" id="finalAccuracy">0%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="label">最高连击</div>
+                    <div class="value" id="finalCombo">0</div>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="restartGame()">再玩一次</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
