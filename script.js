@@ -213,7 +213,13 @@ function updateLeaderboardDisplay() {
     
     document.getElementById('currentMode').textContent = modeMap[mode] || mode;
     document.getElementById('currentDifficulty').textContent = difficultyMap[difficulty] || difficulty;
-    
+
+    // 字母/字符模式不显示难度
+    const difficultyLabel = document.getElementById('difficultyLabel');
+    if (difficultyLabel) {
+        difficultyLabel.classList.toggle('hidden', mode === 'letter' || mode === 'character');
+    }
+
     // 更新难度标签的颜色
     const difficultyElement = document.getElementById('currentDifficulty');
     if (difficultyElement) {
@@ -235,7 +241,7 @@ function updateLeaderboardData(mode, difficulty) {
         // 显示暂无记录
         const row = document.createElement('tr');
         const cell = document.createElement('td');
-        cell.colSpan = 5;
+        cell.colSpan = 6;
         cell.textContent = '暂无记录';
         row.appendChild(cell);
         tbody.appendChild(row);
@@ -275,7 +281,20 @@ function updateLeaderboardData(mode, difficulty) {
         timeCell.style.fontSize = '0.8em';
         timeCell.style.color = '#666';
         row.appendChild(timeCell);
-        
+
+        // 操作：删除按钮
+        const actionCell = document.createElement('td');
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'btn-delete';
+        deleteBtn.textContent = '✕';
+        deleteBtn.title = '删除此记录';
+        deleteBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            deleteLeaderboardEntry(mode, difficulty, index);
+        });
+        actionCell.appendChild(deleteBtn);
+        row.appendChild(actionCell);
+
         tbody.appendChild(row);
     });
 }
@@ -924,6 +943,44 @@ function getLeaderboard(mode, difficulty) {
     return [];
 }
 
+// 删除排行榜中的单条记录
+function deleteLeaderboardEntry(mode, difficulty, index) {
+    const leaderboard = getLeaderboard(mode, difficulty);
+    if (index < 0 || index >= leaderboard.length) return;
+
+    leaderboard.splice(index, 1);
+    localStorage.setItem(`leaderboard_${mode}_${difficulty}`, JSON.stringify(leaderboard));
+
+    updateLeaderboardData(mode, difficulty);
+    if (gameState.mode === mode && gameState.difficulty === difficulty) {
+        updateLeaderboardDisplay();
+    }
+}
+
+// 清空当前排行榜
+function clearLeaderboard() {
+    const mode = gameState.mode;
+    const difficulty = gameState.difficulty;
+
+    const leaderboard = getLeaderboard(mode, difficulty);
+    if (leaderboard.length === 0) {
+        showMessage('排行榜已为空', '');
+        return;
+    }
+
+    if (!confirm('确定要清空当前排行榜的所有记录吗？此操作不可恢复！')) {
+        return;
+    }
+
+    localStorage.setItem(`leaderboard_${mode}_${difficulty}`, JSON.stringify([]));
+
+    updateLeaderboardData(mode, difficulty);
+    if (gameState.mode === mode && gameState.difficulty === difficulty) {
+        updateLeaderboardDisplay();
+    }
+
+    showMessage('排行榜已清空', 'success');
+}
 
 
 // 格式化日期

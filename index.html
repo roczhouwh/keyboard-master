@@ -71,11 +71,12 @@
             <div class="leaderboard-section">
                 <h3>🏆 排行榜</h3>
                 <div class="leaderboard-info">
-                    当前模式：<span id="currentMode">字母模式</span> | 当前难度：<span id="currentDifficulty">简单</span>
+                    当前模式：<span id="currentMode">字母模式</span> <span id="difficultyLabel">| 当前难度：<span id="currentDifficulty">简单</span></span>
                 </div>
                 <div class="leaderboard-actions">
                     <button class="btn btn-secondary" onclick="exportLeaderboard()">📤 导出排行榜</button>
                     <button class="btn btn-secondary" onclick="importLeaderboard()">📥 导入排行榜</button>
+                    <button class="btn btn-danger" onclick="clearLeaderboard()">🗑️ 清空排行榜</button>
                     <input type="file" id="leaderboardFile" accept=".json" style="display: none;" onchange="handleFileImport(this)">
                 </div>
                 <div class="leaderboard-content">
@@ -88,10 +89,11 @@
                                     <th>正确率</th>
                                     <th>连击</th>
                                     <th>时间</th>
+                                    <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody id="leaderboard-letter-easy-body">
-                                <tr><td colspan="5">暂无记录</td></tr>
+                                <tr><td colspan="6">暂无记录</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -104,10 +106,11 @@
                                     <th>正确率</th>
                                     <th>连击</th>
                                     <th>时间</th>
+                                    <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody id="leaderboard-letter-medium-body">
-                                <tr><td colspan="5">暂无记录</td></tr>
+                                <tr><td colspan="6">暂无记录</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -120,10 +123,11 @@
                                     <th>正确率</th>
                                     <th>连击</th>
                                     <th>时间</th>
+                                    <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody id="leaderboard-letter-hard-body">
-                                <tr><td colspan="5">暂无记录</td></tr>
+                                <tr><td colspan="6">暂无记录</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -136,10 +140,11 @@
                                     <th>正确率</th>
                                     <th>连击</th>
                                     <th>时间</th>
+                                    <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody id="leaderboard-character-easy-body">
-                                <tr><td colspan="5">暂无记录</td></tr>
+                                <tr><td colspan="6">暂无记录</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -152,10 +157,11 @@
                                     <th>正确率</th>
                                     <th>连击</th>
                                     <th>时间</th>
+                                    <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody id="leaderboard-character-medium-body">
-                                <tr><td colspan="5">暂无记录</td></tr>
+                                <tr><td colspan="6">暂无记录</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -168,10 +174,11 @@
                                     <th>正确率</th>
                                     <th>连击</th>
                                     <th>时间</th>
+                                    <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody id="leaderboard-character-hard-body">
-                                <tr><td colspan="5">暂无记录</td></tr>
+                                <tr><td colspan="6">暂无记录</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -184,10 +191,11 @@
                                     <th>正确率</th>
                                     <th>连击</th>
                                     <th>时间</th>
+                                    <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody id="leaderboard-word-easy-body">
-                                <tr><td colspan="5">暂无记录</td></tr>
+                                <tr><td colspan="6">暂无记录</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -200,10 +208,11 @@
                                     <th>正确率</th>
                                     <th>连击</th>
                                     <th>时间</th>
+                                    <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody id="leaderboard-word-medium-body">
-                                <tr><td colspan="5">暂无记录</td></tr>
+                                <tr><td colspan="6">暂无记录</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -216,10 +225,11 @@
                                     <th>正确率</th>
                                     <th>连击</th>
                                     <th>时间</th>
+                                    <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody id="leaderboard-word-hard-body">
-                                <tr><td colspan="5">暂无记录</td></tr>
+                                <tr><td colspan="6">暂无记录</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -232,10 +242,11 @@
                                     <th>正确率</th>
                                     <th>连击</th>
                                     <th>时间</th>
+                                    <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody id="leaderboard-challenge-easy-body">
-                                <tr><td colspan="5">暂无记录</td></tr>
+                                <tr><td colspan="6">暂无记录</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -248,10 +259,11 @@
                                     <th>正确率</th>
                                     <th>连击</th>
                                     <th>时间</th>
+                                    <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody id="leaderboard-challenge-medium-body">
-                                <tr><td colspan="5">暂无记录</td></tr>
+                                <tr><td colspan="6">暂无记录</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -264,10 +276,11 @@
                                     <th>正确率</th>
                                     <th>连击</th>
                                     <th>时间</th>
+                                    <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody id="leaderboard-challenge-hard-body">
-                                <tr><td colspan="5">暂无记录</td></tr>
+                                <tr><td colspan="6">暂无记录</td></tr>
                             </tbody>
                         </table>
                     </div>
