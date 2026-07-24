@@ -10,15 +10,6 @@ Project overview, features, gameplay, and installation instructions are in [READ
 
 Single global object `gameState` drives everything: `isPlaying`, `isPaused`, `score`, `combo`, `mode`, `difficulty`, `currentTarget`, `currentIndex`, timers.
 
-### Four Modes
-
-| Mode | Target | Difficulty生效 | Logic |
-|------|--------|---------------|-------|
-| **letter** | A-Z a-z | ❌ 固定60s | I/l confusion avoidance (I→i, l→L) |
-| **character** | A-Z a-z 0-9 , . / | ❌ 固定60s | 大小写随机 + 混淆处理 |
-| **word** | External JSON library | ✅ 时长+词库tier | 2× score multiplier |
-| **challenge** | A-Z a-z timed | ✅ 超时时间 | easy=3s, medium=2s, hard=1s |
-
 ### Core Flow
 
 1. `startGame()` → reset state, show game screen, start countdown
