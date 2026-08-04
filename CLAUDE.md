@@ -44,9 +44,21 @@ Available libraries defined in `wordLibraries` array (`script.js:26-32`). Add ne
 - **Double-tap protection** (`script.js:656-662`): Challenge timer cleared before `nextTarget()` sets new one.
 - **Word library fallback**: Hardcoded word arrays used when `fetch()` fails.
 
+### 学单词模式（Learn Mode）
+
+独立于计时游戏的记忆/拼写练习模式，地位于 `startGame()`/`endGame()`/`handleInput()` 的分支路由中（`mode === 'learn'`）。
+
+- **两阶段流程**：每词先「看词」（英文+中文照打）再「默写」（仅中文，按记忆打英文）。
+- **无全局倒计时**：错词进复习队列，本局结束前再考直到答对。
+- **进度持久化**：localStorage key `keyboardMaster_learnProgress`，结构 `{ [libraryId]: { [wordEn]: 'new'|'learning'|'mastered' } }`。默写一次通过→`mastered`；有错或看答案→`learning`。
+- **批次**：默认 15 词（可调 10/15/20/30），从当前年级全部 tier 取词，未掌握优先（`buildLearnBatch()`）。
+- 核心函数：`startLearnGame()`、`renderLearnWord()`、`handleLearnInput()`、`onLearnWordComplete()`、`advanceLearnWord()`、`revealLearnAnswer()`、`endLearnGame()`、`updateLearnProgress()`。
+- 学习状态存于独立对象 `learnState`（避免被 `startGame()` 的 gameState 重置覆盖）。
+- **不参与排行榜**：`updateLeaderboardDisplay()` 对 `mode === 'learn'` 直接隐藏所有排行榜。
+
 ### Leaderboard (`script.js:828-996`)
 
-- localStorage-backed, top 10 per mode×difficulty (12 boards: 4 modes × 3 difficulties)
+- localStorage-backed, top 10 per mode×difficulty (12 boards: 4 modes × 3 difficulties; learn mode excluded)
 - JSON export/import for backup/sharing
 - Entry format: `{ score, accuracy, combo, timestamp }`
 

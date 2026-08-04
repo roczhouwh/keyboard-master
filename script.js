@@ -75,6 +75,88 @@ function isWordListLoaded() {
     return wordListLoaded;
 }
 
+// ============ 学单词模式 ============
+// 学单词模式状态（独立于 gameState，避免被 startGame 重置覆盖）
+let learnState = {
+    batch: [],               // 当前批次的词条 [{en, zh, status}]
+    batchIndex: 0,           // 主批次索引
+    current: null,           // 当前练习的词条
+    phase: 'learn',          // 'learn' 看词 | 'recite' 默写 | 'review' 复习
+    hadError: false,         // 当前词默写是否出错/看过答案
+    reviewQueue: [],         // 复习队列
+    masteredThisSession: 0,  // 本局新掌握数
+    reviewedCount: 0,        // 本局进复习队列的词数
+    batchSize: 15            // 每批词数（默认15）
+};
+
+// 学单词进度持久化 key（结构: { [libraryId]: { [wordEn]: 'new'|'learning'|'mastered' } }）
+const LEARN_PROGRESS_KEY = 'keyboardMaster_learnProgress';
+
+function loadLearnProgress() {
+    try {
+        const raw = localStorage.getItem(LEARN_PROGRESS_KEY);
+        return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+        console.log('读取学单词进度失败:', e);
+        return {};
+    }
+}
+
+function saveLearnProgress(progress) {
+    try {
+        localStorage.setItem(LEARN_PROGRESS_KEY, JSON.stringify(progress));
+    } catch (e) {
+        console.log('保存学单词进度失败:', e);
+    }
+}
+
+function getWordStatus(libId, word) {
+    const prog = loadLearnProgress();
+    return (prog[libId] && prog[libId][word]) || 'new';
+}
+
+function setWordStatus(libId, word, status) {
+    const prog = loadLearnProgress();
+    if (!prog[libId]) prog[libId] = {};
+    prog[libId][word] = status;
+    saveLearnProgress(prog);
+}
+
+// 统计当前年级进度（去重后已掌握/总数）
+function countGradeProgress(libId) {
+    const prog = loadLearnProgress();
+    const p = prog[libId] || {};
+    const allTiers = wordList ? [...wordList.easy, ...wordList.medium, ...wordList.hard] : [];
+    const seen = new Set();
+    let mastered = 0;
+    allTiers.forEach(w => {
+        if (seen.has(w.en)) return;
+        seen.add(w.en);
+        if (p[w.en] === 'mastered') mastered++;
+    });
+    return { mastered, total: seen.size };
+}
+
+// 构建本批次：未掌握优先，不足则补已掌握词作复习
+function buildLearnBatch(size) {
+    const all = [...wordList.easy, ...wordList.medium, ...wordList.hard];
+    const seen = new Set();
+    const unique = all.filter(w => {
+        if (seen.has(w.en)) return false;
+        seen.add(w.en);
+        return true;
+    });
+    const prog = loadLearnProgress();
+    const p = prog[currentLibraryId] || {};
+    const order = { 'new': 0, 'learning': 1, 'mastered': 2 };
+    unique.sort((a, b) => {
+        const sa = order[p[a.en] || 'new'];
+        const sb = order[p[b.en] || 'new'];
+        return sa - sb;
+    });
+    return unique.slice(0, size);
+}
+
 // 字母表（包含常用字符）
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890,./';
 
@@ -185,15 +267,26 @@ function testAllSounds() {
 function updateLeaderboardDisplay() {
     const mode = gameState.mode;
     const difficulty = gameState.difficulty;
-    
+
+    // 学单词模式不参与排行榜，隐藏所有排行榜
+    if (mode === 'learn') {
+        document.querySelectorAll('.leaderboard').forEach(board => {
+            board.classList.add('hidden');
+        });
+        document.getElementById('currentMode').textContent = '学单词模式';
+        const difficultyLabel = document.getElementById('difficultyLabel');
+        if (difficultyLabel) difficultyLabel.classList.add('hidden');
+        return;
+    }
+
     // 隐藏所有排行榜
     document.querySelectorAll('.leaderboard').forEach(board => {
         board.classList.add('hidden');
     });
-    
+
     // 显示当前模式和难度的排行榜
     document.getElementById(`leaderboard-${mode}-${difficulty}`).classList.remove('hidden');
-    
+
     // 更新排行榜数据
     updateLeaderboardData(mode, difficulty);
     
@@ -346,6 +439,18 @@ function setupEventListeners() {
                 const t = b.querySelector('.btn-text');
                 if (t) t.textContent = t.textContent.replace('…', '');
             });
+
+            // 切词库后刷新学单词进度
+            updateLearnProgress();
+        });
+    });
+
+    // 批次大小选择
+    document.querySelectorAll('.batch-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.batch-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            learnState.batchSize = parseInt(this.dataset.batch, 10) || 15;
         });
     });
 
@@ -357,21 +462,31 @@ function setupEventListeners() {
             const mode = this.dataset.mode;
             gameState.mode = mode;
 
-            // 字母/字符模式：难度不生效，置灰
-            const isModeWithoutDifficulty = mode === 'letter' || mode === 'character';
+            // 字母/字符/学单词模式：难度不生效，置灰
+            const isModeWithoutDifficulty = mode === 'letter' || mode === 'character' || mode === 'learn';
             document.querySelectorAll('.difficulty-btn').forEach(b => {
                 b.disabled = isModeWithoutDifficulty;
             });
 
-            // 词库仅在单词模式可用
-            const isLibraryMode = mode === 'word';
+            // 词库仅单词/学单词模式可用
+            const isLibraryMode = mode === 'word' || mode === 'learn';
             document.querySelectorAll('.library-btn').forEach(b => {
                 b.disabled = !isLibraryMode;
             });
             const libHint = document.getElementById('libraryHint');
             if (libHint) {
                 libHint.classList.toggle('hidden', isLibraryMode);
+                if (mode === 'learn') {
+                    libHint.textContent = '词库=选择年级，学单词模式会复习该年级全部单词';
+                } else {
+                    libHint.textContent = '词库仅对单词模式生效';
+                }
             }
+
+            // 学单词模式：显示批次选择器 + 进度
+            const batchSel = document.getElementById('batchSelector');
+            if (batchSel) batchSel.classList.toggle('hidden', mode !== 'learn');
+            updateLearnProgress();
 
             // 难度提示文字
             const hint = document.getElementById('difficultyHint');
@@ -424,6 +539,12 @@ function setupEventListeners() {
 
 // 开始游戏
 function startGame() {
+    // 学单词模式走独立流程
+    if (gameState.mode === 'learn') {
+        startLearnGame();
+        return;
+    }
+
     // 检查单词库是否加载完成
     if (!isWordListLoaded()) {
         console.error('单词库未加载完成，无法开始游戏');
@@ -488,6 +609,9 @@ function startGame() {
     document.getElementById('startScreen').classList.add('hidden');
     document.getElementById('resultScreen').classList.add('hidden');
     document.getElementById('gameScreen').classList.remove('hidden');
+    // 常规模式显示计时器
+    const timerStat = document.getElementById('timerStat');
+    if (timerStat) timerStat.classList.remove('hidden');
 
     // 清空上一局的提示语，避免残留（如词库已加载、再试一次、暂停等）
     const messageEl = document.getElementById('message');
@@ -738,10 +862,16 @@ function handleKeyUp(e) {
 // 处理输入
 function handleInput(input) {
     if (!gameState.isPlaying || gameState.isPaused) return;
-    
+
+    // 学单词模式走独立输入逻辑
+    if (gameState.mode === 'learn') {
+        handleLearnInput(input);
+        return;
+    }
+
     const pos = gameState.typeablePositions[gameState.currentIndex];
     const expected = gameState.currentTarget[pos].toLowerCase();
-    
+
     if (input === expected) {
         // 正确输入
         handleCorrect();
@@ -858,11 +988,285 @@ function updateStats() {
     document.getElementById('accuracy').textContent = accuracy + '%';
     
     // 更新进度条
-    const maxTime = (gameState.mode === 'letter' || gameState.mode === 'character' || gameState.mode === 'word')
-        ? 60
-        : gameState.difficulty === 'easy' ? 60 : gameState.difficulty === 'medium' ? 40 : 30;
-    const progress = ((maxTime - gameState.timeLeft) / maxTime) * 100;
-    document.getElementById('progressFill').style.width = progress + '%';
+    if (gameState.mode === 'learn') {
+        // 学单词模式：进度 = 已练词数 / 本批词数
+        const pct = learnState.batch.length > 0 ? (learnState.batchIndex / learnState.batch.length) * 100 : 0;
+        document.getElementById('progressFill').style.width = pct + '%';
+    } else {
+        const maxTime = (gameState.mode === 'letter' || gameState.mode === 'character' || gameState.mode === 'word')
+            ? 60
+            : gameState.difficulty === 'easy' ? 60 : gameState.difficulty === 'medium' ? 40 : 30;
+        const progress = ((maxTime - gameState.timeLeft) / maxTime) * 100;
+        document.getElementById('progressFill').style.width = progress + '%';
+    }
+}
+
+// ============ 学单词模式流程 ============
+
+// 开始学单词游戏
+function startLearnGame() {
+    if (!isWordListLoaded() || !wordList) {
+        showMessage('词库未加载完成，请稍后再试！⏳', 'error');
+        return;
+    }
+
+    const batch = buildLearnBatch(learnState.batchSize);
+    if (batch.length === 0) {
+        showMessage('本年级暂无单词可练习！', 'error');
+        return;
+    }
+
+    learnState.batch = batch;
+    learnState.batchIndex = 0;
+    learnState.reviewQueue = [];
+    learnState.masteredThisSession = 0;
+    learnState.reviewedCount = 0;
+    learnState.current = batch[0];
+    learnState.phase = 'learn';
+    learnState.hadError = false;
+
+    gameState.isPlaying = true;
+    gameState.isPaused = false;
+    gameState.score = 0;
+    gameState.correct = 0;
+    gameState.wrong = 0;
+    gameState.combo = 0;
+    gameState.maxCombo = 0;
+
+    // 界面切换
+    document.getElementById('startScreen').classList.add('hidden');
+    document.getElementById('resultScreen').classList.add('hidden');
+    document.getElementById('gameScreen').classList.remove('hidden');
+    // 学单词模式隐藏计时器
+    const timerStat = document.getElementById('timerStat');
+    if (timerStat) timerStat.classList.add('hidden');
+    // 清空提示语
+    const messageEl = document.getElementById('message');
+    if (messageEl) {
+        messageEl.textContent = '';
+        messageEl.className = 'message';
+    }
+
+    setupLearnWord();
+    renderLearnWord();
+    updateStats();
+}
+
+// 加载当前练习词到打字状态
+function setupLearnWord() {
+    const word = learnState.current;
+    gameState.currentTarget = word.en;
+    gameState.currentTargetZh = word.zh || '';
+    gameState.currentIndex = 0;
+    // 计算可输入字母位置（仅字母可输入，空格/标点跳过）
+    gameState.typeablePositions = [];
+    for (let i = 0; i < gameState.currentTarget.length; i++) {
+        if (/^[a-zA-Z]$/.test(gameState.currentTarget[i])) {
+            gameState.typeablePositions.push(i);
+        }
+    }
+}
+
+// 渲染当前学习词
+function renderLearnWord() {
+    const word = learnState.current;
+    const showLetters = learnState.phase === 'learn'; // 看词显示字母，默写/复习隐藏
+    const display = document.getElementById('targetDisplay');
+    display.innerHTML = '';
+
+    for (let i = 0; i < gameState.currentTarget.length; i++) {
+        const char = document.createElement('span');
+        const rank = gameState.typeablePositions.indexOf(i);
+        if (rank === -1) {
+            // 空格/标点：原样显示（作为提示）
+            char.className = 'target-literal';
+            char.textContent = gameState.currentTarget[i];
+        } else {
+            char.className = 'target-char';
+            if (rank < gameState.currentIndex) {
+                char.classList.add('correct');
+                char.textContent = gameState.currentTarget[i];
+            } else if (rank === gameState.currentIndex) {
+                char.classList.add('current');
+                char.textContent = showLetters ? gameState.currentTarget[i] : '';
+            } else {
+                char.classList.add('blank');
+                char.textContent = showLetters ? gameState.currentTarget[i] : '';
+            }
+        }
+        display.appendChild(char);
+    }
+
+    // 中文释义（看词/默写/复习都显示中文作为提示）
+    const meaning = document.getElementById('wordMeaning');
+    if (meaning) {
+        meaning.textContent = word.zh || '';
+        meaning.classList.remove('hidden');
+    }
+
+    // 阶段标签 + 进度
+    const phaseEl = document.getElementById('learnPhase');
+    if (phaseEl) {
+        let content;
+        if (learnState.phase === 'review') {
+            content = `🔁 复习 · 剩余 ${learnState.reviewQueue.length} 词`;
+        } else {
+            const phaseText = learnState.phase === 'learn' ? '👀 看词' : '✍️ 默写';
+            content = `${phaseText} · 第 ${learnState.batchIndex + 1}/${learnState.batch.length} 词`;
+        }
+        phaseEl.textContent = content;
+        phaseEl.classList.remove('hidden');
+    }
+
+    // 看答案按钮：默写/复习阶段可用
+    const answerBtn = document.getElementById('learnAnswerBtn');
+    if (answerBtn) {
+        answerBtn.classList.toggle('hidden', learnState.phase === 'learn');
+    }
+
+    highlightTargetKey();
+}
+
+// 处理学单词模式的输入
+function handleLearnInput(input) {
+    if (!gameState.isPlaying || gameState.isPaused) return;
+    const pos = gameState.typeablePositions[gameState.currentIndex];
+    const expected = gameState.currentTarget[pos].toLowerCase();
+
+    if (input === expected) {
+        gameState.correct++;
+        gameState.currentIndex++;
+        renderLearnWord();
+        if (gameState.currentIndex >= gameState.typeablePositions.length) {
+            onLearnWordComplete();
+        }
+    } else {
+        learnState.hadError = true;
+        gameState.wrong++;
+        gameState.combo = 0;
+        playSound('wrongSound');
+        const currentChar = document.querySelector('.target-char.current');
+        if (currentChar) {
+            currentChar.classList.add('wrong');
+            setTimeout(() => currentChar.classList.remove('wrong'), 500);
+        }
+    }
+    updateStats();
+}
+
+// 整词输入完成后的阶段推进
+function onLearnWordComplete() {
+    const word = learnState.current;
+    if (learnState.phase === 'learn') {
+        // 看词完成 → 进入默写
+        playSound('correctSound');
+        learnState.phase = 'recite';
+        learnState.hadError = false;
+        setupLearnWord();
+        renderLearnWord();
+    } else if (learnState.phase === 'recite') {
+        // 默写完成：一次通过 → 已掌握；有错 → 进复习队列
+        if (!learnState.hadError) {
+            setWordStatus(currentLibraryId, word.en, 'mastered');
+            learnState.masteredThisSession++;
+            playSound('levelUpSound');
+        } else {
+            setWordStatus(currentLibraryId, word.en, 'learning');
+            learnState.reviewQueue.push(word);
+            learnState.reviewedCount++;
+            playSound('correctSound');
+        }
+        advanceLearnWord();
+    } else if (learnState.phase === 'review') {
+        // 复习通过 → 从队列清除
+        playSound('correctSound');
+        learnState.reviewQueue.shift();
+        advanceLearnWord();
+    }
+}
+
+// 推进到下一个词
+function advanceLearnWord() {
+    if (learnState.phase === 'review') {
+        if (learnState.reviewQueue.length > 0) {
+            learnState.current = learnState.reviewQueue[0];
+            learnState.hadError = false;
+            setupLearnWord();
+            renderLearnWord();
+        } else {
+            endLearnGame();
+        }
+    } else {
+        learnState.batchIndex++;
+        if (learnState.batchIndex < learnState.batch.length) {
+            learnState.current = learnState.batch[learnState.batchIndex];
+            learnState.phase = 'learn';
+            learnState.hadError = false;
+            setupLearnWord();
+            renderLearnWord();
+        } else if (learnState.reviewQueue.length > 0) {
+            learnState.phase = 'review';
+            learnState.current = learnState.reviewQueue[0];
+            learnState.hadError = false;
+            setupLearnWord();
+            renderLearnWord();
+        } else {
+            endLearnGame();
+        }
+    }
+}
+
+// 看答案：揭示单词并标记为需复习，推进流程
+function revealLearnAnswer() {
+    if (!gameState.isPlaying || gameState.isPaused) return;
+    if (learnState.phase === 'learn') return; // 看词阶段无需看答案
+    const word = learnState.current;
+    learnState.hadError = true;
+    setWordStatus(currentLibraryId, word.en, 'learning');
+    if (learnState.phase === 'review') {
+        learnState.reviewQueue.shift();
+    } else {
+        learnState.reviewQueue.push(word);
+        learnState.reviewedCount++;
+    }
+    playSound('wrongSound');
+    advanceLearnWord();
+}
+
+// 结束学单词游戏
+function endLearnGame() {
+    gameState.isPlaying = false;
+    const bgMusic = document.getElementById('bgMusic');
+    if (bgMusic) bgMusic.pause();
+
+    const total = gameState.correct + gameState.wrong;
+    const accuracy = total > 0 ? Math.round((gameState.correct / total) * 100) : 0;
+    const progress = countGradeProgress(currentLibraryId);
+
+    document.getElementById('resultMessage').innerHTML = accuracy >= 90
+        ? '🌟 太棒了！这批词学会啦！'
+        : '👍 不错！多练几次就会记住！';
+    document.getElementById('standardResult').classList.add('hidden');
+    document.getElementById('learnResult').classList.remove('hidden');
+    document.getElementById('learnNewMastered').textContent = learnState.masteredThisSession;
+    document.getElementById('learnReviewed').textContent = learnState.reviewedCount;
+    document.getElementById('learnGradeProgress').textContent = `${progress.mastered}/${progress.total}`;
+
+    document.getElementById('gameScreen').classList.add('hidden');
+    document.getElementById('resultScreen').classList.remove('hidden');
+}
+
+// 更新开始界面的学单词进度面板
+function updateLearnProgress() {
+    const el = document.getElementById('learnProgress');
+    if (!el) return;
+    if (gameState.mode !== 'learn' || !wordList) {
+        el.classList.add('hidden');
+        return;
+    }
+    const progress = countGradeProgress(currentLibraryId);
+    el.textContent = `本年级已掌握：${progress.mastered} / ${progress.total} 词`;
+    el.classList.remove('hidden');
 }
 
 // 暂停游戏
@@ -910,6 +1314,11 @@ function pauseGame() {
 
 // 结束游戏
 function endGame() {
+    // 学单词模式走独立结束流程
+    if (gameState.mode === 'learn') {
+        endLearnGame();
+        return;
+    }
     gameState.isPlaying = false;
     clearInterval(gameState.timerInterval);
     
@@ -1172,6 +1581,10 @@ function handleFileImport(input) {
 function restartGame() {
     document.getElementById('resultScreen').classList.add('hidden');
     document.getElementById('startScreen').classList.remove('hidden');
+    // 回去刷新学单词进度与批次选择器可见性
+    updateLearnProgress();
+    const batchSel = document.getElementById('batchSelector');
+    if (batchSel) batchSel.classList.toggle('hidden', gameState.mode !== 'learn');
 }
 
 // 初始化

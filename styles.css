@@ -574,6 +574,49 @@ body {
     animation: pulse 1.1s ease-in-out infinite;
 }
 
+/* 学单词模式：默写空盒子（未输入字母） */
+.target-char.blank {
+    background: var(--surface-soft);
+    border-style: dashed;
+    border-color: var(--border-color);
+    color: transparent;
+}
+
+/* 学单词模式：阶段标签 */
+.learn-phase {
+    text-align: center;
+    font-family: var(--font-heading);
+    font-size: 1.1em;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 8px;
+    min-height: 1.4em;
+}
+
+/* 学单词模式：批次选择器（复用词库选择器布局） */
+.batch-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 12px 0 8px;
+    flex-wrap: wrap;
+}
+
+/* 学单词模式：开始界面进度面板 */
+.learn-progress {
+    text-align: center;
+    font-size: 0.95em;
+    font-weight: 700;
+    color: var(--success-dark);
+    background: var(--primary-soft);
+    border: var(--border-w) solid var(--success);
+    border-radius: var(--radius-pill);
+    padding: 6px 18px;
+    margin: 8px auto 16px;
+    width: fit-content;
+}
+
 /* 中文释义标签 - 黏土风 */
 .word-meaning {
     text-align: center;
