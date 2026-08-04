@@ -459,7 +459,7 @@ function startGame() {
         wrong: 0,
         combo: 0,
         maxCombo: 0,
-        timeLeft: (gameState.mode === 'letter' || gameState.mode === 'character')
+        timeLeft: (gameState.mode === 'letter' || gameState.mode === 'character' || gameState.mode === 'word')
             ? 60
             : gameState.difficulty === 'easy' ? 60 : gameState.difficulty === 'medium' ? 40 : 30,
         mode: gameState.mode,
@@ -858,7 +858,7 @@ function updateStats() {
     document.getElementById('accuracy').textContent = accuracy + '%';
     
     // 更新进度条
-    const maxTime = (gameState.mode === 'letter' || gameState.mode === 'character')
+    const maxTime = (gameState.mode === 'letter' || gameState.mode === 'character' || gameState.mode === 'word')
         ? 60
         : gameState.difficulty === 'easy' ? 60 : gameState.difficulty === 'medium' ? 40 : 30;
     const progress = ((maxTime - gameState.timeLeft) / maxTime) * 100;

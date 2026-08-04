@@ -64,7 +64,7 @@ Available libraries defined in `wordLibraries` array (`script.js:26-32`). Add ne
 4. Add mode name to `modeMap` in `updateLeaderboardDisplay()` (`script.js:199`)
 
 ### Modify game duration
-`startGame()` (`script.js:408-411`): letter/character=60s fixed; word/challenge use difficulty-based (easy=60, medium=40, hard=30).
+`startGame()` (`script.js:462-464`) + `updateStats()` (`script.js:861-863`): letter/character/word=60s fixed; challenge uses difficulty-based (easy=60, medium=40, hard=30). Word mode difficulty only affects word length, not duration.
 
 ### Update difficulty-disabled logic
 `setupEventListeners()` (`script.js:322-342`): letter/character modes disable difficulty buttons; word/challenge enable them.
