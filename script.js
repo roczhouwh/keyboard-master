@@ -489,6 +489,13 @@ function startGame() {
     document.getElementById('resultScreen').classList.add('hidden');
     document.getElementById('gameScreen').classList.remove('hidden');
 
+    // 清空上一局的提示语，避免残留（如词库已加载、再试一次、暂停等）
+    const messageEl = document.getElementById('message');
+    if (messageEl) {
+        messageEl.textContent = '';
+        messageEl.className = 'message';
+    }
+
     updateStats();
     nextTarget();
     startTimer();
