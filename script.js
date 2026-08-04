@@ -732,24 +732,30 @@ function handleCorrect() {
         gameState.maxCombo = gameState.combo;
     }
     
-    // 播放正确音效
-    playSound('correctSound');
-    
     // 计算得分
     let points = 10;
     if (gameState.combo > 5) points += 5;
     if (gameState.combo > 10) points += 10;
     if (gameState.mode === 'word') points *= 2;
-    
+
     gameState.score += points;
-    
+
     // 显示浮动分数
     showFloatingScore(points);
-    
+
     gameState.currentIndex++;
-    
-    if (gameState.currentIndex >= gameState.currentTarget.length) {
-        // 完成当前目标
+
+    const completed = gameState.currentIndex >= gameState.currentTarget.length;
+
+    // 正确音效：单词模式仅在整词完整输入正确时播放，单字符模式逐字符播放
+    if (completed || gameState.mode !== 'word') {
+        playSound('correctSound');
+    }
+
+    if (completed) {
+        // 完成当前目标：先刷新显示，让最后一个字母显示为绿色
+        displayTarget();
+        highlightTargetKey();
         showMessage('太棒了！🎉', 'success');
         
         // 清除挑战模式计时器，防止超时触发
