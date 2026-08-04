@@ -512,7 +512,7 @@ function startTimer() {
 function handleChallengeTimeout() {
     // 检查是否正在处理正确输入（通过currentIndex判断）
     // 如果currentIndex >= currentTarget.length，说明用户已经完成了当前目标
-    if (gameState.isPlaying && gameState.mode === 'challenge' && gameState.currentIndex < gameState.currentTarget.length) {
+    if (gameState.isPlaying && gameState.mode === 'challenge' && gameState.currentIndex < gameState.typeablePositions.length) {
         console.log('挑战模式超时，标记为错误');
         
         // 标记为错误
@@ -619,6 +619,19 @@ function nextTarget() {
         console.log('挑战模式计时器已启动，超时时间:', gameState.challengeTimeout, 'ms');
     }
     
+    // 计算可输入字符位置：单词模式仅字母可输入，空格/标点作为字面显示跳过；
+    // 其他模式（单字符）目标本身即可输入。
+    gameState.typeablePositions = [];
+    for (let i = 0; i < gameState.currentTarget.length; i++) {
+        if (gameState.mode === 'word') {
+            if (/^[a-zA-Z]$/.test(gameState.currentTarget[i])) {
+                gameState.typeablePositions.push(i);
+            }
+        } else {
+            gameState.typeablePositions.push(i);
+        }
+    }
+
     displayTarget();
     highlightTargetKey();
 }
@@ -630,13 +643,19 @@ function displayTarget() {
 
     for (let i = 0; i < gameState.currentTarget.length; i++) {
         const char = document.createElement('span');
-        char.className = 'target-char';
         char.textContent = gameState.currentTarget[i];
+        const rank = gameState.typeablePositions.indexOf(i);
 
-        if (i < gameState.currentIndex) {
-            char.classList.add('correct');
-        } else if (i === gameState.currentIndex) {
-            char.classList.add('current');
+        if (rank === -1) {
+            // 非可输入字符（空格/标点）：字面显示，无需输入
+            char.className = 'target-literal';
+        } else {
+            char.className = 'target-char';
+            if (rank < gameState.currentIndex) {
+                char.classList.add('correct');
+            } else if (rank === gameState.currentIndex) {
+                char.classList.add('current');
+            }
         }
 
         display.appendChild(char);
@@ -662,8 +681,9 @@ function highlightTargetKey() {
     });
     
     // 高亮当前目标键
-    if (gameState.currentIndex < gameState.currentTarget.length) {
-        let targetChar = gameState.currentTarget[gameState.currentIndex].toLowerCase();
+    if (gameState.currentIndex < gameState.typeablePositions.length) {
+        const pos = gameState.typeablePositions[gameState.currentIndex];
+        let targetChar = gameState.currentTarget[pos].toLowerCase();
         const keyElement = document.querySelector(`.key[data-key="${targetChar}"]`);
         if (keyElement) {
             keyElement.classList.add('target');
@@ -712,7 +732,8 @@ function handleKeyUp(e) {
 function handleInput(input) {
     if (!gameState.isPlaying || gameState.isPaused) return;
     
-    const expected = gameState.currentTarget[gameState.currentIndex].toLowerCase();
+    const pos = gameState.typeablePositions[gameState.currentIndex];
+    const expected = gameState.currentTarget[pos].toLowerCase();
     
     if (input === expected) {
         // 正确输入
@@ -745,7 +766,7 @@ function handleCorrect() {
 
     gameState.currentIndex++;
 
-    const completed = gameState.currentIndex >= gameState.currentTarget.length;
+    const completed = gameState.currentIndex >= gameState.typeablePositions.length;
 
     // 正确音效：单词模式仅在整词完整输入正确时播放，单字符模式逐字符播放
     if (completed || gameState.mode !== 'word') {

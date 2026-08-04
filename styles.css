@@ -544,6 +544,16 @@ body {
     transition: transform 0.25s var(--ease-bounce), background 0.2s ease, color 0.2s ease;
 }
 
+.target-literal {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: pre;
+    color: var(--text-muted);
+    min-width: 0.4em;
+    padding: 0 2px;
+}
+
 .target-char.correct {
     background: var(--success);
     border-color: var(--success-dark);
