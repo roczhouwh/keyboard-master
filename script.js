@@ -417,12 +417,12 @@ function setupEventListeners() {
     
 
     // 词库选择
-    document.querySelectorAll('.library-btn').forEach(btn => {
+    document.querySelectorAll('.library-btn[data-library]').forEach(btn => {
         btn.addEventListener('click', async function() {
             const libraryId = this.dataset.library;
             if (libraryId === currentLibraryId) return;
 
-            document.querySelectorAll('.library-btn').forEach(b => {
+            document.querySelectorAll('.library-btn[data-library]').forEach(b => {
                 b.classList.remove('active');
                 b.disabled = true;
                 const t = b.querySelector('.btn-text');
@@ -434,7 +434,7 @@ function setupEventListeners() {
 
             await loadWordList(libraryId);
 
-            document.querySelectorAll('.library-btn').forEach(b => {
+            document.querySelectorAll('.library-btn[data-library]').forEach(b => {
                 b.disabled = false;
                 const t = b.querySelector('.btn-text');
                 if (t) t.textContent = t.textContent.replace('…', '');
@@ -470,7 +470,7 @@ function setupEventListeners() {
 
             // 词库仅单词/学单词模式可用
             const isLibraryMode = mode === 'word' || mode === 'learn';
-            document.querySelectorAll('.library-btn').forEach(b => {
+            document.querySelectorAll('.library-btn[data-library]').forEach(b => {
                 b.disabled = !isLibraryMode;
             });
             const libHint = document.getElementById('libraryHint');
@@ -1090,8 +1090,14 @@ function renderLearnWord() {
                 char.classList.add('current');
                 char.textContent = showLetters ? gameState.currentTarget[i] : '';
             } else {
-                char.classList.add('blank');
-                char.textContent = showLetters ? gameState.currentTarget[i] : '';
+                // 看词阶段：整词展示（同单词模式，不隐藏未达字母）；
+                // 默写/复习阶段：未达字母用空盒子隐藏
+                if (showLetters) {
+                    char.textContent = gameState.currentTarget[i];
+                } else {
+                    char.classList.add('blank');
+                    char.textContent = '';
+                }
             }
         }
         display.appendChild(char);
@@ -1124,7 +1130,12 @@ function renderLearnWord() {
         answerBtn.classList.toggle('hidden', learnState.phase === 'learn');
     }
 
-    highlightTargetKey();
+    // 看词阶段高亮下一个目标键（同单词模式）；默写/复习阶段不提示下一键，需凭记忆输入
+    if (learnState.phase === 'learn') {
+        highlightTargetKey();
+    } else {
+        document.querySelectorAll('.key').forEach(key => key.classList.remove('target'));
+    }
 }
 
 // 处理学单词模式的输入
@@ -1610,7 +1621,7 @@ window.addEventListener('DOMContentLoaded', async function() {
 
         // 默认字母模式，禁用难度和词库选择
         document.querySelectorAll('.difficulty-btn').forEach(b => b.disabled = true);
-        document.querySelectorAll('.library-btn').forEach(b => b.disabled = true);
+        document.querySelectorAll('.library-btn[data-library]').forEach(b => b.disabled = true);
         document.getElementById('libraryHint')?.classList.remove('hidden');
         
     } catch (error) {
