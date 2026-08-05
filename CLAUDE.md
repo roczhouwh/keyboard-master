@@ -64,6 +64,7 @@ Available libraries defined in `wordLibraries` array (`script.js:26-32`). Add ne
 独立于计时游戏的记忆/拼写练习模式，地位于 `startGame()`/`endGame()`/`handleInput()` 的分支路由中（`mode === 'learn'`）。
 
 - **两阶段流程**：每词先「看词」（英文+中文照打）再「默写」（仅中文，按记忆打英文）。
+- **看答案**（`revealLearnAnswer()`）：默写/复习阶段遇到不会的词，点「看答案」揭示剩余拼写、保留已打对的进度**续打当前词**，不跳到下一个词；完成时因 `hadError=true` 仍标 `learning` 进复习队列。按钮在 `game-area` 目标词下方（`.learn-actions`），已揭示后隐藏。
 - **无全局倒计时**：错词进复习队列，本局结束前再考直到答对。
 - **进度持久化**：localStorage key `keyboardMaster_learnProgress`，结构 `{ [libraryId]: { [wordEn]: 'new'|'learning'|'mastered' } }`。默写一次通过→`mastered`；有错或看答案→`learning`。
 - **批次**：默认 10 词（可调 10/20/30），从当前年级全部 tier 取词，未掌握优先（`buildLearnBatch()`）。
