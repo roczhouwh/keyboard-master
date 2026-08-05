@@ -576,12 +576,23 @@ function setupEventListeners() {
 }
 
 // 开始游戏
+// 隐藏学单词模式的专属界面元素（切换到其他模式时调用，避免残留）
+function hideLearnUI() {
+    ['learnPhase', 'learnHearts', 'learnAnswerBtn'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+    });
+}
+
 function startGame() {
     // 学单词模式走独立流程
     if (gameState.mode === 'learn') {
         startLearnGame();
         return;
     }
+
+    // 非学单词模式：隐藏学单词专属界面，避免上一局残留
+    hideLearnUI();
 
     // 检查单词库是否加载完成
     if (!isWordListLoaded()) {
@@ -1463,7 +1474,10 @@ function endGame() {
     
     document.getElementById('gameScreen').classList.add('hidden');
     document.getElementById('resultScreen').classList.remove('hidden');
-    
+    // 常规模式显示标准统计，隐藏学单词统计（避免上一局残留）
+    document.getElementById('standardResult').classList.remove('hidden');
+    document.getElementById('learnResult').classList.add('hidden');
+
     // 保存分数到排行榜
     saveScoreToLeaderboard();
 }
