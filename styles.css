@@ -335,10 +335,6 @@ body {
     flex-wrap: wrap;
 }
 
-.step-header .btn-back {
-    margin: 0;
-}
-
 .step-header h2 {
     margin: 0;
 }
@@ -393,15 +389,13 @@ body {
 
 .btn-secondary:hover { background: var(--accent-soft); }
 
-/* 返回按钮 - 淡青实底 + 亮青字，清晰可见（定义在 .btn 之后避免颜色被覆盖） */
+/* 返回按钮 - 淡青实底 + 亮青字，与主操作按钮同尺寸同风格（仅颜色区分） */
 .btn-back {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    margin: 0 auto 14px;
-    font-size: 0.92em;
-    font-weight: 800;
-    padding: 9px 18px;
+    gap: 8px;
+    padding: 16px 38px;
+    font-size: 1.18em;
     --btn-edge: var(--primary-deep);
     background: var(--primary-soft);
     color: var(--primary-dark);
@@ -409,6 +403,22 @@ body {
 }
 
 .btn-back:hover { background: #A5F3FC; }
+
+/* 底部操作行：次要按钮（返回/返回首页）在左，主要操作在右，统一于结果页与设置页 */
+.action-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+/* 重置 .btn-primary 的 auto margin，避免返回按钮被顶到行首；并统一两按钮尺寸、压低高度 */
+.action-row .btn {
+    margin: 0;
+    padding: 11px 32px;
+    font-size: 1.05em;
+}
 
 .btn-danger {
     --btn-edge: var(--danger-dark);

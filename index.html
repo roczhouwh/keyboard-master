@@ -100,7 +100,6 @@
             <!-- 步骤2：模式设置 + 开始 -->
             <div id="stepSettings" class="hidden">
                 <div class="step-header">
-                    <button class="btn btn-back" onclick="goBackToModeSelect()"><span class="btn-text">返回</span></button>
                     <h2 id="stepSettingsTitle"><svg class="icon"><use href="#icon-gamepad"/></svg> <span id="stepSettingsModeName">单词模式</span></h2>
                 </div>
 
@@ -146,7 +145,10 @@
                 <div id="learnProgress" class="learn-progress hidden"></div>
                 </div><!-- /settings-card -->
 
-                <button class="btn btn-primary" onclick="startGame()"><svg class="icon"><use href="#icon-play"/></svg><span class="btn-text">开始游戏</span></button>
+                <div class="action-row">
+                    <button class="btn btn-back" onclick="goBackToModeSelect()"><span class="btn-text">返回首页</span></button>
+                    <button class="btn btn-primary" onclick="startGame()"><span class="btn-text">开始游戏</span></button>
+                </div>
 
             <!-- 排行榜部分（默认折叠） -->
             <div class="leaderboard-section" id="leaderboardSection">
@@ -511,7 +513,10 @@
                     <div class="value" id="learnGradeProgress">0/0</div>
                 </div>
             </div>
-            <button class="btn btn-primary" onclick="restartGame()"><svg class="icon"><use href="#icon-play"/></svg><span class="btn-text">再玩一次</span></button>
+            <div class="action-row">
+                <button class="btn btn-back" onclick="goToHome()"><span class="btn-text">返回首页</span></button>
+                <button class="btn btn-primary" onclick="restartGame()"><span class="btn-text">再玩一次</span></button>
+            </div>
         </div>
     </div>
 

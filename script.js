@@ -1699,6 +1699,13 @@ function handleFileImport(input) {
 }
 
 // 重新开始游戏
+// 从结果页返回首页（模式选择）
+function goToHome() {
+    document.getElementById('resultScreen').classList.add('hidden');
+    document.getElementById('startScreen').classList.remove('hidden');
+    showStartStep(1);
+}
+
 function restartGame() {
     document.getElementById('resultScreen').classList.add('hidden');
     document.getElementById('startScreen').classList.remove('hidden');

@@ -66,6 +66,7 @@ Available libraries defined in `wordLibraries` array (`script.js:26-32`). Add ne
 - **两阶段流程**：每词先「看词」（英文+中文照打）再「默写」（仅中文，按记忆打英文）。
 - **判定标准（统一）**：判定「是否掌握」只看是否**透过揭示（`revealed`）完成**，不看错键次数。默写/复习阶段各有 **3 次错键配额**（`mistakeLimit`，即 3 颗爱心），配额内打错不判失败；**爱心耗尽（第 3 次错键）** 或**点「看答案」**时才置 `revealed=true` 判失败。
 - **爱心生命**（`renderLearnHearts()`）：默写/复习阶段当前词上方显示 3 颗爱心，每打错一键少一颗，看答案或爱心耗尽后全部变灰归零。看词阶段不显示、错键不计。
+- **顶部统计**：学单词模式隐藏得分/正确率/连击/时间（`setStandardStatsVisible(false)`，对学习结果无意义），仅保留进度条 + 阶段标签 + 爱心；常规模式开局恢复显示。
 - **词完成反馈**（`onLearnWordComplete()` → `advanceAfterDelay()`）：最后一个字母打完后整词弹跳放大（`.target-display.complete`），停留 `LEARN_DONE_DELAY=500ms` 再进入下一步；过渡期以 `learnState.transitioning` 屏蔽输入。
 - **看答案 / 爱心耗尽揭示**（`revealLearnAnswer(silent)`）：默写/复习阶段遇到不会的词，点「看答案」（或打错到第 3 键爱心耗尽自动触发）揭示剩余拼写、保留已打对的进度**续打当前词**，不跳到下一个词；完成后标 `learning`。`silent=true`（爱心耗尽自动触发）时不重复播放错误音。按钮在 `game-area` 目标词下方（`.learn-actions`），已揭示后隐藏。
 - **无全局倒计时**：默写阶段配额内完成→`mastered`；看答案/爱心耗尽→标 `learning` 进复习队列。
