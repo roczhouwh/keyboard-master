@@ -945,47 +945,7 @@ body {
     filter: drop-shadow(0 2px 2px rgba(217, 119, 6, 0.35));
 }
 
-/* 折叠标题 - 黏土胶囊按钮 */
-.leaderboard-toggle {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    cursor: pointer;
-    user-select: none;
-    --btn-edge: var(--primary-dark);
-    background: var(--surface);
-    color: var(--primary-dark);
-    border: var(--border-w) solid var(--primary-soft);
-    border-radius: var(--radius-pill);
-    padding: 8px 26px;
-    box-shadow: var(--shadow-edge);
-    transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease;
-}
-
-.leaderboard-toggle:hover {
-    background: var(--primary-soft);
-}
-
-.leaderboard-toggle:active {
-    transform: translateY(4px);
-    box-shadow: var(--shadow-edge-pressed);
-}
-
-.leaderboard-toggle .chev {
-    display: inline-block;
-    transition: transform 0.3s ease;
-    font-size: 0.9em;
-}
-
-.leaderboard-section.open .leaderboard-toggle .chev {
-    transform: rotate(180deg);
-}
-
-/* 折叠时标题不留多余底部空隙 */
-.leaderboard-section:not(.open) .leaderboard-toggle {
-    margin-bottom: 0;
-}
+/* 排行榜标题 - 常驻展开，普通居中标语（`h3` 基础样式已覆盖） */
 
 .leaderboard-info {
     text-align: center;

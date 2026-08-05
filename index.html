@@ -79,6 +79,11 @@
                         <span class="mc-name">字符模式</span>
                         <span class="mc-desc">字母、数字和标点符号</span>
                     </button>
+                    <button class="mode-card" data-mode="challenge">
+                        <svg class="icon"><use href="#icon-target"/></svg>
+                        <span class="mc-name">限时速打</span>
+                        <span class="mc-desc">限时按键，越快越好</span>
+                    </button>
                     <button class="mode-card" data-mode="word">
                         <svg class="icon"><use href="#icon-book-open"/></svg>
                         <span class="mc-name">单词模式</span>
@@ -87,12 +92,7 @@
                     <button class="mode-card" data-mode="learn">
                         <svg class="icon"><use href="#icon-sparkles"/></svg>
                         <span class="mc-name">学单词模式</span>
-                        <span class="mc-desc">看词+默写，进度可保存</span>
-                    </button>
-                    <button class="mode-card" data-mode="challenge">
-                        <svg class="icon"><use href="#icon-target"/></svg>
-                        <span class="mc-name">挑战模式</span>
-                        <span class="mc-desc">限时按键，越快越好</span>
+                        <span class="mc-desc">看词照打+默写记忆，掌握进度跨会话保存</span>
                     </button>
                 </div>
             </div>
@@ -152,8 +152,8 @@
 
             <!-- 排行榜部分（默认折叠） -->
             <div class="leaderboard-section" id="leaderboardSection">
-                <h3 class="leaderboard-toggle" id="leaderboardToggle"><svg class="icon"><use href="#icon-trophy"/></svg> 排行榜 <span class="chev">▾</span></h3>
-                <div class="leaderboard-body hidden" id="leaderboardBody">
+                <h3 class="leaderboard-title"><svg class="icon"><use href="#icon-trophy"/></svg> 排行榜</h3>
+                <div class="leaderboard-body" id="leaderboardBody">
                     <div class="leaderboard-info">
                         当前模式：<span id="currentMode">字母模式</span> <span id="difficultyLabel">| 当前难度：<span id="currentDifficulty">简单</span></span>
                     </div>

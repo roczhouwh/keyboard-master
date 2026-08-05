@@ -42,7 +42,7 @@ const MODE_NAMES = {
     character: '字符模式',
     word: '单词模式',
     learn: '学单词模式',
-    challenge: '挑战模式'
+    challenge: '限时速打'
 };
 
 // 切换开始界面的步骤（1=选模式，2=设置）
@@ -368,7 +368,7 @@ function updateLeaderboardDisplay() {
         'letter': '字母模式',
         'character': '字符模式',
         'word': '单词模式',
-        'challenge': '挑战模式'
+        'challenge': '限时速打'
     };
     
     const difficultyMap = {
@@ -533,17 +533,6 @@ function setupEventListeners() {
             goModeStep(this.dataset.mode);
         });
     });
-
-    // 步骤2：排行榜折叠展开
-    const lbToggle = document.getElementById('leaderboardToggle');
-    const lbBody = document.getElementById('leaderboardBody');
-    const lbSection = document.getElementById('leaderboardSection');
-    if (lbToggle && lbBody && lbSection) {
-        lbToggle.addEventListener('click', function() {
-            const open = lbBody.classList.toggle('hidden');
-            lbSection.classList.toggle('open', !open);
-        });
-    }
 
     // 键盘事件
     document.addEventListener('keydown', handleKeyDown);

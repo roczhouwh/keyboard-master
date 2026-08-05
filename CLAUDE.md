@@ -31,7 +31,7 @@ Single global object `gameState` drives everything: `isPlaying`, `isPaused`, `sc
 - **`MODE_NAMES`** (`script.js:40`)：模式显示名。
 - 核心函数：`showStartStep(step)`、`renderSettingsForMode(mode)`、`goModeStep(mode)`、`goBackToModeSelect()`。
 - 设置区收进 `.settings-card`：flex 纵向布局，`space-evenly` 让各组按钮垂直均分间距；开始按钮在卡片外居中。
-- 排行榜可折叠（`#leaderboardToggle` 点击展开/收起），学单词模式隐藏。
+- 排行榜常驻展开（无折叠按钮），学单词模式隐藏。
 
 ### Word Libraries
 
