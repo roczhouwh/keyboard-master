@@ -293,11 +293,32 @@ body {
     outline-offset: 2px;
 }
 
-/* 步骤2：设置分组 */
-.settings-group {
-    margin: 14px 0 10px;
+/* 步骤2：设置卡片 —— 所有选项统一收纳进一张面板 */
+.settings-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    background: var(--surface);
+    border: var(--border-w) solid var(--border-color);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-clay);
+    padding: 24px 28px;
+    max-width: 620px;
+    min-height: 200px;
+    margin: 0 auto 6px;
 }
 
+/* 步骤2：设置分组 —— 由卡片 flex 纵向平分间距 */
+.settings-group {
+    margin: 0;
+}
+.settings-group:last-child { margin-bottom: 0; }
+
+.settings-card .learn-progress {
+    margin: 16px auto 0;
+}
+
+/* 字段行：标签 + 选项组 水平居中 */
 .settings-group .difficulty-selector,
 .settings-group .word-library-selector,
 .settings-group .batch-selector {
@@ -355,11 +376,13 @@ body {
 }
 
 .btn-primary {
+    display: flex;
     --btn-edge: var(--primary-deep);
     background: linear-gradient(180deg, #06B6D4 0%, var(--primary-deep) 100%);
     font-size: 1.18em;
     padding: 16px 38px;
-    margin: 22px 0 8px;
+    margin: 18px auto 4px;
+    width: fit-content;
 }
 
 .btn-secondary {
@@ -415,27 +438,32 @@ body {
 }
 
 /* 难度选择器 */
-.difficulty-selector {
+/* 字段行容器：标签 + 选项组 同一布局 */
+.difficulty-selector,
+.word-library-selector,
+.batch-selector {
     display: flex;
+    align-items: center;
     justify-content: center;
-    gap: 12px;
-    margin-bottom: 8px;
+    gap: 14px;
     flex-wrap: wrap;
 }
 
-/* 难度按钮 -- 糖果语义色 */
-.difficulty-btn {
+/* 选项按钮 —— 统一尺寸（难度/词库/批次共用基础形状） */
+.difficulty-btn,
+.library-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 11px 22px;
+    min-height: 48px;
+    padding: 0 24px;
     border: var(--border-w) solid;
     border-radius: var(--radius-btn);
     background: var(--surface);
     font-family: var(--font-heading);
     font-weight: 700;
-    font-size: 0.98em;
+    font-size: 1em;
     line-height: 1;
     cursor: pointer;
     transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease, color 0.15s ease;
@@ -479,48 +507,23 @@ body {
     font-weight: 600;
 }
 
-/* 词库选择器 */
-.word-library-selector {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin: 12px 0 8px;
-    flex-wrap: wrap;
-}
-
+/* 词库选择器（字段布局已在上方统一，这里仅保留类型规则） */
 .library-label {
     font-family: var(--font-heading);
     font-size: 1.05em;
-    font-weight: 700;
+    font-weight: 800;
     color: var(--primary-dark);
+    white-space: nowrap;
 }
 
 .library-buttons {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     flex-wrap: wrap;
-}
-
-/* 词库按钮 - 蓝 */
-.library-btn {
-    display: inline-flex;
-    align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 11px 20px;
-    border: var(--border-w) solid;
-    border-radius: var(--radius-btn);
-    background: var(--surface);
-    font-family: var(--font-heading);
-    font-weight: 700;
-    font-size: 0.98em;
-    line-height: 1;
-    cursor: pointer;
-    transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease, color 0.15s ease;
-    box-shadow: var(--shadow-edge);
 }
 
+/* 词库按钮 - 蓝（基础尺寸已在上方统一，这里仅补充聚焦/颜色） */
 .library-btn:focus-visible {
     outline: 3px solid var(--accent);
     outline-offset: 2px;
@@ -696,15 +699,7 @@ body {
     min-height: 1.4em;
 }
 
-/* 学单词模式：批次选择器（复用词库选择器布局） */
-.batch-selector {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin: 12px 0 8px;
-    flex-wrap: wrap;
-}
+/* 学单词模式：批次选择器（字段布局已在上方统一） */
 
 /* 学单词模式：开始界面进度面板 */
 .learn-progress {
@@ -875,8 +870,9 @@ body {
 
 /* ===== 排行榜 ===== */
 .leaderboard-section {
-    margin: 28px 0 8px;
+    margin: 18px auto 8px;
     padding: 24px;
+    max-width: 640px;
     background: var(--surface-soft);
     border: var(--border-w) solid var(--border-color);
     border-radius: var(--radius-card);
@@ -898,9 +894,10 @@ body {
 }
 
 .leaderboard-section h3 .icon {
-    color: var(--primary);
+    color: #F5A623;
     width: 28px;
     height: 28px;
+    filter: drop-shadow(0 2px 2px rgba(217, 119, 6, 0.35));
 }
 
 /* 折叠标题 - 黏土胶囊按钮 */
@@ -976,15 +973,16 @@ body {
 .leaderboard-actions {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 12px;
     margin-bottom: 20px;
     flex-wrap: wrap;
 }
 
-/* 排行榜操作按钮 - 紧凑尺寸 */
+/* 排行榜操作按钮 - 统一紧凑尺寸 */
 .leaderboard-actions .btn {
-    padding: 9px 16px;
-    font-size: 0.88em;
+    min-height: 44px;
+    padding: 0 20px;
+    font-size: 0.92em;
 }
 
 .leaderboard-content {
@@ -1055,6 +1053,7 @@ body {
     .leaderboard th, .leaderboard td { padding: 8px 4px; font-size: 0.85em; }
     .leaderboard-section { padding: 16px; }
     .mode-card { width: 130px; padding: 16px 12px 14px; }
+    .settings-card { min-height: 170px; padding: 20px 18px; }
 }
 
 @media (max-width: 420px) {

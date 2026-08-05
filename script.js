@@ -63,6 +63,10 @@ function renderSettingsForMode(mode) {
         if (el) el.classList.toggle('hidden', !setting.groups.includes(key));
     });
 
+    // 无设置项的模式（字母/字符）不显示设置卡片，只看开始按钮
+    const card = document.getElementById('settingsCard');
+    if (card) card.classList.toggle('hidden', setting.groups.length === 0);
+
     // 标题
     const title = document.getElementById('stepSettingsModeName');
     if (title) title.textContent = MODE_NAMES[mode] || mode;
