@@ -360,11 +360,16 @@ function toggleSound() {
     const text = button.querySelector('.btn-text');
     if (gameState.soundEnabled) {
         button.classList.remove('muted');
-        if (text) text.textContent = '音效';
+        if (text) text.textContent = '声音开';
         playSound('keySound'); // 测试音效
+        // 游戏中取消静音时，从暂停处恢复背景音乐（不重头）
+        if (gameState.isPlaying && !gameState.isPaused) {
+            const bgMusic = document.getElementById('bgMusic');
+            if (bgMusic) bgMusic.play().catch(e => console.log('Background music resume failed:', e));
+        }
     } else {
         button.classList.add('muted');
-        if (text) text.textContent = '静音';
+        if (text) text.textContent = '声音关';
         const bgMusic = document.getElementById('bgMusic');
         if (bgMusic) {
             bgMusic.pause();
