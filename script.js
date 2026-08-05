@@ -182,13 +182,19 @@ let learnState = {
     batchIndex: 0,           // 主批次索引
     current: null,           // 当前练习的词条
     phase: 'learn',          // 'learn' 看词 | 'recite' 默写 | 'review' 复习
-    revealed: false,         // 当前词是否已点过「看答案」（揭示拼写，续打当前词）
-    hadError: false,         // 当前词默写是否出错/看过答案
+    revealed: false,         // 当前词是否已揭示拼写（点「看答案」或超配额自动揭示），续打当前词
+    mistakeLimit: 3,         // 错键配额：默写/复习阶段允许打错的键数上限
+    mistakeCount: 0,         // 当前词已打错的键数
+    transitioning: false,    // 词完成反馈过渡中（屏蔽输入，展示完成状态）
     reviewQueue: [],         // 复习队列
+    preMastered: new Set(),  // 本局开始前已掌握的词en（用于「新掌握」只统计新词）
     masteredThisSession: 0,  // 本局新掌握数
-    reviewedCount: 0,        // 本局进复习队列的词数
+    needReview: 0,           // 本局结束时仍未掌握、需再复习的词数
     batchSize: 10            // 每批词数（默认10）
 };
+
+// 词完成后的反馈时长（ms）：展示整词完成动画，再进入下一步
+const LEARN_DONE_DELAY = 500;
 
 // 学单词进度持久化 key（结构: { [libraryId]: { [wordEn]: 'new'|'learning'|'mastered' } }）
 const LEARN_PROGRESS_KEY = 'keyboardMaster_learnProgress';
@@ -1052,11 +1058,15 @@ function startLearnGame() {
     learnState.batch = batch;
     learnState.batchIndex = 0;
     learnState.reviewQueue = [];
+    learnState.transitioning = false;
     learnState.masteredThisSession = 0;
-    learnState.reviewedCount = 0;
+    learnState.needReview = 0;
+    // 记录本局开始前已掌握的词，使「新掌握」只统计本局新达到掌握的词
+    const prog = loadLearnProgress();
+    const libProg = prog[currentLibraryId] || {};
+    learnState.preMastered = new Set(Object.keys(libProg).filter(en => libProg[en] === 'mastered'));
     learnState.current = batch[0];
     learnState.phase = 'learn';
-    learnState.hadError = false;
 
     gameState.isPlaying = true;
     gameState.isPaused = false;
@@ -1099,6 +1109,7 @@ function startLearnGame() {
 function setupLearnWord() {
     const word = learnState.current;
     learnState.revealed = false; // 进入新词时清除「已看答案」状态
+    learnState.mistakeCount = 0; // 进入新词时重置错键配额
     gameState.currentTarget = word.en;
     gameState.currentTargetZh = word.zh || '';
     gameState.currentIndex = 0;
@@ -1117,6 +1128,7 @@ function renderLearnWord() {
     const showLetters = learnState.phase === 'learn' || learnState.revealed; // 看词或已看答案时显示字母
     const display = document.getElementById('targetDisplay');
     display.innerHTML = '';
+    display.classList.remove('complete'); // 清除上一词的完成动画
 
     for (let i = 0; i < gameState.currentTarget.length; i++) {
         const char = document.createElement('span');
@@ -1181,11 +1193,28 @@ function renderLearnWord() {
     } else {
         document.querySelectorAll('.key').forEach(key => key.classList.remove('target'));
     }
+
+    renderLearnHearts();
+}
+
+// 渲染错误配额爱心（默写/复习阶段显示，每打错一键少一颗，看答案/超配额后归零）
+function renderLearnHearts() {
+    const el = document.getElementById('learnHearts');
+    if (!el) return;
+    const show = learnState.phase === 'recite' || learnState.phase === 'review';
+    el.classList.toggle('hidden', !show);
+    if (!show) return;
+    const remaining = learnState.revealed ? 0 : Math.max(0, learnState.mistakeLimit - learnState.mistakeCount);
+    let html = '';
+    for (let i = 0; i < learnState.mistakeLimit; i++) {
+        html += `<span class="heart${i < remaining ? '' : ' lost'}">♥</span>`;
+    }
+    el.innerHTML = html;
 }
 
 // 处理学单词模式的输入
 function handleLearnInput(input) {
-    if (!gameState.isPlaying || gameState.isPaused) return;
+    if (!gameState.isPlaying || gameState.isPaused || learnState.transitioning) return;
     const pos = gameState.typeablePositions[gameState.currentIndex];
     const expected = gameState.currentTarget[pos].toLowerCase();
 
@@ -1197,7 +1226,6 @@ function handleLearnInput(input) {
             onLearnWordComplete();
         }
     } else {
-        learnState.hadError = true;
         gameState.wrong++;
         gameState.combo = 0;
         playSound('wrongSound');
@@ -1206,6 +1234,14 @@ function handleLearnInput(input) {
             currentChar.classList.add('wrong');
             setTimeout(() => currentChar.classList.remove('wrong'), 500);
         }
+        // 错键配额：默写/复习阶段累计，3 颗爱心耗尽即判失败（揭示拼写照打一遍）
+        if (!learnState.revealed && learnState.phase !== 'learn') {
+            learnState.mistakeCount++;
+            renderLearnHearts();
+            if (learnState.mistakeCount >= learnState.mistakeLimit) {
+                revealLearnAnswer(true); // 自动揭示，不重复播放错误音
+            }
+        }
     }
     updateStats();
 }
@@ -1213,32 +1249,53 @@ function handleLearnInput(input) {
 // 整词输入完成后的阶段推进
 function onLearnWordComplete() {
     const word = learnState.current;
+    learnState.transitioning = true; // 反馈过渡期间屏蔽输入
+    // 整词完成反馈：显示完成动画，让用户看到最后的字母变绿再进入下一步
+    const display = document.getElementById('targetDisplay');
+    if (display) {
+        display.classList.add('complete');
+        setTimeout(() => display.classList.remove('complete'), LEARN_DONE_DELAY);
+    }
+
     if (learnState.phase === 'learn') {
         // 看词完成 → 进入默写
         playSound('correctSound');
         learnState.phase = 'recite';
-        learnState.hadError = false;
-        setupLearnWord();
-        renderLearnWord();
+        setTimeout(() => { learnState.transitioning = false; setupLearnWord(); renderLearnWord(); }, LEARN_DONE_DELAY);
     } else if (learnState.phase === 'recite') {
-        // 默写完成：一次通过 → 已掌握；有错 → 进复习队列
-        if (!learnState.hadError) {
+        // 默写完成：配额内完成（未揭示）→ 已掌握；看答案/超配额 → 进复习队列
+        if (!learnState.revealed) {
             setWordStatus(currentLibraryId, word.en, 'mastered');
-            learnState.masteredThisSession++;
+            if (!learnState.preMastered.has(word.en)) learnState.masteredThisSession++; // 只统计本局新掌握
             playSound('levelUpSound');
         } else {
             setWordStatus(currentLibraryId, word.en, 'learning');
             learnState.reviewQueue.push(word);
-            learnState.reviewedCount++;
             playSound('correctSound');
         }
-        advanceLearnWord();
+        advanceAfterDelay();
     } else if (learnState.phase === 'review') {
-        // 复习通过 → 从队列清除
-        playSound('correctSound');
+        // 复习判定：配额内答对 → 已掌握；看答案/超配额 → 未掌握（下次游戏重抽）
+        if (!learnState.revealed) {
+            setWordStatus(currentLibraryId, word.en, 'mastered');
+            if (!learnState.preMastered.has(word.en)) learnState.masteredThisSession++; // 只统计本局新掌握
+            playSound('levelUpSound');
+        } else {
+            setWordStatus(currentLibraryId, word.en, 'learning');
+            learnState.needReview++; // 本局结束仍未掌握
+            playSound('correctSound');
+        }
         learnState.reviewQueue.shift();
-        advanceLearnWord();
+        advanceAfterDelay();
     }
+}
+
+// 词完成反馈过渡结束后，解锁输入并推进到下一步
+function advanceAfterDelay() {
+    setTimeout(() => {
+        learnState.transitioning = false;
+        advanceLearnWord();
+    }, LEARN_DONE_DELAY);
 }
 
 // 推进到下一个词
@@ -1246,7 +1303,6 @@ function advanceLearnWord() {
     if (learnState.phase === 'review') {
         if (learnState.reviewQueue.length > 0) {
             learnState.current = learnState.reviewQueue[0];
-            learnState.hadError = false;
             setupLearnWord();
             renderLearnWord();
         } else {
@@ -1257,13 +1313,11 @@ function advanceLearnWord() {
         if (learnState.batchIndex < learnState.batch.length) {
             learnState.current = learnState.batch[learnState.batchIndex];
             learnState.phase = 'learn';
-            learnState.hadError = false;
             setupLearnWord();
             renderLearnWord();
         } else if (learnState.reviewQueue.length > 0) {
             learnState.phase = 'review';
             learnState.current = learnState.reviewQueue[0];
-            learnState.hadError = false;
             setupLearnWord();
             renderLearnWord();
         } else {
@@ -1273,14 +1327,14 @@ function advanceLearnWord() {
 }
 
 // 看答案：揭示当前词剩余拼写，保留已打进度，让用户续打当前词（不跳到下一个词）
-function revealLearnAnswer() {
+// silent=true 时（超配额自动揭示）不重复播放错误音
+function revealLearnAnswer(silent) {
     if (!gameState.isPlaying || gameState.isPaused) return;
     if (learnState.phase === 'learn') return; // 看词阶段无需看答案
     if (learnState.revealed) return;          // 已揭示过，避免重复
     learnState.revealed = true;
-    learnState.hadError = true;               // 靠看答案完成 → 视为需复习
     setWordStatus(currentLibraryId, learnState.current.en, 'learning');
-    playSound('wrongSound');
+    if (!silent) playSound('wrongSound');
     renderLearnWord();                        // 揭示字母，当前词待续打
 }
 
@@ -1290,17 +1344,15 @@ function endLearnGame() {
     const bgMusic = document.getElementById('bgMusic');
     if (bgMusic) bgMusic.pause();
 
-    const total = gameState.correct + gameState.wrong;
-    const accuracy = total > 0 ? Math.round((gameState.correct / total) * 100) : 0;
     const progress = countGradeProgress(currentLibraryId);
 
-    document.getElementById('resultMessage').innerHTML = accuracy >= 90
-        ? '🌟 太棒了！这批词学会啦！'
-        : '👍 不错！多练几次就会记住！';
+    document.getElementById('resultMessage').innerHTML = learnState.needReview === 0
+        ? '🌟 太棒了！这批词都学会啦！'
+        : `👍 不错！还有 ${learnState.needReview} 个词需要再练练！`;
     document.getElementById('standardResult').classList.add('hidden');
     document.getElementById('learnResult').classList.remove('hidden');
     document.getElementById('learnNewMastered').textContent = learnState.masteredThisSession;
-    document.getElementById('learnReviewed').textContent = learnState.reviewedCount;
+    document.getElementById('learnReviewed').textContent = learnState.needReview;
     document.getElementById('learnGradeProgress').textContent = `${progress.mastered}/${progress.total}`;
 
     document.getElementById('gameScreen').classList.add('hidden');

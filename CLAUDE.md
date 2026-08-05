@@ -64,11 +64,16 @@ Available libraries defined in `wordLibraries` array (`script.js:26-32`). Add ne
 独立于计时游戏的记忆/拼写练习模式，地位于 `startGame()`/`endGame()`/`handleInput()` 的分支路由中（`mode === 'learn'`）。
 
 - **两阶段流程**：每词先「看词」（英文+中文照打）再「默写」（仅中文，按记忆打英文）。
-- **看答案**（`revealLearnAnswer()`）：默写/复习阶段遇到不会的词，点「看答案」揭示剩余拼写、保留已打对的进度**续打当前词**，不跳到下一个词；完成时因 `hadError=true` 仍标 `learning` 进复习队列。按钮在 `game-area` 目标词下方（`.learn-actions`），已揭示后隐藏。
-- **无全局倒计时**：错词进复习队列，本局结束前再考直到答对。
-- **进度持久化**：localStorage key `keyboardMaster_learnProgress`，结构 `{ [libraryId]: { [wordEn]: 'new'|'learning'|'mastered' } }`。默写一次通过→`mastered`；有错或看答案→`learning`。
+- **判定标准（统一）**：判定「是否掌握」只看是否**透过揭示（`revealed`）完成**，不看错键次数。默写/复习阶段各有 **3 次错键配额**（`mistakeLimit`，即 3 颗爱心），配额内打错不判失败；**爱心耗尽（第 3 次错键）** 或**点「看答案」**时才置 `revealed=true` 判失败。
+- **爱心生命**（`renderLearnHearts()`）：默写/复习阶段当前词上方显示 3 颗爱心，每打错一键少一颗，看答案或爱心耗尽后全部变灰归零。看词阶段不显示、错键不计。
+- **词完成反馈**（`onLearnWordComplete()` → `advanceAfterDelay()`）：最后一个字母打完后整词弹跳放大（`.target-display.complete`），停留 `LEARN_DONE_DELAY=500ms` 再进入下一步；过渡期以 `learnState.transitioning` 屏蔽输入。
+- **看答案 / 爱心耗尽揭示**（`revealLearnAnswer(silent)`）：默写/复习阶段遇到不会的词，点「看答案」（或打错到第 3 键爱心耗尽自动触发）揭示剩余拼写、保留已打对的进度**续打当前词**，不跳到下一个词；完成后标 `learning`。`silent=true`（爱心耗尽自动触发）时不重复播放错误音。按钮在 `game-area` 目标词下方（`.learn-actions`），已揭示后隐藏。
+- **无全局倒计时**：默写阶段配额内完成→`mastered`；看答案/爱心耗尽→标 `learning` 进复习队列。
+- **复习**：每个词只复习**一遍**（不循环）。队列内配额内答对→标 `mastered`；看答案/爱心耗尽→保持 `learning`，出队，下次游戏 `buildLearnBatch` 未掌握优先重新抽取。
+- **结果页统计**：`newMastered`（新掌握）只统计**本局新达到掌握**的词（开局前已掌握的词不计入，`learnState.preMastered`）；`needReview`（需复习）= 本局结束时仍未掌握、需再练的词数。两者互斥，合计不超过词库总数。提示语按 `needReview` 是否为零给出。
+- **进度持久化**：localStorage key `keyboardMaster_learnProgress`，结构 `{ [libraryId]: { [wordEn]: 'new'|'learning'|'mastered' } }`。默写/复习配额内完成→`mastered`；看答案或爱心耗尽→`learning`。
 - **批次**：默认 10 词（可调 10/20/30），从当前年级全部 tier 取词，未掌握优先（`buildLearnBatch()`）。
-- 核心函数：`startLearnGame()`、`renderLearnWord()`、`handleLearnInput()`、`onLearnWordComplete()`、`advanceLearnWord()`、`revealLearnAnswer()`、`endLearnGame()`、`updateLearnProgress()`。
+- 核心函数：`startLearnGame()`、`setupLearnWord()`、`renderLearnWord()`、`renderLearnHearts()`、`handleLearnInput()`、`onLearnWordComplete()`、`advanceAfterDelay()`、`advanceLearnWord()`、`revealLearnAnswer()`、`endLearnGame()`、`updateLearnProgress()`。
 - 学习状态存于独立对象 `learnState`（避免被 `startGame()` 的 gameState 重置覆盖）。
 - **不参与排行榜**：`updateLeaderboardDisplay()` 对 `mode === 'learn'` 直接隐藏所有排行榜。
 
