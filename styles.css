@@ -9,12 +9,12 @@
     --surface: #FFFFFF;
     --surface-soft: #E0F7FA;
     --primary: #06B6D4;        /* cyan-500 亮青（装饰/边框/悬停） */
-    --primary-dark: #0E7490;   /* cyan-700 中青（文本/3D边） */
-    --primary-deep: #155E75;   /* cyan-800 深青（主按钮实底） */
+    --primary-dark: #0891B2;   /* cyan-600 亮青（文本/3D边）- 去灰显清新 */
+    --primary-deep: #0891B2;   /* cyan-600 亮青（主按钮底部/3D边） */
     --primary-soft: #CFFAFE;   /* cyan-100 柔青 */
-    --accent: #2563EB;         /* blue-600 清新蓝（文本） */
-    --accent-dark: #1D4ED8;    /* blue-700 深蓝（边） */
-    --accent-soft: #DBEAFE;    /* blue-100 柔蓝 */
+    --accent: #0EA5E9;         /* sky-500 清新天蓝（文本） */
+    --accent-dark: #0284C7;    /* sky-600 天蓝（边） */
+    --accent-soft: #E0F2FE;    /* sky-100 柔天蓝 */
     --text: #1E293B;           /* 中性石板 主文本（无绿调） */
     --text-muted: #64748B;     /* 石板灰 次文本 */
     --border-color: #BAE6FD;   /* 天蓝边框 */
@@ -170,7 +170,7 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    background: linear-gradient(120deg, var(--primary-dark) 0%, var(--accent) 55%, var(--candy-pink) 100%);
+    background: linear-gradient(120deg, var(--primary-dark) 0%, #38BDF8 45%, var(--candy-pink) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -322,21 +322,6 @@ body {
     margin: 0;
 }
 
-/* 返回按钮 - 浅色次级样式（白底蓝字，与其他次级按钮一致） */
-.btn-back {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin: 0 auto 14px;
-    font-size: 0.92em;
-    padding: 9px 18px;
-    --btn-edge: var(--accent-dark);
-    background: var(--surface);
-    color: var(--accent);
-}
-
-.btn-back:hover { background: var(--accent-soft); }
-
 /* 通用按钮 - 统一黏土块状风格 */
 .btn {
     display: inline-flex;
@@ -371,7 +356,7 @@ body {
 
 .btn-primary {
     --btn-edge: var(--primary-deep);
-    background: linear-gradient(180deg, #0891B2 0%, var(--primary-deep) 100%);
+    background: linear-gradient(180deg, #06B6D4 0%, var(--primary-deep) 100%);
     font-size: 1.18em;
     padding: 16px 38px;
     margin: 22px 0 8px;
@@ -384,6 +369,23 @@ body {
 }
 
 .btn-secondary:hover { background: var(--accent-soft); }
+
+/* 返回按钮 - 淡青实底 + 亮青字，清晰可见（定义在 .btn 之后避免颜色被覆盖） */
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 auto 14px;
+    font-size: 0.92em;
+    font-weight: 800;
+    padding: 9px 18px;
+    --btn-edge: var(--primary-deep);
+    background: var(--primary-soft);
+    color: var(--primary-dark);
+    border: var(--border-w) solid var(--primary);
+}
+
+.btn-back:hover { background: #A5F3FC; }
 
 .btn-danger {
     --btn-edge: var(--danger-dark);
@@ -534,12 +536,6 @@ body {
     transform: translateY(4px);
     box-shadow: var(--shadow-edge-pressed);
     cursor: default;
-}
-
-.library-btn.active::after {
-    content: '✓';
-    font-size: 0.85em;
-    margin-left: 2px;
 }
 
 .library-btn:active:not(:disabled):not(.active) {
@@ -800,7 +796,7 @@ body {
     font-family: var(--font-heading);
     font-size: 1.15em;
     font-weight: 700;
-    color: #1E40AF;
+    color: var(--primary-dark);
     cursor: pointer;
     transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.1s ease;
     box-shadow: var(--shadow-key);
