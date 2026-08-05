@@ -186,7 +186,7 @@ let learnState = {
     reviewQueue: [],         // 复习队列
     masteredThisSession: 0,  // 本局新掌握数
     reviewedCount: 0,        // 本局进复习队列的词数
-    batchSize: 15            // 每批词数（默认15）
+    batchSize: 10            // 每批词数（默认10）
 };
 
 // 学单词进度持久化 key（结构: { [libraryId]: { [wordEn]: 'new'|'learning'|'mastered' } }）
@@ -550,7 +550,7 @@ function setupEventListeners() {
         btn.addEventListener('click', function() {
             document.querySelectorAll('.batch-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
-            learnState.batchSize = parseInt(this.dataset.batch, 10) || 15;
+            learnState.batchSize = parseInt(this.dataset.batch, 10) || 10;
         });
     });
 
