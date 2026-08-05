@@ -6,7 +6,7 @@
     <title>键盘小达人 - 趣味打字游戏</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Nunito:wght@400;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -142,7 +142,12 @@
                         </div>
                     </div>
                 </div>
-                <div id="learnProgress" class="learn-progress hidden"></div>
+                <div id="learnProgressGroup" class="settings-group hidden">
+                    <div id="learnProgress" class="learn-progress hidden"></div>
+                    <button class="btn btn-word-manager" id="wordManagerBtn" onclick="openWordManager()">
+                        <svg class="icon"><use href="#icon-book-open"/></svg><span class="btn-text">词库管理</span>
+                    </button>
+                </div>
                 </div><!-- /settings-card -->
 
                 <div class="action-row">
@@ -516,6 +521,57 @@
             <div class="action-row">
                 <button class="btn btn-back" onclick="goToHome()"><span class="btn-text">返回首页</span></button>
                 <button class="btn btn-primary" onclick="restartGame()"><span class="btn-text">再玩一次</span></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 词库管理弹窗 -->
+    <div class="wm-overlay hidden" id="wordManagerModal">
+        <div class="wm-panel">
+            <div class="wm-header">
+                <h3 id="wordManagerTitle">词库管理</h3>
+                <button class="wm-close" id="wordManagerClose" aria-label="关闭">×</button>
+            </div>
+
+            <div class="wm-toolbar">
+                <input type="text" id="wmSearch" class="wm-search" placeholder="搜索英文/中文...">
+                <div class="wm-chips">
+                    <button class="wm-status-chip active" data-status="all">全部</button>
+                    <button class="wm-status-chip" data-status="new">未学</button>
+                    <button class="wm-status-chip" data-status="learning">学习中</button>
+                    <button class="wm-status-chip" data-status="mastered">已掌握</button>
+                </div>
+            </div>
+
+            <div class="wm-filter-row">
+                <label class="wm-important-toggle">
+                    <input type="checkbox" id="wmImportantOnly"> 仅看重点词
+                </label>
+                <span id="wordManagerCount" class="wm-count"></span>
+            </div>
+
+            <div class="wm-help" id="wmHelpText">
+                ★ 重点词：在抽词时出现概率更高（约 ×3），可帮您优先强化不熟的词。
+            </div>
+
+            <div class="wm-legend">
+                <span><i class="dot new"></i>未学</span>
+                <span><i class="dot learning"></i>学习中</span>
+                <span><i class="dot mastered"></i>已掌握</span>
+                <span class="wm-legend-tip">学习中 = 默写/复习时看过答案或爱心耗尽，还需再练</span>
+            </div>
+
+            <div class="wm-list" id="wordManagerList"></div>
+
+            <div class="wm-footer">
+                <div class="wm-batch">
+                    <span id="wmSelectedCount" class="wm-count">已选 0 词</span>
+                    <label class="wm-important-toggle"><input type="checkbox" id="wmSelectAll"> 全选</label>
+                    <button class="wm-btn" data-wm-batch="reset">放回未学习</button>
+                    <button class="wm-btn" data-wm-batch="master">设为已学习</button>
+                    <button class="wm-btn" data-wm-batch="markImportant">标记重点</button>
+                    <button class="wm-btn" data-wm-batch="unmarkImportant">取消重点</button>
+                </div>
             </div>
         </div>
     </div>

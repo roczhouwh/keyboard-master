@@ -34,7 +34,7 @@ const MODE_SETTING_GROUPS = {
     difficulty: 'difficultyGroup',
     library: 'libraryGroup',
     batch: 'batchGroup',
-    progress: 'learnProgress'
+    progress: 'learnProgressGroup'
 };
 // 模式显示名
 const MODE_NAMES = {
@@ -198,6 +198,10 @@ const LEARN_DONE_DELAY = 500;
 
 // 学单词进度持久化 key（结构: { [libraryId]: { [wordEn]: 'new'|'learning'|'mastered' } }）
 const LEARN_PROGRESS_KEY = 'keyboardMaster_learnProgress';
+// 重点词持久化 key（结构: { [libraryId]: [wordEn, ...] }，独立存储避免迁移已有进度）
+const LEARN_IMPORTANT_KEY = 'keyboardMaster_importantWords';
+// 重点词抽词权重倍数
+const IMPORTANT_WEIGHT = 3;
 
 function loadLearnProgress() {
     try {
@@ -244,7 +248,58 @@ function countGradeProgress(libId) {
     return { mastered, total: seen.size };
 }
 
-// 构建本批次：未掌握优先，不足则补已掌握词作复习
+// ===== 重点词（词库管理）=====
+function loadImportantWords() {
+    try {
+        const raw = localStorage.getItem(LEARN_IMPORTANT_KEY);
+        return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+        console.log('读取重点词失败:', e);
+        return {};
+    }
+}
+
+function saveImportantWords(data) {
+    try {
+        localStorage.setItem(LEARN_IMPORTANT_KEY, JSON.stringify(data));
+    } catch (e) {
+        console.log('保存重点词失败:', e);
+    }
+}
+
+// 当前词库的重点词集合（Set<en>）
+function getImportantSet(libId) {
+    return new Set(loadImportantWords()[libId] || []);
+}
+
+// 标记/取消某词为重点
+function setWordImportant(libId, word, important) {
+    const data = loadImportantWords();
+    if (!data[libId]) data[libId] = [];
+    let arr = data[libId];
+    const has = arr.includes(word);
+    if (important && !has) arr.push(word);
+    if (!important && has) arr = arr.filter(w => w !== word);
+    data[libId] = arr;
+    saveImportantWords(data);
+}
+
+// 加权随机不重复抽样：从 pool 抽取并入 out，直到 out 达到 max 或 pool 用尽
+function addWeighted(pool, out, max, weightFn) {
+    const remaining = pool.slice();
+    while (out.length < max && remaining.length) {
+        const total = remaining.reduce((s, w) => s + weightFn(w), 0);
+        let r = Math.random() * total;
+        let idx = 0;
+        for (let i = 0; i < remaining.length; i++) {
+            r -= weightFn(remaining[i]);
+            if (r <= 0) { idx = i; break; }
+        }
+        out.push(remaining.splice(idx, 1)[0]);
+    }
+}
+
+// 构建本批次：未掌握优先 + 重点词加权随机
 function buildLearnBatch(size) {
     const all = [...wordList.easy, ...wordList.medium, ...wordList.hard];
     const seen = new Set();
@@ -255,13 +310,23 @@ function buildLearnBatch(size) {
     });
     const prog = loadLearnProgress();
     const p = prog[currentLibraryId] || {};
-    const order = { 'new': 0, 'learning': 1, 'mastered': 2 };
-    unique.sort((a, b) => {
-        const sa = order[p[a.en] || 'new'];
-        const sb = order[p[b.en] || 'new'];
-        return sa - sb;
-    });
-    return unique.slice(0, size);
+    const important = getImportantSet(currentLibraryId);
+
+    const getStatus = w => (p[w.en] || 'new');
+    const weight = w => {
+        let wgt = getStatus(w) === 'new' ? 2 : 1; // 未学过略高
+        if (important.has(w.en)) wgt *= IMPORTANT_WEIGHT; // 重点词加倍
+        return wgt;
+    };
+
+    // 未掌握池（new + learning）优先，不足再从已掌握池补足复习
+    const unlearned = unique.filter(w => getStatus(w) !== 'mastered');
+    const mastered = unique.filter(w => getStatus(w) === 'mastered');
+
+    const result = [];
+    addWeighted(unlearned, result, size, weight);
+    if (result.length < size) addWeighted(mastered, result, size, weight);
+    return result;
 }
 
 // 字母表（包含常用字符）
@@ -1375,6 +1440,195 @@ function updateLearnProgress() {
     el.textContent = `本年级已掌握：${progress.mastered} / ${progress.total} 词`;
     el.classList.remove('hidden');
 }
+
+// ===== 词库管理面板 =====
+// 当前面板的筛选状态（不持久化，仅本次会话）
+let wordManagerFilter = { q: '', status: 'all', importantOnly: false };
+
+// 唯一词列表（跨 tier 按 en 去重）
+function getUniqueLibraryWords() {
+    if (!wordList) return [];
+    const all = [...wordList.easy, ...wordList.medium, ...wordList.hard];
+    const seen = new Set();
+    const unique = [];
+    all.forEach(w => {
+        if (seen.has(w.en)) return;
+        seen.add(w.en);
+        unique.push(w);
+    });
+    return unique;
+}
+
+// 弹出词库管理面板
+function openWordManager() {
+    if (!wordList) { showMessage('词库未加载，无法管理', ''); return; }
+    wordManagerFilter = { q: '', status: 'all', importantOnly: false };
+    const modal = document.getElementById('wordManagerModal');
+    if (!modal) return;
+    const lib = wordLibraries.find(l => l.id === currentLibraryId);
+    document.getElementById('wordManagerTitle').textContent = `${lib ? lib.name : currentLibraryId} · 词库管理`;
+    modal.classList.remove('hidden');
+    renderWordManager();
+}
+
+function closeWordManager() {
+    const modal = document.getElementById('wordManagerModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+// 渲染当前筛选下的词表
+function renderWordManager() {
+    const f = wordManagerFilter;
+    const important = getImportantSet(currentLibraryId);
+    const prog = loadLearnProgress()[currentLibraryId] || {};
+    const libName = wordLibraries.find(l => l.id === currentLibraryId);
+
+    const words = getUniqueLibraryWords().filter(w => {
+        const st = prog[w.en] || 'new';
+        if (f.q && !(w.en.toLowerCase().includes(f.q.toLowerCase()) || (w.zh || '').includes(f.q))) return false;
+        if (f.status !== 'all' && st !== f.status) return false;
+        if (f.importantOnly && !important.has(w.en)) return false;
+        return true;
+    });
+
+    const listEl = document.getElementById('wordManagerList');
+    const countEl = document.getElementById('wordManagerCount');
+    if (!listEl) return;
+
+    countEl.textContent = `共 ${words.length} 词`;
+    if (!words.length) {
+        listEl.innerHTML = '<div class="wm-empty">没有匹配的单词</div>';
+        updateWordManagerBatchInfo();
+        return;
+    }
+
+    listEl.innerHTML = words.map(w => {
+        const st = prog[w.en] || 'new';
+        const isImp = important.has(w.en);
+        return `
+        <div class="wm-row">
+            <input type="checkbox" class="wm-check" data-en="${w.en}" ${isImp ? '' : ''}>
+            <button class="wm-star ${isImp ? 'on' : ''}" data-en="${w.en}" title="${isImp ? '取消重点' : '标记为重点'}">★</button>
+            <div class="wm-word">
+                <div class="wm-en">${w.en}</div>
+                <div class="wm-zh">${w.zh || ''}</div>
+            </div>
+            <div class="wm-library-tag">${libName ? libName.name : ''}</div>
+            <span class="wm-status ${st}">${st === 'new' ? '未学' : st === 'learning' ? '学习中' : '已掌握'}</span>
+            <div class="wm-actions">
+                ${st !== 'mastered' ? `<button class="wm-reset" data-en="${w.en}" data-act="master" title="设为已学习">设为已学习</button>` : ''}
+                ${st !== 'new' ? `<button class="wm-reset" data-en="${w.en}" data-act="reset" title="放回未学习">放回未学习</button>` : ''}
+            </div>
+        </div>`;
+    }).join('');
+
+    updateWordManagerBatchInfo();
+    bindWordManagerEvents();
+}
+
+// 更新批量操作栏信息（选中数 / 全选状态）
+function updateWordManagerBatchInfo() {
+    const checks = document.querySelectorAll('#wordManagerList .wm-check:checked');
+    const selCount = document.getElementById('wmSelectedCount');
+    if (selCount) selCount.textContent = `已选 ${checks.length} 词`;
+    const selectAll = document.getElementById('wmSelectAll');
+    if (selectAll) {
+        const all = document.querySelectorAll('#wordManagerList .wm-check');
+        selectAll.checked = all.length > 0 && all.length === checks.length;
+    }
+}
+
+// 绑定列表内事件（每词：星标 / 放回未学习 / 复选框）
+function bindWordManagerEvents() {
+    document.querySelectorAll('.wm-star').forEach(btn => {
+        btn.onclick = () => {
+            const en = btn.dataset.en;
+            const nowOn = btn.classList.contains('on');
+            setWordImportant(currentLibraryId, en, !nowOn);
+            renderWordManager();
+            updateLearnProgress();
+        };
+    });
+    document.querySelectorAll('.wm-reset').forEach(btn => {
+        btn.onclick = () => {
+            const en = btn.dataset.en;
+            const act = btn.dataset.act; // 'master' 设为已学习 | 'reset' 放回未学习
+            setWordStatus(currentLibraryId, en, act === 'master' ? 'mastered' : 'new');
+            renderWordManager();
+            updateLearnProgress();
+        };
+    });
+    document.querySelectorAll('.wm-check').forEach(cb => {
+        cb.onchange = updateWordManagerBatchInfo;
+    });
+}
+
+// 批量动作：对当前筛选结果（或选中项）执行操作
+function applyWordManagerBatch(action) {
+    const checks = document.querySelectorAll('#wordManagerList .wm-check:checked');
+    // 有选中项就作用于选中项，否则作用于当前筛选结果
+    const targets = checks.length
+        ? Array.from(checks).map(c => c.dataset.en)
+        : getUniqueLibraryWords().filter(w => {
+            const f = wordManagerFilter;
+            const prog = loadLearnProgress()[currentLibraryId] || {};
+            const st = prog[w.en] || 'new';
+            if (f.q && !(w.en.toLowerCase().includes(f.q.toLowerCase()) || (w.zh || '').includes(f.q))) return false;
+            if (f.status !== 'all' && st !== f.status) return false;
+            const important = getImportantSet(currentLibraryId);
+            if (f.importantOnly && !important.has(w.en)) return false;
+            return true;
+        }).map(w => w.en);
+
+    if (!targets.length) { showMessage('没有可操作的词', ''); return; }
+
+    targets.forEach(en => {
+        if (action === 'reset') setWordStatus(currentLibraryId, en, 'new');
+        else if (action === 'master') setWordStatus(currentLibraryId, en, 'mastered');
+        else setWordImportant(currentLibraryId, en, action === 'markImportant');
+    });
+    renderWordManager();
+    updateLearnProgress();
+    showMessage(`已处理 ${targets.length} 个词`, 'success');
+}
+
+// 初始化词库管理面板的事件（筛选栏 / 批量栏 / 关闭）
+function initWordManager() {
+    const modal = document.getElementById('wordManagerModal');
+    if (!modal) return;
+
+    document.getElementById('wordManagerClose')?.addEventListener('click', closeWordManager);
+    modal.addEventListener('click', e => { if (e.target === modal) closeWordManager(); });
+
+    document.getElementById('wmSearch')?.addEventListener('input', e => {
+        wordManagerFilter.q = e.target.value.trim();
+        renderWordManager();
+    });
+
+    document.querySelectorAll('.wm-status-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            document.querySelectorAll('.wm-status-chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            wordManagerFilter.status = chip.dataset.status;
+            renderWordManager();
+        });
+    });
+
+    document.getElementById('wmImportantOnly')?.addEventListener('change', e => {
+        wordManagerFilter.importantOnly = e.target.checked;
+        renderWordManager();
+    });
+
+    document.getElementById('wmSelectAll')?.addEventListener('change', e => {
+        document.querySelectorAll('#wordManagerList .wm-check').forEach(cb => { cb.checked = e.target.checked; });
+        updateWordManagerBatchInfo();
+    });
+
+    document.querySelectorAll('[data-wm-batch]').forEach(btn => {
+        btn.addEventListener('click', () => applyWordManagerBatch(btn.dataset.wmBatch));
+    });
+}
+if (typeof document !== 'undefined') initWordManager();
 
 // 暂停游戏
 function pauseGame() {

@@ -69,6 +69,8 @@
     /* 字体 */
     --font-heading: 'Baloo 2', 'Microsoft YaHei', sans-serif;
     --font-body: 'Nunito', 'Microsoft YaHei', sans-serif;
+    /* 字母显示字体：Atkinson Hyperlegible 专为区分 I/l/1 等易混淆字符设计 */
+    --font-letters: 'Atkinson Hyperlegible', 'Baloo 2', 'Nunito', sans-serif;
 }
 
 * {
@@ -634,7 +636,7 @@ body {
 
 .target-display {
     text-align: center;
-    font-family: var(--font-heading);
+    font-family: var(--font-letters);
     font-size: 3.8em;
     font-weight: 800;
     color: var(--text);
@@ -833,7 +835,7 @@ body {
     background: linear-gradient(180deg, #FFFFFF 0%, #F0F9FF 100%);
     border: var(--border-w) solid #BAE6FD;
     border-radius: var(--radius-key);
-    font-family: var(--font-heading);
+    font-family: var(--font-letters);
     font-size: 1.15em;
     font-weight: 700;
     color: var(--primary-dark);
@@ -1077,3 +1079,240 @@ body {
     .blob { animation: none; }
 }
 
+
+/* ============================================
+   词库管理弹窗（Word Manager Modal）
+   ============================================ */
+.btn-word-manager {
+    margin: 8px auto 16px;
+    width: fit-content;
+    padding: 8px 22px;
+    --btn-edge: var(--accent-dark);
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+    border-color: var(--accent);
+}
+.btn-word-manager:hover { background: #BAE6FD; }
+
+.wm-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(8, 47, 90, 0.45);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.wm-panel {
+    width: min(680px, 100%);
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: var(--border-w) solid var(--border-color);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-clay);
+    overflow: hidden;
+}
+
+.wm-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px 12px;
+    border-bottom: 2px solid var(--surface-soft);
+}
+.wm-header h3 {
+    font-family: var(--font-heading);
+    font-size: 1.25em;
+    color: var(--accent-dark);
+}
+.wm-close {
+    border: none;
+    background: var(--surface-soft);
+    color: var(--text-muted);
+    width: 34px;
+    height: 34px;
+    border-radius: var(--radius-pill);
+    font-size: 1.4em;
+    line-height: 1;
+    cursor: pointer;
+}
+.wm-close:hover { background: var(--danger-soft); color: var(--danger-dark); }
+
+.wm-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    padding: 12px 20px;
+}
+.wm-search {
+    flex: 1 1 200px;
+    padding: 8px 14px;
+    border: var(--border-w) solid var(--border-color);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-body);
+    font-size: 0.95em;
+    background: var(--surface-soft);
+    outline: none;
+}
+.wm-search:focus { border-color: var(--primary); }
+.wm-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.wm-status-chip {
+    border: 2px solid var(--border-color);
+    background: var(--surface);
+    color: var(--text-muted);
+    border-radius: var(--radius-pill);
+    padding: 4px 12px;
+    font-family: var(--font-body);
+    font-size: 0.85em;
+    cursor: pointer;
+}
+.wm-status-chip.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+.wm-filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    padding: 0 20px 10px;
+}
+.wm-important-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9em;
+    color: var(--text);
+    cursor: pointer;
+}
+.wm-count { font-size: 0.85em; color: var(--text-muted); }
+.wm-link {
+    margin-left: auto;
+    border: none;
+    background: none;
+    color: var(--accent);
+    font-family: var(--font-body);
+    font-size: 0.85em;
+    cursor: pointer;
+    text-decoration: underline;
+}
+.wm-link:hover { color: var(--accent-dark); }
+
+.wm-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px 20px 12px;
+    border-top: 1px solid var(--surface-soft);
+}
+.wm-empty { text-align: center; color: var(--text-muted); padding: 30px 0; }
+
+.wm-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 6px;
+    border-bottom: 1px solid var(--surface-soft);
+}
+.wm-row:last-child { border-bottom: none; }
+.wm-check { transform: scale(1.25); accent-color: var(--primary); cursor: pointer; }
+.wm-star {
+    border: none;
+    background: none;
+    font-size: 1.3em;
+    color: var(--text-muted);
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+}
+.wm-star.on { color: var(--warning); }
+.wm-word { flex: 1; min-width: 0; }
+.wm-en { font-family: var(--font-heading); font-weight: 700; color: var(--text); }
+.wm-zh { font-size: 0.85em; color: var(--text-muted); }
+.wm-library-tag {
+    font-size: 0.75em;
+    color: var(--text-muted);
+    background: var(--surface-soft);
+    border-radius: var(--radius-pill);
+    padding: 2px 8px;
+    white-space: nowrap;
+}
+.wm-status {
+    font-size: 0.8em;
+    font-weight: 700;
+    border-radius: var(--radius-pill);
+    padding: 3px 10px;
+    white-space: nowrap;
+}
+.wm-status.new { background: var(--surface-soft); color: var(--text-muted); }
+.wm-status.learning { background: var(--warning-soft); color: var(--warning-dark); }
+.wm-status.mastered { background: var(--success-soft); color: var(--success-dark); }
+.wm-reset {
+    border: 2px solid var(--border-color);
+    background: var(--surface);
+    color: var(--text-muted);
+    border-radius: var(--radius-pill);
+    padding: 4px 12px;
+    font-family: var(--font-body);
+    font-size: 0.8em;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.wm-reset:hover { border-color: var(--danger); color: var(--danger-dark); }
+
+.wm-footer {
+    border-top: 2px solid var(--surface-soft);
+    padding: 12px 20px;
+    background: var(--surface-soft);
+}
+.wm-batch { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.wm-btn {
+    border: 2px solid var(--primary);
+    background: var(--surface);
+    color: var(--primary-dark);
+    border-radius: var(--radius-pill);
+    padding: 6px 14px;
+    font-family: var(--font-body);
+    font-size: 0.85em;
+    font-weight: 700;
+    cursor: pointer;
+}
+.wm-btn:hover { background: var(--primary); color: #fff; }
+
+/* 词库管理弹窗：帮助 / 图例 / 行内操作 */
+.wm-help {
+    margin: 0 20px 8px;
+    padding: 8px 14px;
+    font-size: 0.85em;
+    color: var(--warning-dark);
+    background: var(--warning-soft);
+    border-radius: var(--radius-btn);
+}
+.wm-legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    padding: 0 20px 10px;
+    font-size: 0.8em;
+    color: var(--text-muted);
+}
+.wm-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.wm-legend .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.dot.new { background: var(--text-muted); }
+.dot.learning { background: var(--warning); }
+.dot.mastered { background: var(--success); }
+.wm-legend-tip { margin-left: auto; }
+
+.wm-actions { display: flex; gap: 6px; }
+.wm-reset[data-act="master"]:hover {
+    border-color: var(--success);
+    color: var(--success-dark);
+}

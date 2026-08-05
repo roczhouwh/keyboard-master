@@ -74,7 +74,23 @@ Available libraries defined in `wordLibraries` array (`script.js:26-32`). Add ne
 - **结果页统计**：`newMastered`（新掌握）只统计**本局新达到掌握**的词（开局前已掌握的词不计入，`learnState.preMastered`）；`needReview`（需复习）= 本局结束时仍未掌握、需再练的词数。两者互斥，合计不超过词库总数。提示语按 `needReview` 是否为零给出。
 - **进度持久化**：localStorage key `keyboardMaster_learnProgress`，结构 `{ [libraryId]: { [wordEn]: 'new'|'learning'|'mastered' } }`。默写/复习配额内完成→`mastered`；看答案或爱心耗尽→`learning`。
 - **批次**：默认 10 词（可调 10/20/30），从当前年级全部 tier 取词，未掌握优先（`buildLearnBatch()`）。
+- **抽词（加权随机）**：`buildLearnBatch()` 先从未掌握池（`new`+`learning`）**加权随机不重复抽取**，不足 `size` 再从已掌握池补足复习。权重 = 基础（`new`=2、`learning`/`mastered`=1）×（重点词 `IMPORTANT_WEIGHT=3`）。抽样用辅助函数 `addWeighted()`。
 - 核心函数：`startLearnGame()`、`setupLearnWord()`、`renderLearnWord()`、`renderLearnHearts()`、`handleLearnInput()`、`onLearnWordComplete()`、`advanceAfterDelay()`、`advanceLearnWord()`、`revealLearnAnswer()`、`endLearnGame()`、`updateLearnProgress()`。
+
+### 词库管理（Word Manager）
+
+学单词模式设置区新增「词库管理」弹窗（`#wordManagerModal`），用于预览/筛选/批量管理当前词库的单词学习状态。
+
+- **入口**：设置组 `progress` 的元素改为容器 `#learnProgressGroup`（内含进度文本 `#learnProgress` + 「词库管理」按钮 `#wordManagerBtn`）。因 `updateLearnProgress()` 会用 `textContent` 覆盖 `#learnProgress`，按钮必须在外层容器。`MODE_SETTING_GROUPS.progress = 'learnProgressGroup'`。
+- **功能**：搜索（en/zh 模糊）、状态筛选 chips（全部/未学/学习中/已掌握）、「仅看重点词」开关；逐词星标切换重点、逐词「设为已学习 / 放回未学习」；底部批量栏（全选筛选结果 + 放回未学习 / 设为已学习 / 标记重点 / 取消重点）。
+- **状态含义（图例）**：未学（从未练过）→ 学习中（练过但看答案/爱心耗尽，需再练）→ 已掌握。批次优先级：未学 > 学习中 > 已掌握。
+- **重点词存储**：独立 localStorage key `keyboardMaster_importantWords`，结构 `{ [libraryId]: [wordEn, ...] }`，与进度 key 分离（避免迁移已有进度）。辅助函数 `loadImportantWords()`/`getImportantSet()`/`setWordImportant()`。
+- **核心函数**：`openWordManager()`、`renderWordManager()`、`bindWordManagerEvents()`、`applyWordManagerBatch()`、`getUniqueLibraryWords()`。
+- **样式**：弹窗相关类 `.wm-overlay`/`.wm-panel`/`.wm-row`/`.wm-status`/`.wm-batch`/`.wm-legend` 等，见 `styles.css` 末尾。
+
+### 字母显示可读性（I/l 区分）
+
+目标词区（`.target-display`）与虚拟键盘（`.key`）使用 `--font-letters` = **Atkinson Hyperlegible**（Google Fonts，专为区分 I/l/1 等易混淆字符设计），避免大写 I 被误读为小写 l。专有名词（Internet、Italian）与代词 I 保留正确大写，不改数据。
 - 学习状态存于独立对象 `learnState`（避免被 `startGame()` 的 gameState 重置覆盖）。
 - **不参与排行榜**：`updateLeaderboardDisplay()` 对 `mode === 'learn'` 直接隐藏所有排行榜。
 
