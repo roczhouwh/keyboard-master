@@ -688,6 +688,13 @@ body {
     color: transparent;
 }
 
+/* 学单词模式：看答案按钮区（随目标词居中，显眼易发现） */
+.learn-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 18px;
+}
+
 /* 学单词模式：阶段标签 */
 .learn-phase {
     text-align: center;

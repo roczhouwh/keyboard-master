@@ -182,6 +182,7 @@ let learnState = {
     batchIndex: 0,           // 主批次索引
     current: null,           // 当前练习的词条
     phase: 'learn',          // 'learn' 看词 | 'recite' 默写 | 'review' 复习
+    revealed: false,         // 当前词是否已点过「看答案」（揭示拼写，续打当前词）
     hadError: false,         // 当前词默写是否出错/看过答案
     reviewQueue: [],         // 复习队列
     masteredThisSession: 0,  // 本局新掌握数
@@ -326,40 +327,6 @@ function updateVolume() {
                 sound.volume = 0.8 * masterVolume;
             }
         }
-    });
-}
-
-// 测试所有音效
-function testAllSounds() {
-    if (!gameState.soundEnabled) {
-        gameState.soundEnabled = true;
-        const sb = document.getElementById('soundButton');
-        sb.classList.remove('muted');
-        const t = sb.querySelector('.btn-text');
-        if (t) t.textContent = '音效';
-    }
-    
-    // 依次播放所有音效
-    const sounds = [
-        { id: 'keySound', name: '按键音效' },
-        { id: 'correctSound', name: '正确音效' },
-        { id: 'wrongSound', name: '错误音效' },
-        { id: 'levelUpSound', name: '成就音效' },
-        { id: 'bgMusic', name: '背景音乐' }
-    ];
-    
-    let delay = 0;
-    sounds.forEach((sound, index) => {
-        setTimeout(() => {
-            playSound(sound.id);
-            showMessage(`测试: ${sound.name}`, 'success');
-            if (index === sounds.length - 1) {
-                setTimeout(() => {
-                    showMessage('准备好了吗？按键盘上对应的键！', '');
-                }, 1000);
-            }
-        }, delay);
-        delay += 1000;
     });
 }
 
@@ -661,10 +628,11 @@ function startGame() {
         soundEnabled: gameState.soundEnabled
     };
 
-    // 播放背景音乐
+    // 播放背景音乐（从开头重新开始）
     if (gameState.soundEnabled) {
         const bgMusic = document.getElementById('bgMusic');
         if (bgMusic) {
+            bgMusic.currentTime = 0;
             bgMusic.volume = 0.3 * masterVolume;
             bgMusic.play().catch(e => console.log('Background music play failed:', e));
         }
@@ -1098,6 +1066,16 @@ function startLearnGame() {
     gameState.combo = 0;
     gameState.maxCombo = 0;
 
+    // 播放背景音乐（学单词模式同样播放，从开头重新开始）
+    if (gameState.soundEnabled) {
+        const bgMusic = document.getElementById('bgMusic');
+        if (bgMusic) {
+            bgMusic.currentTime = 0;
+            bgMusic.volume = 0.3 * masterVolume;
+            bgMusic.play().catch(e => console.log('Background music play failed:', e));
+        }
+    }
+
     // 界面切换
     document.getElementById('startScreen').classList.add('hidden');
     document.getElementById('resultScreen').classList.add('hidden');
@@ -1120,6 +1098,7 @@ function startLearnGame() {
 // 加载当前练习词到打字状态
 function setupLearnWord() {
     const word = learnState.current;
+    learnState.revealed = false; // 进入新词时清除「已看答案」状态
     gameState.currentTarget = word.en;
     gameState.currentTargetZh = word.zh || '';
     gameState.currentIndex = 0;
@@ -1135,7 +1114,7 @@ function setupLearnWord() {
 // 渲染当前学习词
 function renderLearnWord() {
     const word = learnState.current;
-    const showLetters = learnState.phase === 'learn'; // 看词显示字母，默写/复习隐藏
+    const showLetters = learnState.phase === 'learn' || learnState.revealed; // 看词或已看答案时显示字母
     const display = document.getElementById('targetDisplay');
     display.innerHTML = '';
 
@@ -1185,18 +1164,19 @@ function renderLearnWord() {
             const phaseText = learnState.phase === 'learn' ? '👀 看词' : '✍️ 默写';
             content = `${phaseText} · 第 ${learnState.batchIndex + 1}/${learnState.batch.length} 词`;
         }
+        if (learnState.revealed) content += ' · 已看答案';
         phaseEl.textContent = content;
         phaseEl.classList.remove('hidden');
     }
 
-    // 看答案按钮：默写/复习阶段可用
+    // 看答案按钮：默写/复习阶段可用，已揭示后隐藏
     const answerBtn = document.getElementById('learnAnswerBtn');
     if (answerBtn) {
-        answerBtn.classList.toggle('hidden', learnState.phase === 'learn');
+        answerBtn.classList.toggle('hidden', learnState.phase === 'learn' || learnState.revealed);
     }
 
-    // 看词阶段高亮下一个目标键（同单词模式）；默写/复习阶段不提示下一键，需凭记忆输入
-    if (learnState.phase === 'learn') {
+    // 看词阶段或已看答案：高亮下一个目标键；否则不提示，需凭记忆输入
+    if (learnState.phase === 'learn' || learnState.revealed) {
         highlightTargetKey();
     } else {
         document.querySelectorAll('.key').forEach(key => key.classList.remove('target'));
@@ -1292,21 +1272,16 @@ function advanceLearnWord() {
     }
 }
 
-// 看答案：揭示单词并标记为需复习，推进流程
+// 看答案：揭示当前词剩余拼写，保留已打进度，让用户续打当前词（不跳到下一个词）
 function revealLearnAnswer() {
     if (!gameState.isPlaying || gameState.isPaused) return;
     if (learnState.phase === 'learn') return; // 看词阶段无需看答案
-    const word = learnState.current;
-    learnState.hadError = true;
-    setWordStatus(currentLibraryId, word.en, 'learning');
-    if (learnState.phase === 'review') {
-        learnState.reviewQueue.shift();
-    } else {
-        learnState.reviewQueue.push(word);
-        learnState.reviewedCount++;
-    }
+    if (learnState.revealed) return;          // 已揭示过，避免重复
+    learnState.revealed = true;
+    learnState.hadError = true;               // 靠看答案完成 → 视为需复习
+    setWordStatus(currentLibraryId, learnState.current.en, 'learning');
     playSound('wrongSound');
-    advanceLearnWord();
+    renderLearnWord();                        // 揭示字母，当前词待续打
 }
 
 // 结束学单词游戏

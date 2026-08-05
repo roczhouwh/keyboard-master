@@ -401,6 +401,9 @@
                 <div class="learn-phase hidden" id="learnPhase"></div>
                 <div class="target-display" id="targetDisplay"></div>
                 <div class="word-meaning hidden" id="wordMeaning"></div>
+                <div class="learn-actions">
+                    <button class="btn btn-primary hidden" onclick="revealLearnAnswer()" id="learnAnswerBtn"><svg class="icon"><use href="#icon-book-open"/></svg><span class="btn-text">看答案</span></button>
+                </div>
             </div>
 
             <div class="message" id="message">准备好了吗？按键盘上对应的键！</div>
@@ -466,8 +469,6 @@
                 </button>
                 <button class="btn btn-secondary" onclick="increaseVolume()"><svg class="icon"><use href="#icon-volume-2"/></svg><span class="btn-text">音量+</span></button>
                 <button class="btn btn-secondary" onclick="decreaseVolume()"><svg class="icon"><use href="#icon-volume-1"/></svg><span class="btn-text">音量-</span></button>
-                <button class="btn btn-secondary" onclick="testAllSounds()"><svg class="icon"><use href="#icon-music"/></svg><span class="btn-text">测试音效</span></button>
-                <button class="btn btn-secondary hidden" onclick="revealLearnAnswer()" id="learnAnswerBtn"><svg class="icon"><use href="#icon-book-open"/></svg><span class="btn-text">看答案</span></button>
                 <button class="btn btn-secondary" onclick="pauseGame()" id="pauseButton">
                     <svg class="icon icon-pause"><use href="#icon-pause"/></svg>
                     <svg class="icon icon-play"><use href="#icon-play"/></svg>
