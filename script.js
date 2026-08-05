@@ -584,6 +584,12 @@ function hideLearnUI() {
     });
 }
 
+// 顶部统计栏：学单词模式隐藏整个统计框（得分/正确率/连击/时间对学习结果无意义）
+function setStandardStatsVisible(visible) {
+    const el = document.getElementById('statsBar');
+    if (el) el.classList.toggle('hidden', !visible);
+}
+
 function startGame() {
     // 学单词模式走独立流程
     if (gameState.mode === 'learn') {
@@ -659,9 +665,8 @@ function startGame() {
     document.getElementById('startScreen').classList.add('hidden');
     document.getElementById('resultScreen').classList.add('hidden');
     document.getElementById('gameScreen').classList.remove('hidden');
-    // 常规模式显示计时器
-    const timerStat = document.getElementById('timerStat');
-    if (timerStat) timerStat.classList.remove('hidden');
+    // 常规模式显示顶部统计（得分/正确率/连击/时间）
+    setStandardStatsVisible(true);
 
     // 清空上一局的提示语，避免残留（如词库已加载、再试一次、暂停等）
     const messageEl = document.getElementById('message');
@@ -1101,9 +1106,8 @@ function startLearnGame() {
     document.getElementById('startScreen').classList.add('hidden');
     document.getElementById('resultScreen').classList.add('hidden');
     document.getElementById('gameScreen').classList.remove('hidden');
-    // 学单词模式隐藏计时器
-    const timerStat = document.getElementById('timerStat');
-    if (timerStat) timerStat.classList.add('hidden');
+    // 学单词模式隐藏顶部统计（得分/正确率/连击/时间，对学习结果无意义）
+    setStandardStatsVisible(false);
     // 清空提示语
     const messageEl = document.getElementById('message');
     if (messageEl) {
