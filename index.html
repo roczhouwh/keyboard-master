@@ -99,8 +99,10 @@
 
             <!-- 步骤2：模式设置 + 开始 -->
             <div id="stepSettings" class="hidden">
-                <button class="btn btn-back" onclick="goBackToModeSelect()"><span class="btn-text">← 选择其他模式</span></button>
-                <h2 id="stepSettingsTitle"><svg class="icon"><use href="#icon-gamepad"/></svg> <span id="stepSettingsModeName">单词模式</span></h2>
+                <div class="step-header">
+                    <button class="btn btn-back" onclick="goBackToModeSelect()"><span class="btn-text">← 返回</span></button>
+                    <h2 id="stepSettingsTitle"><svg class="icon"><use href="#icon-gamepad"/></svg> <span id="stepSettingsModeName">单词模式</span></h2>
+                </div>
 
                 <!-- 难度设置（单词 / 挑战模式） -->
                 <div class="settings-group hidden" id="difficultyGroup">
