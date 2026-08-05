@@ -65,67 +65,97 @@
 
         <!-- 开始界面 -->
         <div class="start-screen" id="startScreen">
-            <h2><svg class="icon"><use href="#icon-gamepad"/></svg> 选择游戏模式</h2>
-            <ul class="mode-list">
-                <li><svg class="icon"><use href="#icon-type"/></svg> <strong>字母模式</strong>：练习单个字母按键</li>
-                <li><svg class="icon"><use href="#icon-hash"/></svg> <strong>字符模式</strong>：练习字母、数字和标点符号</li>
-                <li><svg class="icon"><use href="#icon-book-open"/></svg> <strong>单词模式</strong>：练习拼写简单单词</li>
-                <li><svg class="icon"><use href="#icon-sparkles"/></svg> <strong>学单词模式</strong>：看词+默写，轻松记背单词</li>
-                <li><svg class="icon"><use href="#icon-target"/></svg> <strong>挑战模式</strong>：限时挑战，要快速按键哦！</li>
-            </ul>
-
-            <div class="mode-selector">
-                <button class="mode-btn active" data-mode="letter"><svg class="icon"><use href="#icon-type"/></svg><span class="btn-text">字母模式</span></button>
-                <button class="mode-btn" data-mode="character"><svg class="icon"><use href="#icon-hash"/></svg><span class="btn-text">字符模式</span></button>
-                <button class="mode-btn" data-mode="word"><svg class="icon"><use href="#icon-book-open"/></svg><span class="btn-text">单词模式</span></button>
-                <button class="mode-btn" data-mode="learn"><svg class="icon"><use href="#icon-sparkles"/></svg><span class="btn-text">学单词模式</span></button>
-                <button class="mode-btn" data-mode="challenge"><svg class="icon"><use href="#icon-target"/></svg><span class="btn-text">挑战模式</span></button>
-            </div>
-
-            <div class="difficulty-selector">
-                <button class="difficulty-btn easy active" data-difficulty="easy">简单</button>
-                <button class="difficulty-btn medium" data-difficulty="medium">中等</button>
-                <button class="difficulty-btn hard" data-difficulty="hard">困难</button>
-            </div>
-            <div id="difficultyHint" class="difficulty-hint hidden">难度仅对单词和挑战模式生效</div>
-
-            <div class="word-library-selector">
-                <span class="library-label">词库选择:</span>
-                <div class="library-buttons" id="libraryButtons">
-                    <button class="library-btn active" data-library="grade3"><span class="btn-text">三年级</span></button>
-                    <button class="library-btn" data-library="grade4"><span class="btn-text">四年级</span></button>
-                    <button class="library-btn" data-library="grade5"><span class="btn-text">五年级</span></button>
-                    <button class="library-btn" data-library="grade6"><span class="btn-text">六年级</span></button>
+            <!-- 步骤1：选择模式 -->
+            <div id="stepMode">
+                <h2><svg class="icon"><use href="#icon-gamepad"/></svg> 选择游戏模式</h2>
+                <div class="mode-cards">
+                    <button class="mode-card" data-mode="letter">
+                        <svg class="icon"><use href="#icon-type"/></svg>
+                        <span class="mc-name">字母模式</span>
+                        <span class="mc-desc">练习单个字母按键</span>
+                    </button>
+                    <button class="mode-card" data-mode="character">
+                        <svg class="icon"><use href="#icon-hash"/></svg>
+                        <span class="mc-name">字符模式</span>
+                        <span class="mc-desc">字母、数字和标点符号</span>
+                    </button>
+                    <button class="mode-card" data-mode="word">
+                        <svg class="icon"><use href="#icon-book-open"/></svg>
+                        <span class="mc-name">单词模式</span>
+                        <span class="mc-desc">拼写年级单词，2倍得分</span>
+                    </button>
+                    <button class="mode-card" data-mode="learn">
+                        <svg class="icon"><use href="#icon-sparkles"/></svg>
+                        <span class="mc-name">学单词模式</span>
+                        <span class="mc-desc">看词+默写，进度可保存</span>
+                    </button>
+                    <button class="mode-card" data-mode="challenge">
+                        <svg class="icon"><use href="#icon-target"/></svg>
+                        <span class="mc-name">挑战模式</span>
+                        <span class="mc-desc">限时按键，越快越好</span>
+                    </button>
                 </div>
             </div>
-            <div id="libraryHint" class="difficulty-hint hidden">词库仅对单词模式生效</div>
 
-            <div class="batch-selector hidden" id="batchSelector">
-                <span class="library-label">每批词数:</span>
-                <div class="library-buttons">
-                    <button class="library-btn batch-btn" data-batch="10"><span class="btn-text">10</span></button>
-                    <button class="library-btn batch-btn active" data-batch="15"><span class="btn-text">15</span></button>
-                    <button class="library-btn batch-btn" data-batch="20"><span class="btn-text">20</span></button>
-                    <button class="library-btn batch-btn" data-batch="30"><span class="btn-text">30</span></button>
-                </div>
-            </div>
-            <div id="learnProgress" class="learn-progress hidden"></div>
+            <!-- 步骤2：模式设置 + 开始 -->
+            <div id="stepSettings" class="hidden">
+                <button class="btn btn-back" onclick="goBackToModeSelect()"><span class="btn-text">← 选择其他模式</span></button>
+                <h2 id="stepSettingsTitle"><svg class="icon"><use href="#icon-gamepad"/></svg> <span id="stepSettingsModeName">单词模式</span></h2>
 
-            <button class="btn btn-primary" onclick="startGame()"><svg class="icon"><use href="#icon-play"/></svg><span class="btn-text">开始游戏</span></button>
+                <!-- 难度设置（单词 / 挑战模式） -->
+                <div class="settings-group hidden" id="difficultyGroup">
+                    <div class="difficulty-selector">
+                        <button class="difficulty-btn easy active" data-difficulty="easy">简单</button>
+                        <button class="difficulty-btn medium" data-difficulty="medium">中等</button>
+                        <button class="difficulty-btn hard" data-difficulty="hard">困难</button>
+                    </div>
+                    <div id="difficultyHint" class="difficulty-hint hidden"></div>
+                </div>
 
-            <!-- 排行榜部分 -->
-            <div class="leaderboard-section">
-                <h3><svg class="icon"><use href="#icon-trophy"/></svg> 排行榜</h3>
-                <div class="leaderboard-info">
-                    当前模式：<span id="currentMode">字母模式</span> <span id="difficultyLabel">| 当前难度：<span id="currentDifficulty">简单</span></span>
+                <!-- 词库设置（单词 / 学单词模式） -->
+                <div class="settings-group hidden" id="libraryGroup">
+                    <div class="word-library-selector">
+                        <span class="library-label">词库选择:</span>
+                        <div class="library-buttons" id="libraryButtons">
+                            <button class="library-btn active" data-library="grade3"><span class="btn-text">三年级</span></button>
+                            <button class="library-btn" data-library="grade4"><span class="btn-text">四年级</span></button>
+                            <button class="library-btn" data-library="grade5"><span class="btn-text">五年级</span></button>
+                            <button class="library-btn" data-library="grade6"><span class="btn-text">六年级</span></button>
+                        </div>
+                    </div>
+                    <div id="libraryHint" class="difficulty-hint hidden"></div>
                 </div>
-                <div class="leaderboard-actions">
-                    <button class="btn btn-secondary" onclick="exportLeaderboard()"><svg class="icon"><use href="#icon-upload"/></svg><span class="btn-text">导出排行榜</span></button>
-                    <button class="btn btn-secondary" onclick="importLeaderboard()"><svg class="icon"><use href="#icon-download"/></svg><span class="btn-text">导入排行榜</span></button>
-                    <button class="btn btn-danger" onclick="clearLeaderboard()"><svg class="icon"><use href="#icon-trash"/></svg><span class="btn-text">清空排行榜</span></button>
-                    <input type="file" id="leaderboardFile" accept=".json" style="display: none;" onchange="handleFileImport(this)">
+
+                <!-- 学单词批次（学单词模式） -->
+                <div class="settings-group hidden" id="batchGroup">
+                    <div class="batch-selector" id="batchSelector">
+                        <span class="library-label">每批词数:</span>
+                        <div class="library-buttons">
+                            <button class="library-btn batch-btn" data-batch="10"><span class="btn-text">10</span></button>
+                            <button class="library-btn batch-btn active" data-batch="15"><span class="btn-text">15</span></button>
+                            <button class="library-btn batch-btn" data-batch="20"><span class="btn-text">20</span></button>
+                            <button class="library-btn batch-btn" data-batch="30"><span class="btn-text">30</span></button>
+                        </div>
+                    </div>
                 </div>
-                <div class="leaderboard-content">
+                <div id="learnProgress" class="learn-progress hidden"></div>
+
+                <button class="btn btn-primary" onclick="startGame()"><svg class="icon"><use href="#icon-play"/></svg><span class="btn-text">开始游戏</span></button>
+
+            <!-- 排行榜部分（默认折叠） -->
+            <div class="leaderboard-section" id="leaderboardSection">
+                <h3 class="leaderboard-toggle" id="leaderboardToggle"><svg class="icon"><use href="#icon-trophy"/></svg> 排行榜 <span class="chev">▾</span></h3>
+                <div class="leaderboard-body hidden" id="leaderboardBody">
+                    <div class="leaderboard-info">
+                        当前模式：<span id="currentMode">字母模式</span> <span id="difficultyLabel">| 当前难度：<span id="currentDifficulty">简单</span></span>
+                    </div>
+                    <div class="leaderboard-actions">
+                        <button class="btn btn-secondary" onclick="exportLeaderboard()"><svg class="icon"><use href="#icon-upload"/></svg><span class="btn-text">导出排行榜</span></button>
+                        <button class="btn btn-secondary" onclick="importLeaderboard()"><svg class="icon"><use href="#icon-download"/></svg><span class="btn-text">导入排行榜</span></button>
+                        <button class="btn btn-danger" onclick="clearLeaderboard()"><svg class="icon"><use href="#icon-trash"/></svg><span class="btn-text">清空排行榜</span></button>
+                        <input type="file" id="leaderboardFile" accept=".json" style="display: none;" onchange="handleFileImport(this)">
+                    </div>
+                    <div class="leaderboard-content">
                     <div class="leaderboard" id="leaderboard-letter-easy">
                         <table>
                             <thead>
@@ -331,8 +361,10 @@
                         </table>
                     </div>
                 </div>
+                </div>
             </div>
         </div>
+    </div>
 
         <!-- 游戏界面 -->
         <div class="game-screen hidden" id="gameScreen">

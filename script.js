@@ -20,6 +20,102 @@ let gameState = {
     soundEnabled: true
 };
 
+// ===== 首页分步向导 =====
+// 每个模式需要显示的设置组与是否展示排行榜
+const MODE_SETTINGS = {
+    letter:   { groups: [],                                       hasLeaderboard: true },
+    character:{ groups: [],                                       hasLeaderboard: true },
+    word:     { groups: ['difficulty', 'library'],                hasLeaderboard: true },
+    learn:    { groups: ['library', 'batch', 'progress'],         hasLeaderboard: false },
+    challenge:{ groups: ['difficulty'],                           hasLeaderboard: true }
+};
+// 设置组 key -> DOM 元素 id
+const MODE_SETTING_GROUPS = {
+    difficulty: 'difficultyGroup',
+    library: 'libraryGroup',
+    batch: 'batchGroup',
+    progress: 'learnProgress'
+};
+// 模式显示名
+const MODE_NAMES = {
+    letter: '字母模式',
+    character: '字符模式',
+    word: '单词模式',
+    learn: '学单词模式',
+    challenge: '挑战模式'
+};
+
+// 切换开始界面的步骤（1=选模式，2=设置）
+function showStartStep(step) {
+    const stepMode = document.getElementById('stepMode');
+    const stepSettings = document.getElementById('stepSettings');
+    if (stepMode) stepMode.classList.toggle('hidden', step !== 1);
+    if (stepSettings) stepSettings.classList.toggle('hidden', step !== 2);
+}
+
+// 根据模式渲染设置区：只显示该模式需要的设置组
+function renderSettingsForMode(mode) {
+    const setting = MODE_SETTINGS[mode] || MODE_SETTINGS.letter;
+
+    // 显示/隐藏各设置组
+    Object.keys(MODE_SETTING_GROUPS).forEach(key => {
+        const el = document.getElementById(MODE_SETTING_GROUPS[key]);
+        if (el) el.classList.toggle('hidden', !setting.groups.includes(key));
+    });
+
+    // 标题
+    const title = document.getElementById('stepSettingsModeName');
+    if (title) title.textContent = MODE_NAMES[mode] || mode;
+
+    // 难度提示文案
+    const diffHint = document.getElementById('difficultyHint');
+    if (diffHint) {
+        if (mode === 'word') {
+            diffHint.textContent = '简单=短词(2-3字母) / 中等=中词(4-5字母) / 困难=长词(6+字母)';
+            diffHint.classList.remove('hidden');
+        } else if (mode === 'challenge') {
+            diffHint.textContent = '简单=3秒超时 / 中等=2秒超时 / 困难=1秒超时';
+            diffHint.classList.remove('hidden');
+        } else {
+            diffHint.classList.add('hidden');
+        }
+    }
+
+    // 词库提示文案
+    const libHint = document.getElementById('libraryHint');
+    if (libHint) {
+        if (mode === 'learn') {
+            libHint.textContent = '词库=选择年级，学单词模式会复习该年级全部单词';
+            libHint.classList.remove('hidden');
+        } else if (mode === 'word') {
+            libHint.textContent = '词库仅对单词模式生效';
+            libHint.classList.remove('hidden');
+        } else {
+            libHint.classList.add('hidden');
+        }
+    }
+
+    // 排行榜：学单词模式不参与
+    const lbSection = document.getElementById('leaderboardSection');
+    if (lbSection) lbSection.classList.toggle('hidden', !setting.hasLeaderboard);
+
+    // 刷新排行榜与学单词进度
+    updateLeaderboardDisplay();
+    updateLearnProgress();
+}
+
+// 在步骤1选中某个模式：进入步骤2
+function goModeStep(mode) {
+    gameState.mode = mode;
+    showStartStep(2);
+    renderSettingsForMode(mode);
+}
+
+// 从步骤2返回步骤1
+function goBackToModeSelect() {
+    showStartStep(1);
+}
+
 // 音量控制
 let masterVolume = 1.0;
 
@@ -454,58 +550,23 @@ function setupEventListeners() {
         });
     });
 
-    // 模式选择
-    document.querySelectorAll('.mode-selector .mode-btn').forEach(btn => {
+    // 步骤1：模式卡片选择 —— 进入步骤2
+    document.querySelectorAll('.mode-card').forEach(btn => {
         btn.addEventListener('click', function() {
-            document.querySelectorAll('.mode-selector .mode-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            const mode = this.dataset.mode;
-            gameState.mode = mode;
-
-            // 字母/字符/学单词模式：难度不生效，置灰
-            const isModeWithoutDifficulty = mode === 'letter' || mode === 'character' || mode === 'learn';
-            document.querySelectorAll('.difficulty-btn').forEach(b => {
-                b.disabled = isModeWithoutDifficulty;
-            });
-
-            // 词库仅单词/学单词模式可用
-            const isLibraryMode = mode === 'word' || mode === 'learn';
-            document.querySelectorAll('.library-btn[data-library]').forEach(b => {
-                b.disabled = !isLibraryMode;
-            });
-            const libHint = document.getElementById('libraryHint');
-            if (libHint) {
-                libHint.classList.toggle('hidden', isLibraryMode);
-                if (mode === 'learn') {
-                    libHint.textContent = '词库=选择年级，学单词模式会复习该年级全部单词';
-                } else {
-                    libHint.textContent = '词库仅对单词模式生效';
-                }
-            }
-
-            // 学单词模式：显示批次选择器 + 进度
-            const batchSel = document.getElementById('batchSelector');
-            if (batchSel) batchSel.classList.toggle('hidden', mode !== 'learn');
-            updateLearnProgress();
-
-            // 难度提示文字
-            const hint = document.getElementById('difficultyHint');
-            if (hint) {
-                if (mode === 'word') {
-                    hint.textContent = '简单=短词(2-3字母) / 中等=中词(4-5字母) / 困难=长词(6+字母)';
-                    hint.classList.remove('hidden');
-                } else if (mode === 'challenge') {
-                    hint.textContent = '简单=3秒超时 / 中等=2秒超时 / 困难=1秒超时';
-                    hint.classList.remove('hidden');
-                } else {
-                    hint.classList.add('hidden');
-                }
-            }
-
-            // 更新排行榜显示
-            updateLeaderboardDisplay();
+            goModeStep(this.dataset.mode);
         });
     });
+
+    // 步骤2：排行榜折叠展开
+    const lbToggle = document.getElementById('leaderboardToggle');
+    const lbBody = document.getElementById('leaderboardBody');
+    const lbSection = document.getElementById('leaderboardSection');
+    if (lbToggle && lbBody && lbSection) {
+        lbToggle.addEventListener('click', function() {
+            const open = lbBody.classList.toggle('hidden');
+            lbSection.classList.toggle('open', !open);
+        });
+    }
 
     // 键盘事件
     document.addEventListener('keydown', handleKeyDown);
@@ -1592,10 +1653,9 @@ function handleFileImport(input) {
 function restartGame() {
     document.getElementById('resultScreen').classList.add('hidden');
     document.getElementById('startScreen').classList.remove('hidden');
-    // 回去刷新学单词进度与批次选择器可见性
-    updateLearnProgress();
-    const batchSel = document.getElementById('batchSelector');
-    if (batchSel) batchSel.classList.toggle('hidden', gameState.mode !== 'learn');
+    // 回到步骤2，保留上次模式设置，便于"再玩一次"
+    showStartStep(2);
+    renderSettingsForMode(gameState.mode);
 }
 
 // 初始化
@@ -1619,10 +1679,8 @@ window.addEventListener('DOMContentLoaded', async function() {
         initLeaderboard();
         console.log('排行榜初始化完成');
 
-        // 默认字母模式，禁用难度和词库选择
-        document.querySelectorAll('.difficulty-btn').forEach(b => b.disabled = true);
-        document.querySelectorAll('.library-btn[data-library]').forEach(b => b.disabled = true);
-        document.getElementById('libraryHint')?.classList.remove('hidden');
+        // 进入步骤1：选择模式
+        showStartStep(1);
         
     } catch (error) {
         console.error('游戏初始化失败:', error);

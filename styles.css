@@ -274,49 +274,120 @@ body {
     font-weight: 600;
 }
 
-/* 模式说明列表 */
-.mode-list {
-    list-style: none;
-    background: var(--surface-soft);
-    border: var(--border-w) solid var(--border-color);
-    border-radius: var(--radius-card);
-    padding: 16px 20px;
-    margin: 0 auto 24px;
-    max-width: 520px;
-    text-align: left;
-    box-shadow: var(--shadow-clay-soft);
-}
-
-.mode-list li {
-    padding: 8px 4px;
-    font-size: 1.02em;
-    color: var(--text);
+/* 步骤1：模式卡片网格 */
+.mode-cards {
     display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin: 6px auto 8px;
+    max-width: 620px;
+}
+
+.mode-card {
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 6px;
+    width: 150px;
+    padding: 18px 14px 16px;
+    background: var(--surface);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-card);
+    font-family: var(--font-heading);
+    cursor: pointer;
+    text-align: center;
+    box-shadow: var(--shadow-clay-soft);
+    transition: transform 0.09s ease, box-shadow 0.09s ease, background 0.15s ease, border-color 0.15s ease;
 }
 
-.mode-list li:not(:last-child) {
-    border-bottom: 1px dashed rgba(234, 88, 12, 0.2);
-}
-
-.mode-list .icon {
+.mode-card .icon {
+    width: 34px;
+    height: 34px;
     color: var(--primary);
-    width: 20px;
-    height: 20px;
 }
 
-.mode-list strong {
+.mode-card .mc-name {
+    font-size: 1.08em;
+    font-weight: 800;
     color: var(--primary-dark);
 }
 
-/* 模式选择器 */
-.mode-selector {
+.mode-card .mc-desc {
+    font-family: var(--font-body);
+    font-size: 0.86em;
+    font-weight: 600;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+.mode-card:hover {
+    background: var(--primary-soft);
+    border-color: var(--primary);
+    transform: translateY(-3px);
+}
+
+.mode-card:active {
+    transform: translateY(0);
+}
+
+.mode-card:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* 步骤2：设置分组 */
+.settings-group {
+    margin: 14px 0 10px;
+}
+
+.settings-group .difficulty-selector,
+.settings-group .word-library-selector,
+.settings-group .batch-selector {
+    margin-top: 0;
+}
+
+/* 返回按钮 - 浅色次级样式 */
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 auto 14px;
+    font-size: 0.92em;
+    padding: 9px 18px;
+    --btn-edge: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+}
+
+/* 排行榜折叠 */
+.leaderboard-toggle {
     display: flex;
+    align-items: center;
     justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.15s ease;
+}
+
+.leaderboard-toggle:hover {
+    color: var(--primary);
+}
+
+.leaderboard-toggle .chev {
+    display: inline-block;
+    transition: transform 0.3s ease;
+    font-size: 0.9em;
+}
+
+.leaderboard-section.open .leaderboard-toggle .chev {
+    transform: rotate(180deg);
+}
+
+/* 折叠时标题不留多余底部空隙 */
+.leaderboard-section:not(.open) .leaderboard-toggle {
+    margin-bottom: 0;
 }
 
 /* 选择器按钮 - 统一构造（模式 / 难度 / 词库共享） */
@@ -345,16 +416,6 @@ body {
 .library-btn:focus-visible {
     outline: 3px solid var(--accent);
     outline-offset: 2px;
-}
-
-/* 模式按钮 - 橙 */
-.mode-btn { color: var(--primary-dark); border-color: var(--primary); }
-.mode-btn:hover:not(.active) { background: var(--primary-soft); }
-.mode-btn.active {
-    background: var(--primary);
-    color: #fff;
-    border-color: var(--primary-dark);
-    box-shadow: 0 4px 0 0 var(--primary-dark);
 }
 
 /* 难度选择器 */
@@ -911,7 +972,7 @@ body {
     .controls .btn { padding: 10px 14px; font-size: 0.88em; }
     .leaderboard th, .leaderboard td { padding: 8px 4px; font-size: 0.85em; }
     .leaderboard-section { padding: 16px; }
-    .mode-list { padding: 12px 16px; }
+    .mode-card { width: 130px; padding: 16px 12px 14px; }
 }
 
 @media (max-width: 420px) {
