@@ -192,12 +192,35 @@ body {
     font-weight: 600;
 }
 
+/* 游戏时隐藏顶部标题，把垂直空间让给游戏内容（标题只在首页显示） */
+body.playing .game-header { display: none; }
+
+/* 右上角固定的全局声音开关（纯图标，突出显示） */
+.btn-sound-fixed {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 50;
+    width: 56px;
+    height: 56px;
+    padding: 0;
+    border-radius: 50%;
+    --btn-edge: var(--primary-deep);
+    background: linear-gradient(180deg, #06B6D4 0%, var(--primary-deep) 100%);
+    color: #fff;
+    box-shadow: var(--shadow-clay), 0 4px 14px rgba(8, 47, 90, 0.25);
+}
+.btn-sound-fixed .icon {
+    width: 28px;
+    height: 28px;
+}
+
 /* 主容器 - 黏土卡片 */
 .game-container {
     background: var(--surface);
     border: var(--border-w) solid var(--border-color);
     border-radius: var(--radius-card);
-    padding: 32px;
+    padding: 24px;
     box-shadow: var(--shadow-clay);
     max-width: 920px;
     width: 100%;
@@ -571,8 +594,8 @@ body {
 .stats-bar {
     display: flex;
     justify-content: space-around;
-    margin-bottom: 20px;
-    padding: 18px 16px;
+    margin-bottom: 16px;
+    padding: 12px 16px;
     background: linear-gradient(135deg, #ECFEFF 0%, #DBEAFE 100%);
     border: var(--border-w) solid var(--border-color);
     border-radius: var(--radius-card);
@@ -623,12 +646,12 @@ body {
 
 /* 游戏区 */
 .game-area {
-    min-height: 180px;
+    min-height: 140px;
     background: var(--surface-soft);
     border: var(--border-w) solid var(--border-color);
     border-radius: var(--radius-card);
-    padding: 24px;
-    margin-bottom: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
     position: relative;
     overflow: hidden;
     box-shadow: var(--shadow-clay-soft);
@@ -811,8 +834,8 @@ body {
     background: linear-gradient(180deg, #F0F9FF 0%, #E0F2FE 100%);
     border: var(--border-w) solid var(--border-color);
     border-radius: var(--radius-card);
-    padding: 18px;
-    margin-bottom: 20px;
+    padding: 12px;
+    margin-bottom: 14px;
     box-shadow: var(--shadow-clay-soft);
     overflow-x: auto;
 }
@@ -821,7 +844,7 @@ body {
     display: flex;
     justify-content: center;
     gap: 8px;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
 }
 
 .keyboard-row:last-child {
@@ -829,9 +852,9 @@ body {
 }
 
 .key {
-    min-width: 50px;
-    width: 50px;
-    height: 50px;
+    min-width: 46px;
+    width: 46px;
+    height: 44px;
     background: linear-gradient(180deg, #FFFFFF 0%, #F0F9FF 100%);
     border: var(--border-w) solid #BAE6FD;
     border-radius: var(--radius-key);
@@ -889,10 +912,10 @@ body {
     font-size: 0.95em;
 }
 
-/* 音效/暂停按钮图标切换 */
-#soundButton .icon-off { display: none; }
-#soundButton.muted .icon-on { display: none; }
-#soundButton.muted .icon-off { display: inline-flex; }
+/* 声音开关图标切换（右上角悬浮 + 游戏内共用） */
+.sound-btn .icon-off { display: none; }
+.sound-btn.muted .icon-on { display: none; }
+.sound-btn.muted .icon-off { display: inline-flex; }
 
 #pauseButton .icon-play { display: none; }
 #pauseButton.paused .icon-pause { display: none; }

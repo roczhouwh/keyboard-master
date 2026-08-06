@@ -46,11 +46,18 @@ const MODE_NAMES = {
 };
 
 // 切换开始界面的步骤（1=选模式，2=设置）
+// 标题只在首页（步骤1 选模式）显示，其余页面隐藏，把垂直空间让给内容
+function setHeaderVisible(visible) {
+    document.body.classList.toggle('playing', !visible);
+}
+
 function showStartStep(step) {
     const stepMode = document.getElementById('stepMode');
     const stepSettings = document.getElementById('stepSettings');
     if (stepMode) stepMode.classList.toggle('hidden', step !== 1);
     if (stepSettings) stepSettings.classList.toggle('hidden', step !== 2);
+    // 标题仅在步骤1（首页选模式）显示
+    setHeaderVisible(step === 1);
 }
 
 // 根据模式渲染设置区：只显示该模式需要的设置组
@@ -353,23 +360,32 @@ function playSound(id) {
     }
 }
 
+// 同步所有声音开关按钮（右上角悬浮 + 游戏内）的状态
+function updateSoundButtons() {
+    document.querySelectorAll('.sound-btn').forEach(button => {
+        const text = button.querySelector('.btn-text');
+        if (gameState.soundEnabled) {
+            button.classList.remove('muted');
+            if (text) text.textContent = '声音开';
+        } else {
+            button.classList.add('muted');
+            if (text) text.textContent = '声音关';
+        }
+    });
+}
+
 // 音效控制
 function toggleSound() {
     gameState.soundEnabled = !gameState.soundEnabled;
-    const button = document.getElementById('soundButton');
-    const text = button.querySelector('.btn-text');
+    updateSoundButtons();
     if (gameState.soundEnabled) {
-        button.classList.remove('muted');
-        if (text) text.textContent = '声音开';
-        playSound('keySound'); // 测试音效
+        playSound('keySound'); // 测试按钮音效
         // 游戏中取消静音时，从暂停处恢复背景音乐（不重头）
         if (gameState.isPlaying && !gameState.isPaused) {
             const bgMusic = document.getElementById('bgMusic');
             if (bgMusic) bgMusic.play().catch(e => console.log('Background music resume failed:', e));
         }
     } else {
-        button.classList.add('muted');
-        if (text) text.textContent = '声音关';
         const bgMusic = document.getElementById('bgMusic');
         if (bgMusic) {
             bgMusic.pause();
@@ -650,6 +666,9 @@ function setStandardStatsVisible(visible) {
 }
 
 function startGame() {
+    // 离开开始界面，隐藏顶部标题（只在首页显示）
+    setHeaderVisible(false);
+
     // 学单词模式走独立流程
     if (gameState.mode === 'learn') {
         startLearnGame();
@@ -1680,6 +1699,9 @@ function pauseGame() {
 
 // 结束游戏
 function endGame() {
+    // 结果页也不显示顶部标题
+    setHeaderVisible(false);
+
     // 学单词模式走独立结束流程
     if (gameState.mode === 'learn') {
         endLearnGame();
@@ -1982,6 +2004,9 @@ window.addEventListener('DOMContentLoaded', async function() {
         // 初始化排行榜
         initLeaderboard();
         console.log('排行榜初始化完成');
+
+        // 同步声音开关按钮状态（右上角悬浮按钮进页面即显示正确状态）
+        updateSoundButtons();
 
         // 进入步骤1：选择模式
         showStartStep(1);
