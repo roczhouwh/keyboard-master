@@ -29,6 +29,7 @@
         <symbol id="icon-hash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="4" y1="9" y2="15"/><line x1="20" x2="20" y1="9" y2="15"/><line x1="9" x2="15" y1="4" y2="20"/><line x1="15" x2="9" y1="4" y2="20"/></symbol>
         <symbol id="icon-book-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></symbol>
         <symbol id="icon-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+        <symbol id="icon-fingering" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></symbol>
         <symbol id="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol>
         <symbol id="icon-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
     </svg>
@@ -75,6 +76,11 @@
             <div id="stepMode">
                 <h2><svg class="icon"><use href="#icon-gamepad"/></svg> 选择游戏模式</h2>
                 <div class="mode-cards">
+                    <button class="mode-card" data-mode="beginner">
+                        <svg class="icon"><use href="#icon-fingering"/></svg>
+                        <span class="mc-name">指法起步</span>
+                        <span class="mc-desc">双手图解，单指→逐行→全键盘选关闯</span>
+                    </button>
                     <button class="mode-card" data-mode="letter">
                         <svg class="icon"><use href="#icon-type"/></svg>
                         <span class="mc-name">字母模式</span>
@@ -153,6 +159,11 @@
                     <button class="btn btn-word-manager" id="wordManagerBtn" onclick="openWordManager()">
                         <svg class="icon"><use href="#icon-book-open"/></svg><span class="btn-text">词库管理</span>
                     </button>
+                </div>
+
+                <!-- 指法起步关卡选择 -->
+                <div class="settings-group hidden" id="lessonGroup">
+                    <div id="beginnerPick"></div>
                 </div>
                 </div><!-- /settings-card -->
 
@@ -411,8 +422,11 @@
             </div>
 
             <div class="game-area" id="gameArea">
+                <!-- 指法起步：本关已通过后常驻的「去下一关」气泡（字母区右侧） -->
+                <button class="beginner-next hidden" id="beginnerNextBubble" onclick="nextBeginnerForced()">如果熟练了就进入下一关吧 →</button>
                 <div class="learn-phase hidden" id="learnPhase"></div>
                 <div class="learn-hearts hidden" id="learnHearts"></div>
+                <div class="beginner-bar hidden" id="beginnerBar"></div>
                 <div class="target-display" id="targetDisplay"></div>
                 <div class="word-meaning hidden" id="wordMeaning"></div>
                 <div class="learn-actions">
@@ -475,6 +489,58 @@
                 </div>
             </div>
 
+            <!-- 指法起步模式：双手图解（宽扁比例，JS 对齐到第二行主键列） -->
+            <div class="beginner-hands hidden" id="beginnerHands" aria-hidden="true">
+                <div class="beginner-fingers" id="beginnerFingers">
+                    <!-- 左手（四根打字指，无手掌）：指心 x=12/34/56/78，间距22 -->
+                    <svg class="hand hand-left" viewBox="0 0 92 48" preserveAspectRatio="xMinYMin meet" role="img" aria-label="左手指法">
+                        <g class="finger" data-finger="lp" aria-label="左小指">
+                            <rect class="fh" x="2" y="1" width="20" height="42" rx="11"/>
+                            <ellipse class="nail" cx="12" cy="4" rx="7" ry="9"/>
+                            <text class="fl" x="12" y="28">小</text>
+                        </g>
+                        <g class="finger" data-finger="lr" aria-label="左无名指">
+                            <rect class="fh" x="24" y="1" width="20" height="42" rx="11"/>
+                            <ellipse class="nail" cx="34" cy="4" rx="7" ry="9"/>
+                            <text class="fl" x="34" y="28">无</text>
+                        </g>
+                        <g class="finger" data-finger="lm" aria-label="左中指">
+                            <rect class="fh" x="46" y="1" width="20" height="42" rx="11"/>
+                            <ellipse class="nail" cx="56" cy="4" rx="7" ry="9"/>
+                            <text class="fl" x="56" y="28">中</text>
+                        </g>
+                        <g class="finger" data-finger="li" aria-label="左食指">
+                            <rect class="fh" x="68" y="1" width="20" height="42" rx="11"/>
+                            <ellipse class="nail" cx="78" cy="4" rx="7" ry="9"/>
+                            <text class="fl" x="78" y="28">食</text>
+                        </g>
+                    </svg>
+                    <!-- 右手（四根打字指，无手掌）：指心 x=12/34/56/78，间距22 -->
+                    <svg class="hand hand-right" viewBox="0 0 92 48" preserveAspectRatio="xMinYMin meet" role="img" aria-label="右手指法">
+                        <g class="finger" data-finger="ri" aria-label="右食指">
+                            <rect class="fh" x="2" y="1" width="20" height="42" rx="11"/>
+                            <ellipse class="nail" cx="12" cy="4" rx="7" ry="9"/>
+                            <text class="fl" x="12" y="28">食</text>
+                        </g>
+                        <g class="finger" data-finger="rm" aria-label="右中指">
+                            <rect class="fh" x="24" y="1" width="20" height="42" rx="11"/>
+                            <ellipse class="nail" cx="34" cy="4" rx="7" ry="9"/>
+                            <text class="fl" x="34" y="28">中</text>
+                        </g>
+                        <g class="finger" data-finger="rr" aria-label="右无名指">
+                            <rect class="fh" x="46" y="1" width="20" height="42" rx="11"/>
+                            <ellipse class="nail" cx="56" cy="4" rx="7" ry="9"/>
+                            <text class="fl" x="56" y="28">无</text>
+                        </g>
+                        <g class="finger" data-finger="rp" aria-label="右小指">
+                            <rect class="fh" x="68" y="1" width="20" height="42" rx="11"/>
+                            <ellipse class="nail" cx="78" cy="4" rx="7" ry="9"/>
+                            <text class="fl" x="78" y="28">小</text>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+
             <div class="controls">
                 <button class="btn btn-secondary" onclick="increaseVolume()"><svg class="icon"><use href="#icon-volume-2"/></svg><span class="btn-text">音量+</span></button>
                 <button class="btn btn-secondary" onclick="decreaseVolume()"><svg class="icon"><use href="#icon-volume-1"/></svg><span class="btn-text">音量-</span></button>
@@ -517,6 +583,16 @@
                 <div class="stat-item">
                     <div class="label">年级进度</div>
                     <div class="value" id="learnGradeProgress">0/0</div>
+                </div>
+            </div>
+            <div class="stats-bar hidden" id="beginnerResult" style="margin-bottom: 30px;">
+                <div class="stat-item">
+                    <div class="label">闯关进度</div>
+                    <div class="value" id="beginnerCompleted">0/12</div>
+                </div>
+                <div class="stat-item">
+                    <div class="label">当前阶段</div>
+                    <div class="value" id="beginnerStageResult">—</div>
                 </div>
             </div>
             <div class="action-row">

@@ -27,14 +27,16 @@ const MODE_SETTINGS = {
     character:{ groups: [],                                       hasLeaderboard: true },
     word:     { groups: ['difficulty', 'library'],                hasLeaderboard: true },
     learn:    { groups: ['library', 'batch', 'progress'],         hasLeaderboard: false },
-    challenge:{ groups: ['difficulty'],                           hasLeaderboard: true }
+    challenge:{ groups: ['difficulty'],                           hasLeaderboard: true },
+    beginner: { groups: ['lesson'],                               hasLeaderboard: false }
 };
 // 设置组 key -> DOM 元素 id
 const MODE_SETTING_GROUPS = {
     difficulty: 'difficultyGroup',
     library: 'libraryGroup',
     batch: 'batchGroup',
-    progress: 'learnProgressGroup'
+    progress: 'learnProgressGroup',
+    lesson: 'lessonGroup'
 };
 // 模式显示名
 const MODE_NAMES = {
@@ -42,8 +44,107 @@ const MODE_NAMES = {
     character: '字符模式',
     word: '单词模式',
     learn: '学单词模式',
-    challenge: '限时速打'
+    challenge: '限时速打',
+    beginner: '指法起步'
 };
+
+// ===== 指法起步（初学者）模式 =====
+// 标准 QWERTY 指法映射：目标字符 / 键 → 应使用的指头
+const FINGER_MAP = {
+    q: 'lp', a: 'lp', z: 'lp',
+    w: 'lr', s: 'lr', x: 'lr',
+    e: 'lm', d: 'lm', c: 'lm',
+    r: 'li', t: 'li', g: 'li', b: 'li', f: 'li', v: 'li',
+    y: 'ri', u: 'ri', h: 'ri', j: 'ri', n: 'ri', m: 'ri',
+    i: 'rm', k: 'rm', ',': 'rm',
+    o: 'rr', l: 'rr', '.': 'rr',
+    p: 'rp', '/': 'rp'
+};
+const FINGER_LABEL = {
+    lp: '左小指', lr: '左无名指', lm: '左中指', li: '左食指',
+    ri: '右食指', rm: '右中指', rr: '右无名指', rp: '右小指'
+};
+// 基本手位：ASDF-JKL; 双手 8 指常驻
+const HOME_ROW_FINGERS = ['li', 'lm', 'lr', 'lp', 'rp', 'rr', 'rm', 'ri'];
+
+// 闯关课表：① 单指（8 课，中排食指起）→ ② 逐行（中排→上排→下排）→ ③ 字母
+const BEGINNER_PLAN = (() => [
+    { type: 'finger', name: '左食指',  stage: '①单指', keys: 'rtfgvb'.split('') },
+    { type: 'finger', name: '左中指',  stage: '①单指', keys: 'edc'.split('') },
+    { type: 'finger', name: '左无名指', stage: '①单指', keys: 'wsx'.split('') },
+    { type: 'finger', name: '左小指',  stage: '①单指', keys: 'qaz'.split('') },
+    { type: 'finger', name: '右小指',  stage: '①单指', keys: 'p/'.split('') },
+    { type: 'finger', name: '右无名指', stage: '①单指', keys: 'ol.'.split('') },
+    { type: 'finger', name: '右中指',  stage: '①单指', keys: 'ik,'.split('') },
+    { type: 'finger', name: '右食指',  stage: '①单指', keys: 'yuhjnm'.split('') },
+    { type: 'row',   name: '中排',     stage: '②逐行', keys: 'asdfghjkl'.split('') },
+    { type: 'row',   name: '上排',     stage: '②逐行', keys: 'qwertyuiop'.split('') },
+    { type: 'row',   name: '下排',     stage: '②逐行', keys: 'zxcvbnm'.split('') },
+    { type: 'alpha', name: 'A–Z 全键盘', stage: '③字母', keys: 'abcdefghijklmnopqrstuvwxyz'.split('') }
+])();
+
+const BEGINNER_PROGRESS_KEY = 'keyboardMaster_beginnerProgress';
+// 进度 = 已完成课数（0..12）
+function loadBeginnerProgress() {
+    const v = parseInt(localStorage.getItem(BEGINNER_PROGRESS_KEY) || '0', 10);
+    return Number.isFinite(v) ? Math.min(Math.max(v, 0), BEGINNER_PLAN.length) : 0;
+}
+function saveBeginnerProgress(n) {
+    localStorage.setItem(BEGINNER_PROGRESS_KEY, String(Math.min(Math.max(n, 0), BEGINNER_PLAN.length)));
+}
+// 当前闯关位置：selected=选中的课索引，lessonIndex=进行中的课，charIndex=课内字符进度
+let beginnerState = { selected: 0, lessonIndex: 0, charIndex: 0 };
+
+// 在开始界面渲染关卡选择器（按阶段分组，显示闯关状态，点击选择关卡）
+function renderBeginnerPicker() {
+    const wrap = document.getElementById('beginnerPick');
+    if (!wrap) return;
+    const done = loadBeginnerProgress(); // 已通关课数（0..12），关卡 0..done-1 已完成
+
+    // 各课状态：done 已完成 / current 当前建议 / locked 未解锁
+    const status = i => (i < done ? 'done' : (i === done ? 'current' : 'locked'));
+
+    // 选中默认取当前建议课（可跨起始），若已通关则默认第 0 课便于重玩
+    let sel = beginnerState.selected;
+    if (!Number.isFinite(sel) || sel < 0 || sel >= BEGINNER_PLAN.length) sel = 0;
+    if (status(sel) === 'locked') sel = Math.min(sel, done);      // 选中未解锁时回落
+    if (sel >= BEGINNER_PLAN.length) sel = 0;
+    beginnerState.selected = sel;
+
+    // 按阶段分组（保持课表顺序）
+    const stages = [];
+    BEGINNER_PLAN.forEach((lesson, i) => {
+        const g = stages.find(s => s.stage === lesson.stage);
+        if (g) g.items.push({ lesson, i, st: status(i) });
+        else stages.push({ stage: lesson.stage, items: [{ lesson, i, st: status(i) }] });
+    });
+
+    const selName = BEGINNER_PLAN[beginnerState.selected] ? BEGINNER_PLAN[beginnerState.selected].name : '—';
+    let html = `<div class="bl-head">指法闯关 · 已完成 <b>${done}</b>/${BEGINNER_PLAN.length} 关 · 已选：<b class="bl-picked">${selName}</b></div>`;
+    stages.forEach(group => {
+        html += `<div class="bl-stage"><div class="bl-stage-title">${group.stage}</div><div class="bl-grid">`;
+        group.items.forEach(({ lesson, i, st }) => {
+            const selCls = (i === beginnerState.selected) ? ' sel' : '';
+            const dis = st === 'locked' ? ' disabled' : '';
+            const keyLabel = lesson.type === 'alpha' ? 'A–Z' : lesson.keys.join('').toUpperCase();
+            html += `<button class="bl-item ${st}${selCls}${dis}" data-index="${i}">`
+                + `<span class="bl-mark">${st === 'done' ? '✓' : (st === 'current' ? '●' : '🔒')}</span>`
+                + `<span class="bl-name">${lesson.name}</span>`
+                + `<span class="bl-keys">${keyLabel}</span>`
+                + `</button>`;
+        });
+        html += `</div></div>`;
+    });
+    wrap.innerHTML = html;
+
+    // 绑定点击选择（锁定的课不可选）
+    wrap.querySelectorAll('.bl-item:not(.disabled)').forEach(btn => {
+        btn.addEventListener('click', () => {
+            beginnerState.selected = parseInt(btn.dataset.index, 10);
+            renderBeginnerPicker();
+        });
+    });
+}
 
 // 切换开始界面的步骤（1=选模式，2=设置）
 // 标题只在首页（步骤1 选模式）显示，其余页面隐藏，把垂直空间让给内容
@@ -106,9 +207,12 @@ function renderSettingsForMode(mode) {
         }
     }
 
-    // 排行榜：学单词模式不参与
+    // 排行榜：学单词/指法起步模式不参与
     const lbSection = document.getElementById('leaderboardSection');
     if (lbSection) lbSection.classList.toggle('hidden', !setting.hasLeaderboard);
+
+    // 指法起步：渲染关卡选择器
+    if (mode === 'beginner') renderBeginnerPicker();
 
     // 刷新排行榜与学单词进度
     updateLeaderboardDisplay();
@@ -427,12 +531,12 @@ function updateLeaderboardDisplay() {
     const mode = gameState.mode;
     const difficulty = gameState.difficulty;
 
-    // 学单词模式不参与排行榜，隐藏所有排行榜
-    if (mode === 'learn') {
+    // 学单词/指法起步模式不参与排行榜，隐藏所有排行榜
+    if (mode === 'learn' || mode === 'beginner') {
         document.querySelectorAll('.leaderboard').forEach(board => {
             board.classList.add('hidden');
         });
-        document.getElementById('currentMode').textContent = '学单词模式';
+        document.getElementById('currentMode').textContent = MODE_NAMES[mode] || mode;
         const difficultyLabel = document.getElementById('difficultyLabel');
         if (difficultyLabel) difficultyLabel.classList.add('hidden');
         return;
@@ -674,9 +778,16 @@ function startGame() {
         startLearnGame();
         return;
     }
+    // 指法起步（初学者）模式走独立流程
+    if (gameState.mode === 'beginner') {
+        startBeginnerGame();
+        return;
+    }
 
     // 非学单词模式：隐藏学单词专属界面，避免上一局残留
     hideLearnUI();
+    // 隐藏指法起步专属界面
+    showBeginnerUI(false);
 
     // 检查单词库是否加载完成
     if (!isWordListLoaded()) {
@@ -1001,6 +1112,11 @@ function handleInput(input) {
         handleLearnInput(input);
         return;
     }
+    // 指法起步模式走独立输入逻辑
+    if (gameState.mode === 'beginner') {
+        handleBeginnerInput(input);
+        return;
+    }
 
     const pos = gameState.typeablePositions[gameState.currentIndex];
     const expected = gameState.currentTarget[pos].toLowerCase();
@@ -1012,6 +1128,259 @@ function handleInput(input) {
         // 错误输入
         handleWrong();
     }
+}
+
+// ============ 指法起步（初学者）模式流程 ============
+
+// 显示/隐藏指法起步专属界面（双手图解 + 阶段条），并复位指头高亮
+function showBeginnerUI(show) {
+    ['beginnerBar', 'beginnerHands'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('hidden', !show);
+    });
+    // 气泡始终隐藏：仅在本关通过后由 handleBeginnerInput 显示
+    const bubble = document.getElementById('beginnerNextBubble');
+    if (bubble) bubble.classList.add('hidden');
+    if (!show) {
+        const hands = document.getElementById('beginnerHands');
+        if (hands) hands.querySelectorAll('.finger').forEach(f => f.classList.remove('lit', 'rest'));
+    }
+}
+
+// 点亮某个字符应使用的指头（在键盘下方的双手图上），空格点亮拇指
+function lightBeginnerFinger(ch) {
+    const key = String(ch == null ? '' : ch).toLowerCase();
+    const hands = document.getElementById('beginnerHands');
+    if (!hands) return;
+    hands.querySelectorAll('.finger').forEach(f => f.classList.remove('lit', 'rest'));
+    HOME_ROW_FINGERS.forEach(id => {
+        const f = hands.querySelector(`.finger[data-finger="${id}"]`);
+        if (f) f.classList.add('rest');
+    });
+    const ids = FINGER_MAP[key] ? [FINGER_MAP[key]] : [];
+    ids.forEach(id => {
+        const f = hands.querySelector(`.finger[data-finger="${id}"]`);
+        if (f) f.classList.add('lit');
+    });
+}
+
+// 开始指法起步：未计时，只练选中关卡（关卡在开始界面选择）
+function startBeginnerGame() {
+    hideLearnUI();
+    beginnerState.lessonIndex = beginnerState.selected;
+    beginnerState.charIndex = 0;
+
+    gameState = {
+        isPlaying: true, isPaused: false, score: 0, correct: 0, wrong: 0,
+        combo: 0, maxCombo: 0, timeLeft: 0, mode: 'beginner', difficulty: gameState.difficulty,
+        currentTarget: '', currentTargetZh: '', currentIndex: 0,
+        timerInterval: null, challengeTimer: null, challengeTimeout: 3000,
+        challengeTimeRemaining: null, challengeTimerStartAt: null,
+        soundEnabled: gameState.soundEnabled
+    };
+
+    // 界面切换
+    setHeaderVisible(false);
+    document.getElementById('startScreen').classList.add('hidden');
+    document.getElementById('resultScreen').classList.add('hidden');
+    document.getElementById('gameScreen').classList.remove('hidden');
+    // 隐藏标准计时统计（得分/连击/时间对教学无意义），显示阶段条
+    setStandardStatsVisible(false);
+    document.getElementById('standardResult').classList.add('hidden');
+    document.getElementById('learnResult').classList.add('hidden');
+    document.getElementById('beginnerResult').classList.add('hidden');
+
+    // 背景音乐（从头播放）
+    if (gameState.soundEnabled) {
+        const bgMusic = document.getElementById('bgMusic');
+        if (bgMusic) {
+            bgMusic.currentTime = 0;
+            bgMusic.volume = 0.3 * masterVolume;
+            bgMusic.play().catch(e => console.log('Background music play failed:', e));
+        }
+    }
+
+    showBeginnerUI(true);
+    alignBeginnerHands();
+    renderBeginnerTarget();
+    // 确保侧边栏切换窗口后仍对齐
+    attachBeginnerResizeHandler();
+}
+
+// 出当前关卡的目标字母（按课表顺序，单关内不连续到下一关）
+function renderBeginnerTarget() {
+    const lesson = BEGINNER_PLAN[beginnerState.lessonIndex];
+    if (!lesson || beginnerState.charIndex >= lesson.keys.length) {
+        // 理论不会走到：进入本关卡时 charIndex=0，完成时走 handleBeginnerInput→endBeginnerGame
+        endBeginnerGame(false);
+        return;
+    }
+    const ch = lesson.keys[beginnerState.charIndex];
+    gameState.currentTarget = ch;
+    gameState.currentIndex = 0;
+    gameState.typeablePositions = [0];
+
+    // 常驻提示：这个键该用哪个指头（始终显示，打错也不消失）
+    const finger = FINGER_LABEL[FINGER_MAP[ch]];
+    const messageEl = document.getElementById('message');
+    if (messageEl) {
+        messageEl.innerHTML = finger ? `这个键用 <b>${finger}</b> 来按` : '';
+        messageEl.className = 'message';
+    }
+
+    displayTarget();
+    highlightTargetKey();
+    lightBeginnerFinger(ch);
+    updateBeginnerBar();
+    updateBeginnerProgressBar();
+}
+
+// 更新阶段条文案（单关内进度）
+function updateBeginnerBar() {
+    const el = document.getElementById('beginnerBar');
+    if (!el) return;
+    const lesson = BEGINNER_PLAN[beginnerState.lessonIndex];
+    el.textContent = `${lesson.stage} · ${lesson.name} · ${beginnerState.charIndex + 1}/${lesson.keys.length}：${lesson.keys[beginnerState.charIndex].toUpperCase()}`;
+}
+
+// 更新本关进度条
+function updateBeginnerProgressBar() {
+    const lesson = BEGINNER_PLAN[beginnerState.lessonIndex];
+    const pct = lesson ? Math.round((beginnerState.charIndex / lesson.keys.length) * 100) : 0;
+    const fill = document.getElementById('progressFill');
+    if (fill) fill.style.width = pct + '%';
+}
+
+// 处理指法起步模式的输入
+function handleBeginnerInput(input) {
+    if (!gameState.isPlaying || gameState.isPaused) return;
+    const expected = String(gameState.currentTarget || '').toLowerCase();
+    if (input === expected) {
+        // 正确：声音 + 推进本关下一字母
+        gameState.correct++;
+        playSound('correctSound');
+        const lesson = BEGINNER_PLAN[beginnerState.lessonIndex];
+        beginnerState.charIndex++;
+        if (beginnerState.charIndex >= lesson.keys.length) {
+            // 本关完整过一遍即算通过（存档），但不结束：无限循环练习，弹出「去下一关」气泡
+            saveBeginnerProgress(Math.max(loadBeginnerProgress(), beginnerState.lessonIndex + 1));
+            const bubble = document.getElementById('beginnerNextBubble');
+            if (bubble) {
+                bubble.classList.remove('hidden');
+                positionBeginnerBubble();
+            }
+            beginnerState.charIndex = 0;
+            renderBeginnerTarget();
+        } else {
+            renderBeginnerTarget();
+        }
+    } else {
+        // 错键：无惩罚、不推进，只发出音效（常驻提示已指出正确指头）
+        gameState.wrong++;
+        playSound('wrongSound');
+    }
+}
+
+// 让「去下一关」气泡与当前目标字母同行（垂直居中对齐目标区）
+function positionBeginnerBubble() {
+    const area = document.getElementById('gameArea');
+    const target = document.getElementById('targetDisplay');
+    const bubble = document.getElementById('beginnerNextBubble');
+    if (!area || !target || !bubble) return;
+    if (bubble.classList.contains('hidden')) return;
+    const ar = area.getBoundingClientRect();
+    const tr = target.getBoundingClientRect();
+    bubble.style.top = (tr.top - ar.top + tr.height / 2 - bubble.offsetHeight / 2) + 'px';
+}
+
+// 点击「去下一关」气泡：本关已通过，结束本局回到选关/结果页
+function nextBeginnerForced() {
+    if (!gameState.isPlaying) return;
+    endBeginnerGame(true);
+}
+
+// 让两只手的最小指距与键盘第二行（ASDF-JKL）键距一致，并逐指对齐到对应列
+function alignBeginnerHands() {
+    const block = document.getElementById('beginnerHands');
+    const left = document.getElementById('beginnerHands') ? document.querySelector('#beginnerHands .hand-left') : null;
+    const right = document.getElementById('beginnerHands') ? document.querySelector('#beginnerHands .hand-right') : null;
+    const fig = document.getElementById('beginnerFingers');
+    const a = document.querySelector('.key[data-key="a"]');
+    const f = document.querySelector('.key[data-key="f"]');
+    const j = document.querySelector('.key[data-key="j"]');
+    if (!block || !left || !right || !fig || !a || !f || !j) return;
+    if (block.classList.contains('hidden')) return;
+    if (!gameState || gameState.mode !== 'beginner' || !gameState.isPlaying) return;
+
+    const VSN = 92;       // 手视框宽（viewBox width）
+    const PITCH = 22;     // 视框内相邻手指间距
+    const RATIO = 48 / VSN; // 视框高/宽（宽扁比例，控制手高度）
+    const RIGHT_SHIFT = -8; // 右手整体向左微调（px），让食指更稳落在 J 上
+
+    const cx = el => el.getBoundingClientRect().left + el.getBoundingClientRect().width / 2 + window.scrollX;
+    const fa = cx(f) - cx(a);   // F-A 距离 = 3 个键距
+    const pitch = Math.max(fa / 3, 24);         // 单个键距（像素）
+    const handW = pitch * VSN / PITCH;          // 使视框内 1 指距 ↔ 1 键距的手宽
+
+    left.style.width = handW + 'px';
+    right.style.width = handW + 'px';
+    fig.style.height = Math.ceil(handW * RATIO) + 'px';
+
+    // 左手：左手食指（视框中心 78）对齐到 F 列
+    left.style.transform = 'none';
+    const lWant = cx(f) - (78 / VSN) * handW;
+    left.style.transform = `translateX(${lWant - (left.getBoundingClientRect().left + window.scrollX)}px)`;
+
+    // 右手：右手食指（视框中心 12）对齐到 J 列（则中/无名/小指依次对 J/K/L/;），并整体向左微调
+    right.style.transform = 'none';
+    const rWant = cx(j) - (12 / VSN) * handW + RIGHT_SHIFT;
+    right.style.transform = `translateX(${rWant - (right.getBoundingClientRect().left + window.scrollX)}px)`;
+}
+
+// 窗口尺寸变化时重新对齐双手（仅 beginners 进行中）
+let _beginnerResizeAttached = false;
+function attachBeginnerResizeHandler() {
+    if (_beginnerResizeAttached) return;
+    _beginnerResizeAttached = true;
+    window.addEventListener('resize', () => {
+        if (gameState && gameState.mode === 'beginner' && gameState.isPlaying) {
+            alignBeginnerHands();
+            positionBeginnerBubble();
+        }
+    });
+}
+
+// 结束指法起步（finished=true 表示本关完成；false 为提前结束/结束游戏按钮）
+function endBeginnerGame(finished) {
+    gameState.isPlaying = false;
+    clearInterval(gameState.timerInterval);
+    // 停止背景音乐
+    const bgMusic = document.getElementById('bgMusic');
+    if (bgMusic) bgMusic.pause();
+    playSound('levelUpSound');
+
+    const completed = loadBeginnerProgress();
+    document.getElementById('beginnerCompleted').textContent = `${completed}/${BEGINNER_PLAN.length} 关`;
+    const playedLesson = BEGINNER_PLAN[beginnerState.lessonIndex];
+    document.getElementById('beginnerStageResult').textContent = playedLesson ? playedLesson.stage : '—';
+
+    const rm = document.getElementById('resultMessage');
+    if (finished && completed >= BEGINNER_PLAN.length) {
+        rm.innerHTML = '🎉 全部 12 关已通过！你已经养成指法好习惯啦！';
+    } else if (finished && playedLesson) {
+        rm.innerHTML = `🎉 第 ${beginnerState.lessonIndex + 1} 关「${playedLesson.name}」已通过，下一关已解锁！`;
+    } else if (finished) {
+        rm.innerHTML = '🎉 本关已通过！';
+    } else {
+        rm.innerHTML = `练习结束，已完成 ${completed}/${BEGINNER_PLAN.length} 关，随时回来继续 💪`;
+    }
+
+    document.getElementById('gameScreen').classList.add('hidden');
+    document.getElementById('resultScreen').classList.remove('hidden');
+    document.getElementById('standardResult').classList.add('hidden');
+    document.getElementById('learnResult').classList.add('hidden');
+    document.getElementById('beginnerResult').classList.remove('hidden');
+    showBeginnerUI(false);
 }
 
 // 处理正确输入
@@ -1444,6 +1813,7 @@ function endLearnGame() {
         : `👍 不错！还有 ${learnState.needReview} 个词需要再练练！`;
     document.getElementById('standardResult').classList.add('hidden');
     document.getElementById('learnResult').classList.remove('hidden');
+    document.getElementById('beginnerResult').classList.add('hidden');
     document.getElementById('learnNewMastered').textContent = learnState.masteredThisSession;
     document.getElementById('learnReviewed').textContent = learnState.needReview;
     document.getElementById('learnGradeProgress').textContent = `${progress.mastered}/${progress.total}`;
@@ -1707,6 +2077,11 @@ function endGame() {
         endLearnGame();
         return;
     }
+    // 指法起步模式走独立结束流程（结束游戏按钮触发，未完成整条课表）
+    if (gameState.mode === 'beginner') {
+        endBeginnerGame(false);
+        return;
+    }
     gameState.isPlaying = false;
     clearInterval(gameState.timerInterval);
     
@@ -1748,9 +2123,10 @@ function endGame() {
     
     document.getElementById('gameScreen').classList.add('hidden');
     document.getElementById('resultScreen').classList.remove('hidden');
-    // 常规模式显示标准统计，隐藏学单词统计（避免上一局残留）
+    // 常规模式显示标准统计，隐藏学单词/指法统计（避免上一局残留）
     document.getElementById('standardResult').classList.remove('hidden');
     document.getElementById('learnResult').classList.add('hidden');
+    document.getElementById('beginnerResult').classList.add('hidden');
 
     // 保存分数到排行榜
     saveScoreToLeaderboard();

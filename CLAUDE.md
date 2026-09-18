@@ -94,6 +94,18 @@ Available libraries defined in `wordLibraries` array (`script.js:26-32`). Add ne
 - 学习状态存于独立对象 `learnState`（避免被 `startGame()` 的 gameState 重置覆盖）。
 - **不参与排行榜**：`updateLeaderboardDisplay()` 对 `mode === 'learn'` 直接隐藏所有排行榜。
 
+### 指法起步（初学者 / Beginner Mode）
+
+独立的未计时指法教学模式，路由于 `startGame()`/`handleInput()`/`endGame()` 的 `mode === 'beginner'` 分支。教学卖点是把双手 SVG 放到虚拟键盘正下方、逐指对齐主键列，建立「键 ↔ 指头」的肌肉记忆。
+
+- **课表**（`BEGINNER_PLAN`，`script.js:73`）：12 关，①单指（8 关：左食指→左中指→…→右食指，每关只练该指控制的键）→ ②逐行（中排→上排→下排）→ ③字母（A–Z）。录入 `index.html` 虚拟键盘上实际存在的键（字母 + `,`/`.`/`/`）。
+- **指法映射**：`FINGER_MAP`（字符→标准 QWERTY 指头）、`FINGER_LABEL`（指头名）、`HOME_ROW_FINGERS`（ASDF-JKL 8 指常驻）。
+- **选关闯关**（第二页 `renderBeginnerPicker()`，`script.js`）：不进连续通关，开始界面按阶段分组显示 12 关，三态：✓ 完成（可重玩）/ ● 当前建议 / 🔒 未解锁（顺序解锁）。关按钮统一尺寸（`.bl-item`）。选中关高亮为实心天蓝，建议关只作轻提示。
+- **玩一关**：`startBeginnerGame()` 只从 `beginnerState.selected` 出发，无倒计时；`handleBeginnerInput()` 按课内顺序出字母，正确推进，错键无惩罚、不推进（仅音效 + 常驻提示）。**完整过一遍即算通过**：`saveBeginnerProgress(max(load, sel+1))` 存档并解锁下一关，但**不结束**——回本关第一个字母无限循环练习，同时屏幕右上角显示「去下一关」气泡（`#beginnerNextBubble`，`nextBeginnerForced()` 点击→`endBeginnerGame(true)`）。
+- **持久化**：`keyboardMaster_beginnerProgress` = 已通关课数（0..12），`loadBeginnerProgress()`/`saveBeginnerProgress()`。
+- **手型图解与对齐**：`alignBeginnerHands()`（`script.js`）测量键盘 A↔F 实际键距，把手宽调到「视框内 1 指距 ↔ 1 键距」，再逐指对齐：左手食指→F 列、右手食指→J 列（右手整体 `RIGHT_SHIFT=-8px` 微调）。手为 4 根无手掌的宽扁指（viewBox `0 0 92 48`），指头白/肉色 + 汉字标，目标指亮橙描边 + 光晕；仅字母模式之外对 `mode==='beginner'` 生效，窗口拉伸重算。
+- **不参与排行榜**：`updateLeaderboardDisplay()` 对 `mode === 'beginner'` 直接隐藏。
+
 ### Leaderboard (`script.js:828-996`)
 
 - localStorage-backed, top 10 per mode×difficulty (12 boards: 4 modes × 3 difficulties; learn mode excluded)

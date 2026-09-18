@@ -899,6 +899,168 @@ body.playing .game-header { display: none; }
 .key.extra-wide { width: 120px; }
 .key.space { width: 300px; }
 
+/* ===== 指法起步模式：双手图解（键盘下方） ===== */
+.beginner-bar {
+    text-align: center;
+    font-family: var(--font-heading);
+    font-size: 1.05em;
+    font-weight: 700;
+    color: var(--primary-dark);
+    background: linear-gradient(135deg, #E0F2FE, #BAE6FD);
+    border: var(--border-w) solid #7DD3FC;
+    border-radius: 20px;
+    padding: 6px 18px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-key);
+}
+.beginner-hands {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: min(620px, 100%);
+    margin: -6px auto 14px;
+    padding-top: 8px;
+    overflow: visible;
+}
+.beginner-hands .beginner-fingers {
+    position: relative;
+    width: 100%;
+    height: 120px; /* JS 对齐时按手宽重设 */
+    overflow: visible;
+}
+.beginner-hands .hand {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 300px; /* JS 对齐时按键距重设 */
+    height: auto;
+}
+.beginner-hands .hand-left { z-index: 2; }
+.beginner-hands .hand-right { z-index: 2; }
+.beginner-hands .hand .palm { fill: #FFD7B3; stroke: #F1B58A; stroke-width: 2; }
+.beginner-hands .hand .fh {
+    fill: #FFF8F0;
+    stroke: #E7C09E;
+    stroke-width: 2;
+    transition: fill .15s ease, stroke .15s ease, filter .15s ease;
+}
+.beginner-hands .hand .nail { fill: #FFE0EA; }
+/* 指头上的汉字标（小/无/中/食）：默认暗肉色，目标指上变亮橙 */
+.beginner-hands .hand .fl {
+    font-family: var(--font-body), system-ui, sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    fill: #C79E7E;
+    text-anchor: middle;
+    pointer-events: none;
+}
+/* 基本手位（ASDF-JKL; 8 指）柔肤底，柔和不抢眼 */
+.beginner-hands .hand .finger.rest .fh { fill: #F9E4C8; stroke: #E7C09E; }
+/* 目标键对应指头：指肚保持白色/肉色，用亮橙描边 + 光晕标记 */
+.beginner-hands .hand .finger.lit .fh { fill: #FFF8F0; stroke: #F97316; stroke-width: 2.5; filter: drop-shadow(0 0 5px rgba(249, 115, 22, .8)); }
+.beginner-hands .hand .finger.rest.lit .fh { fill: #FFF8F0; stroke: #F97316; stroke-width: 2.5; }
+/* 高亮时标签用亮橙 */
+.beginner-hands .hand .finger.lit .fl,
+.beginner-hands .hand .finger.rest.lit .fl { fill: #EA580C; }
+/* ===== 指法起步：关卡选择器（开始界面第二页） ===== */
+.bl-head {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    color: var(--primary-dark);
+    text-align: center;
+    margin-bottom: 10px;
+}
+.bl-picked { color: var(--primary); }
+.bl-stage { margin-bottom: 14px; }
+.bl-stage-title {
+    font-weight: 700;
+    color: var(--primary-dark);
+    opacity: .7;
+    margin-bottom: 6px;
+    font-size: .95em;
+}
+.bl-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.bl-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    width: 92px;
+    height: 78px;
+    box-sizing: border-box;
+    padding: 6px 6px;
+    border: var(--border-w) solid #BAE6FD;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #fff, #F0F9FF);
+    box-shadow: var(--shadow-key);
+    cursor: pointer;
+    font-family: var(--font-heading);
+    transition: transform .08s ease, box-shadow .08s ease, outline .08s ease;
+}
+.bl-item:hover:not(.disabled) { transform: translateY(-2px); }
+.bl-item .bl-mark { font-size: .85em; color: var(--primary); }
+.bl-item .bl-name { font-weight: 700; color: var(--primary-dark); font-size: .95em; }
+.bl-item .bl-keys {
+    font-family: var(--font-letters);
+    font-size: .72em;
+    color: #64748B;
+    letter-spacing: 1px;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    text-align: center;
+    line-height: 1.2;
+}
+.bl-item.done { opacity: .85; }
+.bl-item.done .bl-mark { color: #16A34A; }
+/* 「当前建议」：只作轻提示（淡灰金字 + ●），不与选中抢眼 */
+.bl-item.current {
+    border-color: #FCCB55;
+    background: #FFF9E8;
+}
+.bl-item.current .bl-mark { color: #F59E0B; }
+.bl-item.locked { opacity: .5; cursor: not-allowed; }
+.bl-item.locked .bl-mark { color: #94A3B8; }
+/* 「已选中」：实心高饱和，明显压过其他状态 */
+.bl-item.sel {
+    background: linear-gradient(180deg, #38BDF8, #0284C7);
+    border-color: #0369A1;
+    box-shadow: 0 6px 14px rgba(2, 132, 199, .35);
+    transform: translateY(-2px);
+}
+.bl-item.sel:hover:not(.disabled) { transform: translateY(-3px); }
+.bl-item.sel .bl-name,
+.bl-item.sel .bl-keys { color: #fff; }
+.bl-item.sel .bl-mark { color: #EAF7FF; }
+
+/* 指法起步：本关已通过后常驻的「去下一关」气泡（位于字母区右侧） */
+.game-area { position: relative; }
+.beginner-next {
+    position: absolute;
+    right: 4%;
+    z-index: 5;
+    margin: 0;
+    padding: 8px 18px;
+    font-family: var(--font-heading);
+    font-size: .98em;
+    font-weight: 700;
+    color: #065F46;
+    background: linear-gradient(135deg, #D1FAE5, #A7F3D0);
+    border: 2px solid #6EE7B7;
+    border-radius: 30px;
+    box-shadow: var(--shadow-key), 0 4px 10px rgba(16, 185, 129, .25);
+    cursor: pointer;
+    animation: beginnerBubblePop .3s ease;
+    transition: transform .08s ease;
+    white-space: nowrap;
+}
+.beginner-next:hover { transform: translateY(-2px); }
+@keyframes beginnerBubblePop {
+    from { transform: scale(.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
 /* 控制按钮组 */
 .controls {
     display: flex;
@@ -1084,12 +1246,18 @@ body.playing .game-header { display: none; }
     .leaderboard-section { padding: 16px; }
     .mode-card { width: 130px; padding: 16px 12px 14px; }
     .settings-card { min-height: 170px; padding: 20px 18px; }
+    .beginner-bar { font-size: 0.92em; padding: 4px 12px; }
+    .bl-item { width: 80px; height: 70px; }
 }
 
 @media (max-width: 420px) {
     .btn-primary { font-size: 1.05em; padding: 14px 28px; }
     .start-screen h2 { font-size: 1.6em; }
     .stat-item .value { font-size: 1.3em; }
+    /* 超窄屏隐藏双手图解，避免挤压目标区 */
+    .beginner-hands.hidden { display: none; }
+    .beginner-hands { display: none !important; }
+    .beginner-bar { font-size: 0.85em; }
 }
 
 /* ===== 减少动态效果 ===== */
